@@ -1,0 +1,9 @@
+{% extends "200.html" %}
+
+{% block content %}
+{% if currentNode.akey == currentNode.id %}
+	{% include "components/profile.html" %}
+{% else %}
+	{% include "components/project.html" %}
+{% endif %}
+{% endblock content %}

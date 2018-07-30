@@ -1,0 +1,181 @@
+{% load momentjs %}
+<div class="d-flex flex box-shadow-0" data-plugin="chat" >
+  <div class="d-flex flex" >
+		<div class="d-flex flex-column flex" id="chat-list">
+			<div class="navbar flex-nowrap light lt box-shadow">
+        <span class="text-md text-ellipsis flex">
+          {{currentNode.title}}
+        </span>
+			</div>
+	      	<div class="scrollable hover">
+	      		<div class="p-3">
+	      		  <div class="chat-list">
+                <ul class="timeline timeline-center dark">
+                  <li class="tl-header">
+                    <div class="btn white" data-toggle-class="timeline-center" data-target=".timeline">Align me</div>
+                  </li>
+
+                {% for event in origin.get_ancestors %}
+
+                <li class="tl-item {% if event.akey != user_profile.akey %}tl-left{% endif %}" style="position:relative">
+                  <div class="tl-wrap b-info">
+                    <span class="tl-date text-muted">{% moment_from_now event.ref_date %}</span>
+
+                    {% if event.akey != user_profile.akey %}
+                    <div class="tl-content box-color text-color p-a-sm" {% if event.akey != user_profile.akey %}style="float:right"{% endif %}>
+                      <span class="arrow b-white left pull-up hidden-left"></span>
+                      <span class="arrow b-white right pull-up visible-left"></span>
+                      <div>
+                        {{event.status}}
+                        <a class="text-primary subpanel" href="{{event.get_url}}index/" >{{event.title}}</a>
+                      </div>
+                    </div>
+                    {% else %}
+                    <div class="tl-content box-color text-color">
+                      <span class="arrow b-white left pull-top"></span>
+                      <div>{{event.status}}
+                        {% if event.target == user_profile.akey %}
+                        <a class="link" href="{{event.related.get_url}}view/" >{{event.get_target.title}}</a>
+                        {% else %}
+                        <a class="link" href="{{event.get_target.get_url}}view/" >{{event.get_target.title}}</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% endif %}
+
+                    {% if event.purpose %}
+                    <div class="chat-item" {% if event.akey != user_profile.akey %}style="float:left"{% endif %} data-class="{% if event.akey == user_profile.akey %}alt{% endif %}">
+    	      		      <a href="#" class="avatar w-40">
+    	      		        <img src="{{event.get_actor.get_image.url}}" alt=".">
+    	      		      </a>
+                      <div class="chat-body">
+                        {% if event.purpose %}
+    	      		        <div class="chat-content rounded msg">
+    	      		          {{event.purpose}}
+    	      		        </div>
+                        {% endif %}
+    	      		        <div class="chat-date date">
+    	      		          {% moment_from_now event.ref_date %}
+    	      		        </div>
+    	      		      </div>
+    	      		    </div>
+                    {% endif %}
+
+                  </div>
+
+                  {% if event.target == user_profile.akey and event.get_data.behavior %}
+                  <div class="tl-wrap b-primary">
+                    <span class="tl-date text-muted">04.2014</span>
+                    <div class="tl-content box-color text-color w-xl w-auto-xs">
+                      <span class="arrow b-white left pull-top"></span>
+                      <div class="box-header font-bold">to {{event.behavior|default:event.get_data.behavior}}</div>
+                      <div class="box-divider"></div>
+                      <div class="box-body text-muted">
+                        <a href="{{event.related.get_url}}{{event.get_data.behavior}}/?origin_id={{event.id}}" >Yes</a>
+                        <a href="{{event.related.get_url}}reject/?origin_id={{event.id}}" >No</a>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                </li>
+                {% endfor %}
+                </ul>
+                <ul class="timeline timeline-center light">
+                {% for event in origin.get_descendants %}
+                <li class="tl-item {% if event.akey != user_profile.akey %}tl-left{% endif %}" style="position:relative">
+                  <div class="tl-wrap b-info">
+                    <span class="tl-date text-muted">{% moment_from_now event.ref_date %}</span>
+
+                    {% if event.akey != user_profile.akey %}
+                    <div class="tl-content box-color text-color p-a-sm" {% if event.akey != user_profile.akey %}style="float:right"{% endif %}>
+                      <span class="arrow b-white left pull-up hidden-left"></span>
+                      <span class="arrow b-white right pull-up visible-left"></span>
+                      <div>
+                        {{event.status}}
+                        {% if event.target == user_profile.akey %}
+                        <a class="link" href="{{event.related.get_url}}view/" >{{event.get_target.title}}</a>
+                        {% else %}
+                        <a class="link" href="{{event.get_target.get_url}}view/" >{{event.get_target.title}}</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% else %}
+                    <div class="tl-content box-color text-color">
+                      <span class="arrow b-white left pull-top"></span>
+                      <div>{{event.status}}
+                        {% if event.target == user_profile.akey %}
+                        <a class="link" href="{{event.related.get_url}}view/" >{{event.get_target.title}}</a>
+                        {% else %}
+                        <a class="link" href="{{event.get_target.get_url}}view/" >{{event.get_target.title}}</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% endif %}
+
+                    {% if event.purpose %}
+                    <div class="chat-item" {% if event.akey != user_profile.akey %}style="float:left"{% endif %} data-class="{% if event.akey == user_profile.akey %}alt{% endif %}">
+    	      		      <a href="{{event.get_actor.get_url}}index/" class="avatar w-40">
+    	      		        <img src="{{event.get_actor.get_image.url}}" alt=".">
+    	      		      </a>
+                      <div class="chat-body">
+                        {% if event.purpose %}
+    	      		        <div class="chat-content rounded msg">
+    	      		          {{event.purpose}}
+    	      		        </div>
+                        {% endif %}
+    	      		        <div class="chat-date date">
+    	      		          {% moment_from_now event.ref_date %}
+    	      		        </div>
+    	      		      </div>
+    	      		    </div>
+                    {% endif %}
+
+                  </div>
+
+                  {% if event.target == user_profile.akey and event.get_data.behavior %}
+                  <div class="tl-wrap b-primary">
+                    <span class="tl-date text-muted">04.2014</span>
+                    <div class="tl-content box-color text-color w-xl w-auto-xs">
+                      <span class="arrow b-white left pull-top"></span>
+                      <div class="box-header font-bold">to {{event.behavior|default:event.get_data.behavior}}</div>
+                      <div class="box-divider"></div>
+                      <div class="box-body text-muted">
+                        <a href="{{event.related.get_url}}{{event.get_data.behavior}}/?origin_id={{event.id}}" >Yes</a>
+                        <a href="{{event.related.get_url}}reject/?origin_id={{event.id}}" >No</a>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                </li>
+                {% endfor %}
+
+
+              </ul>
+	      		  </div>
+	      		  <div class="hide">
+	      		    <div class="chat-item" id="chat-item" data-class>
+	      		      <a href="#" class="avatar w-40">
+	      		        <img class="image" src="{{user_profile.get_actor.get_image.url}}" alt=".">
+	      		      </a>
+	      		      <div class="chat-body">
+	      		        <div class="chat-content rounded msg">
+	      		        </div>
+	      		        <div class="chat-date date"></div>
+	      		      </div>
+	      		    </div>
+	      		  </div>
+	      		</div>
+	      	</div>
+	      	<div class="p-3 light lt b-t mt-auto" id="chat-form">
+		        <div class="input-group">
+		          	<input type="text" class="form-control" placeholder="Say something" id="newField">
+		          	<span class="input-group-btn">
+		            	<button class="btn white b-a no-shadow" type="button" id="newBtn">
+		            		<i class="fa fa-send text-success"></i>
+		            	</button>
+		          	</span>
+		        </div>
+			</div>
+		</div>
+	</div>
+</div>

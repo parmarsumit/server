@@ -1,0 +1,113 @@
+{% extends "search.html" %}
+{% load momentjs %}
+{% block results %}
+
+<div class="padding">
+	<div>
+		<h3>Projects</h3>
+	</div>
+	<div class="padding row">
+		{% for node in nodes %}
+		{% if not node.parent and not node.id == node.akey %}
+		<div class="col-6 col-sm-3 col-md-2">
+			<div class="box">
+				<div class="item r-t">
+					<div class="item-media item-media-16by9">
+					    <a href="{{node.get_url}}index/" class="item-media-content subpanel"
+		          style="background-image: url({{node.get_image.avatar.url}})"></a>
+					</div>
+					<div class="item-overlay active top p-3">
+						<a href="{{node.get_url}}index/" class="text-u-c badge subpanel">{{node.label}}</a>
+					</div>
+		    </div>
+				<div class="p-3">
+		      <div class="float-right badge grey text-sm">{{node.get_total_budgeted_value}}</div>
+		      <div class="mb-2 h-2x"><a href="{{node.get_url}}index/" class="_800 subpanel">{{node.title}}</a></div>
+		      <p class="h-3x">{{node.purpose}}</p>
+
+		      <p class="h-3x">{{node.description}}</p>
+					<div>
+		        <a href="{{node.get_url}}view/" class="btn btn-xs white">Open</a>
+		      </div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+		{% empty %}
+		No project found
+		{% endfor %}
+	</div>
+</div>
+
+<div class="padding">
+	<div>
+		<h3>Calls for contributions</h3>
+	</div>
+	<div class="padding">
+		<table class="ui table">
+	    <thead>
+	      <th>Initiative</th>
+	      <th>Purpose</th>
+	      <th>Status</th>
+	      <th>Added by</th>
+	      <th>On</th>
+	      <th>#JOBS</th>
+	      <th>Reward</th>
+	    </thead>
+	    <tbody>
+				{% for event in nodes %}
+				{% if event.parent and event.status != 'created' %}
+	      <tr>
+	        <td><a class="subpanel" href="{{event.related.get_url}}index/">{{event.related.parent.title}}</a></td>
+	        <td><a class="subpanel" href="{{event.get_url}}index/">{{event.related.title}}</a></td>
+	        <td><span class="btn white" >{{event.origin.status}}</span>
+	          <a class="subpanel" href="{{event.get_url}}index/" ><span class="btn white">{{event.status}}</span>
+	          </a>
+	        </td>
+	        <td><a class="subpanel" href="{{event.get_actor.get_url}}index/"><img class="avatar" src="{{event.get_actor.get_image.url}}" style="width:32px;" /></a></td>
+	        <td>{% moment_from_now event.ref_date %}</td>
+	        <td>{{event.get_children.count}}</td>
+	        <td><span class="badge">{{event.quantity}}CTX / {{event.value}}€</span></td>
+	        <td>
+	          <div class="btn-group">
+
+	            <a class="btn btn-outline subpanel" href="{{event.related.get_url}}call/">Call</a>
+	            <a class="btn btn-outline subpanel" href="{{event.related.get_url}}invite/?behavior=answer">Invite</a>
+
+	            <a class="btn btn-outline subpanel" href="{{event.get_url}}assign/">Assign</a>
+	            <a class="btn btn-outline subpanel" href="{{event.get_url}}answer/">Answer</a>
+
+	          </div>
+	        </td>
+	      </tr>
+				{% endif %}
+				{% endfor %}
+	    </tbody>
+	  </table>
+
+
+	</div>
+</div>
+
+<div class="padding" >
+	<div>
+		<h3>Contributors</h3>
+	</div>
+  <div class="ui vertical segment" >
+    <table class="ui very basic table">
+      {% for contributor in nodes %}
+      {% if contributor.akey == contributor.id %}
+      <tr>
+        <td>
+          <a href="/profile.html?id={{contributor.id}}" >
+            <img class="avatar" src="{{contributor.get_image.avatar.url}}" />
+            {{contributor.title}}
+          </a>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

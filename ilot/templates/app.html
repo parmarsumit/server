@@ -1,0 +1,180 @@
+{% extends "200.html" %}
+
+{% block sidebar %}
+{% if not input_data.embed %}
+<div id="toc" class="ui user vertical wide right sidebar inverted menu" >
+  <a class="ui fluid secondary rootpanel" href="/" target="_self" >
+    <img class="ui circular centered tiny image" src="{{user_profile.get_profile.get_image.url}}" />
+  </a>
+  <div class="item menu">
+    <a class="item {% if request.path == '/' %}active{% endif %}" href="/" ><i class="ui icon inbox"></i>Inbox</a>
+  </div>
+  <div class="item menu">
+    <a class="dividing item {% if request.path == '/projects.html' %}active{% endif %}" href="/projects.html" ><i class="ui icon list"></i>Browse projects</a>
+  </div>
+  <div class="menu divided item" >
+    <div class="item header">My Wallet <span class="ui orange label">### $</span></div>
+    {% for node in currentNode.get_view_roots %}
+      <a class="item {% if currentNode.get_root == node %}{% endif %}" href="{{node.get_url}}view/" >
+        <img class="image" src="{{node.get_image.thumbnail.url}}" />
+        {{node.title|truncatechars:18}}
+        <span class="ui mini label"><i class="ui icon bell" ></i>{{node.get_messages_count}}</span>
+        <span class="ui mini black label">## XCT</span>
+      </a>
+    {% endfor %}
+    <a class="item rootpanel button" href="/docs/create-a-project.html" ><i class="ui icon add" ></i>Add project</a>
+  </div>
+
+  {% comment %}
+  <div >
+   {% if currentNode.id == user_profile.akey or currentNode.id == currentNode.akey %}
+   {% else %}
+   <a class="item {% if currentNode == currentnode.get_root %}active{% endif %}" href="{{currentNode.get_root.get_url}}view/?panel={{input_data.panel}}" >
+     <img class="ui tiny image" src="{{currentNode.get_root.get_image.avatar.url}}" />
+     <b>{{currentNode.get_root.title|truncatechars:18}}</b>
+   </a>
+   {% endif %}
+
+   {% if currentNode.id == user_profile.akey %}
+   {% else %}
+    {% for item in currentNode.get_root.get_children %}
+    <div class="item menu {% if currentNode == item %}active{% endif %}">
+      <a class="item" href="{{item.get_url}}view/?panel={{input_data.panel}}" >{{item.title}}</a>
+      <div class="item menu">
+        {% for sub_item in item.get_children %}
+        <a class="item {% if currentNode == sub_item %}active{% endif %}" href="{{sub_item.get_url}}view/?panel={{input_data.panel}}" >{{sub_item.title}}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    </div>
+    {% endcomment %}
+    <div class="ui fluid inverted menu">
+      <a class="item rootpanel" href="/permissions.html" ><i class="ui icon api"></i>Permissions</a>
+      <a class="item rootpanel" href="/api.html" ><i class="ui icon api"></i>API</a>
+    </div>
+
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block page %}
+
+    {% if not input_data.embed %}
+    <div class="ui item" style="position:relative;background-color:white;">
+      <div class="ui fluid secondary pointing menu" >
+        <a class="item {% if request.path == '/' %}active{% endif %}" href="/" ><i class="ui icon street view"></i>Tribute</a>
+        {% comment %}
+        <div class="ui item dropdown" >
+
+         <div class="text">
+             Jump to project ...
+         </div>
+         <i class="dropdown icon"></i>
+         <div class="ui fluid large menu" style="width:300px;">
+           {% for node in currentNode.get_view_roots %}
+             <a class="item" href="{{node.get_url}}view/" >
+               <img class="ui icon image" style="max-width:28px" src="{{node.get_image.thumbnail.url}}" />
+               {{node.title|truncatechars:18}}
+             </a>
+           {% endfor %}
+         </div>
+
+       </div>
+       {% endcomment %}
+
+        <div class="item">
+          <form class="ui fluid form" action="/search/" method="GET" rol="form" >
+              <div class="ui head category search">
+                <div class="ui left icon transparent input">
+                  <i class="search icon"></i>
+                  <input id="search_input" color="white" class="inverted prompt" name="keyword" placeholder="Rechercher ..." type="text"  />
+                </div>
+                <div class="results" ></div>
+              </div>
+          </form>
+        </div>
+        <a class="right button icon item" href="/inbox.html?panel=notifications" >
+          {% if user_profile.get_profile.get_unread_invitations.count %}
+            <div class="ui label"><i class="red icon alarm"></i>{{user_profile.get_profile.get_unread_invitations.count}}/{{user_profile.get_profile.get_invitations.count}}</div>
+          {% else %}
+            <div class="ui label"><i class="icon alarm"></i>{{user_profile.get_profile.get_invitations.count}}</div>
+          {% endif %}
+        </a>
+        <a class="item button" onclick="$('.ui.right.user.sidebar').sidebar('toggle');" >
+          <img class="ui avatar image" src="{{user_profile.get_profile.get_image.url}}" />
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+    {% block page_wrapper %}
+
+
+    {% block page_message %}
+    <div class="" id="messages" >
+        {% for message in messages %}
+            {% if not debug or 'debug' not in message.tags %}
+                <div class="ui warning message">
+                  <i class="close icon"></i>
+                  <div class="header">
+                    {{ message.title }}
+                  </div>
+                  {{ message|safe }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endblock %}
+
+    {% block page_container %}
+
+    {% block content %}
+
+
+    <div class="ui padded divided grid" style="height:90vh" >
+
+      <div class="three wide column tree" style="background-color:#555" >
+        <a class="icon item" href="{{currentNode.get_root.get_url}}view/" >
+          <img class="ui fluid tiny image" src="{{currentNode.get_root.get_image.avatar.url}}" />
+        </a>
+        {% include "panels/tree.html" %}
+      </div>
+      <div class="thirteen wide column" style="">
+        <div class="ui fluid secondary pointing menu" >
+          <div class="item">
+            {% content_breadcrumb currentNode 'view' %}
+          </div>
+          <a class="right item {% if not input_data.panel or input_data.panel == 'dashboard' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=dashboard"><i class="icon dashboard" ></i>Dashboard</a>
+          <a class="item {% if input_data.panel == 'people' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=people"><i class="icon users" ></i>People</a>
+          <a class="item {% if input_data.panel == 'initiatives' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=initiatives"><i class="icon browser" ></i>Initiatives</a>
+          <a class="item {% if input_data.panel == 'settings' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=settings"><i class="icon cogs" ></i>Settings</a>
+          <a class="right item {% if input_data.panel == 'overview' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=overview"><i class="icon eye" ></i>Overview</a>
+        </div>
+        {% if input_data.panel == 'dashboard' %}
+          {% include "panels/dashboard.html" %}
+        {% elif input_data.panel == 'overview' %}
+          {% include "panels/overview.html" %}
+        {% elif input_data.panel == 'settings' %}
+          {% include "panels/settings.html" %}
+        {% elif input_data.panel == 'people' %}
+          {% include "panels/people.html" %}
+        {% elif input_data.panel == 'projects' %}
+          {% include "panels/projects.html" %}
+        {% elif input_data.panel == 'initiatives' %}
+          {% include "panels/initiatives.html" %}
+        {% else %}
+          {% include "panels/dashboard.html" %}
+        {% endif %}
+      </div>
+        </div>
+      {% endblock %}
+      {% endblock %}
+
+    </div>
+
+    {% endblock %}
+
+{% endblock %}

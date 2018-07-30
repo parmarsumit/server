@@ -1,0 +1,15 @@
+{
+  "id":"{{currentNode.id}}",
+  "label":"{{currentNode.label}}",
+  "title":"{{currentNode.title}}",
+  "name":"{{currentNode.label|default:currentNode.title|default:currentNode.slug|default:'Item'}}",
+  "children_count":{{currentNode.get_children_count}},
+  "children":[{% for node in currentNode.get_children %}
+      {
+        "id":"{{node.id}}",
+        "name":"{{node.label|default:node.title|default:node.slug|default:'Item'}}",
+        "children_count":{{node.get_children_count}}
+      }{% if forloop.revcounter > 1 %},{% endif %}{% endfor %}
+    ]
+
+}

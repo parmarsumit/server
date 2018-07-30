@@ -1,0 +1,25 @@
+{% extends "200.html" %}
+
+{% block content %}
+    <div class="py-5 text-center w-100 white">
+      <div class="mx-auto w-xxl w-auto-xs">
+        <div class="px-3">
+          <div>
+            <h5>You need to login</h5>
+            <p class="text-muted my-3">
+              Using your email, you wiil a link to come back to this page.
+            </p>
+          </div>
+
+          <form name="authenticate" method="post" action="{{request.path}}">
+            <div class="form-group">
+              <input value="{{input_data.email}}" name="email" type="email" placeholder="Email" class="form-control" required>
+            </div>
+            <button type="submit" class="btn primary btn-block p-x-md" >Send</button>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+{% endblock %}

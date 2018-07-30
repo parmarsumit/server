@@ -1,0 +1,14 @@
+{% extends "200.html" %}
+
+{% block content %}
+
+{% for node in currentNode.get_descendants %}
+<div class="box" style="margin-left:{{node.get_ancestors|length}}rem">
+  {{node.title}} - {{node.get_appliances}}
+  {% for event in node.query_this reversed %}
+  <div>{{event.status}}</div>
+  {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

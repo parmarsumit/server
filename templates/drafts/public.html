@@ -1,0 +1,112 @@
+{% load momentjs markdown_deux_tags %}
+
+
+<div class="ui inverted segment" style="background-color:#111" >
+
+  <h1><img class="ui centered small image" src="{{currentNode.get_image.thumbnail.url}}" /></h1>
+  <h2 class="ui header">{{currentNode.get_root.title}}</h2>
+  <h3 class="ui header">{{currentNode.get_root.purpose}}</h3>
+
+  <div class="ui paddded inverted vertical segment">
+    {{currentNode.description|markdown}}
+  </div>
+
+  {% if currentNode.content %}
+    {% content_render currentNode.content %}
+  {% elif currentNode.type and currentNode.get_type.content %}
+    {% content_render currentNode.get_type.content %}
+  {% else %}
+
+    <div class="ui padded vertical segment">
+      <div class="ui padded vertical segment">
+        <table class="ui very basic inverted table">
+          <thead>
+            <th>Purpose</th>
+            <th>On</th>
+            <th>End on</th>
+            <th>#JOBS</th>
+            <th>Rewarded</th>
+            <th>Action</th>
+          </thead>
+          <tbody>
+            {% for event in currentNode.get_calls %}
+            <tr>
+              <td><a class="ui link subpanel" href="{{event.related.get_url}}view/?id={{event.id}}">{{event.purpose}}</a></td>
+              <td>{% moment_from_now event.ref_date %}</td>
+              <td>{{event.related.end}}</td>
+              <td>{{event.quantity}}</td>
+              <td>{{event.value}}</td>
+              <td><a class="ui button" href="{{event.related.get_url}}answer/?origin_id={{event.id}}">Answer</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% for embed in currentNode.get_embedded %}
+    <div class="ui vertical segment">
+      {% with embed_object=embed.get_data %}
+      {% include "ilot/tags/embed.html" %}
+      {% endwith %}
+    </div>
+    {% endfor %}
+  </div>
+
+  {% endif %}
+
+
+{% comment %}
+    <div class="ui padded vertical segment">
+    {% for node in currentNode.get_children %}
+    <div class="ui padded segment">
+      <div class="ui right floated vertical secondary small menu">
+        <div class="item">ALLOC <span class="ui label" ><b>{{node.get_total_opened_value}}</b> XCT</span></div>
+        <div class="item">ASSIGN <span class="ui label" >{{node.get_total_assigned_value}} XCT</span></div>
+        <div class="item">REWARD <span class="ui label" >{{node.get_total_rewarded_value}} XCT</span></div>
+      </div>
+      <img class="ui small left floated image" src="{{node.get_image.thumbnail.url}}" />
+      <h3 class="ui header">{{node.title}}</h3>
+      <h4 class="ui header">{{node.purpose}}</h4>
+      <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+
+      <div class="ui secondary menu">
+        <a class="subpanel right item" href="{{node.get_url}}comment/">Comment</a>
+        <a class="subpanel item" href="{{node.get_url}}follow/">Follow</a>
+        <a class="item" href="{{node.get_url}}index/">More ...</a>
+      </div>
+
+      <div class="ui vertical segment">
+
+        <div class="ui vertical segment">
+          <table class="ui very basic table">
+            <thead>
+              <th>Type</th>
+              <th>Purpose</th>
+              <th>On</th>
+              <th>End on</th>
+              <th>#JOBS</th>
+              <th>Rewarded</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              {% for event in node.get_todos %}
+              <tr>
+                <td>{{event.related.type}}</td>
+                <td><a class="ui link subpanel" href="{{event.related.get_url}}view/?id={{event.id}}">{{event.purpose}}</a></td>
+                <td>{% moment_from_now event.ref_date %}</td>
+                <td>{{event.related.end}}</td>
+                <td></td>
+                <td>{{event.value}}</td>
+                <td><a class="ui button" href="{{event.related.get_url}}claim/?origin_id={{event.id}}">Claim</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+    {% endfor %}
+    </div>
+ {% endcomment %}

@@ -1,0 +1,105 @@
+{% load momentjs messages %}
+<style>
+.list-item:hover{
+  background_color:
+}
+</style>
+<div class="d-flex flex" data-plugin="mail"  >
+  <div class="d-flex flex-column flex container" id="mail-list" >
+
+    <div class="navbar flex-nowrap mt-3 white box-shadow">
+      <form class="w-100">
+          <div class="input-group">
+              <input type="text" class="form-control form-control-sm search" placeholder="Input the keywords to search" required>
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm no-shadow" type="button"><i class="fa fa-search"></i></button>
+              </span>
+          </div>
+      </form>
+      {% comment %}
+      <button id="sort" class="btn btn-sm white ml-1 sort" data-sort="item-title" data-toggle="tooltip" title="Sort">
+        <i class="fa fa-sort"></i>
+      </button>
+      {% endcomment %}
+    </div>
+
+    <div class="list white box-shadow mt-3">
+      {% for item in currentNode.query_all_notifications|slice:':50' %}
+      <div class="list-item subpanel" style="{% if item.query_is_todos_count %}background-color:lightgrey;{% endif %}padding:2em;"
+          data-id="{{item.id}}" href="{{item.related.get_url}}index/" >
+
+        <a class="float-left text-center subpanel" href="{{item.get_context.get_url}}index/" style="width:8%" >
+          <img style="width:48px;" src="{{item.get_context.get_image_logo.avatar.url}}" alt=".">
+          <div class="text-muted text-sm">{{item.get_context.get_data.title}}</div>
+        </a>
+
+        <a class="w-40 avatar circle subpanel" href="{{item.get_actor.get_url}}index/"  style="margin:1em" >
+            <img src="{{item.get_actor.get_image.avatar.url}}" alt="@{{item.get_actor.get_data.username}}">
+        </a>
+
+        <div class="list-body">
+          {% get_context_message item %}
+          <div class="item-except text-sm text-muted h-1x">
+            {% moment_from_now item.ref_date %}
+          </div>
+          <div class="item-tag tag hide">
+            {{item.query_this_latest.status}}, {{item.get_actor.title}}, {{item.related.title}}, {{item.get_context.title}}, {% if item.akey == profile.akey %}outbox{% else %}inbox{% endif %}
+          </div>
+        </div>
+
+        <div class="text-right" >
+          {% with actions=item.get_important_actions %}
+            {% if actions|length > 2 %}
+              {% if item.can_view %}
+              <a class="md-btn md-raised btn-block mb-2 w-xs grey" href="{{item.get_url}}view/" >Open</a>
+              {% elif item.can_index %}
+              <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{item.get_url}}" >Inspect</a>
+              {% endif %}
+
+            {% elif actions|length == 0 %}
+              {% if item.related.can_index %}
+                <a class="md-btn md-raised btn-block mb-2 w-xs grey subpanel" href="{{item.related.get_url}}" >Inspect</a>
+              {% endif %}
+            {% else %}
+              {% for action_item in actions %}
+                {% if action_item.meta_type != 'request' %}
+                <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel"
+                  href="{{item.get_url}}{{action_item.name}}/{% if not action_item.get_panel.confirm %}?do=1{% elif action_item.name == 'signOwnership' %}?target={{item.target}}{% endif %}" >
+                  {% get_context_action item action_item 'label' %}</a>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+
+          {% endwith %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="no-result hide">
+      <div class="p-4 text-center">
+        No Results
+      </div>
+    </div>
+
+    <div class="p-3 b-t mt-auto light">
+        <div class="d-flex align-items-center">
+          <div class="flex d-flex flex-row">
+            <a href="#" class="btn btn-xs white no-border pager-prev hide">
+              <i class="fa fa-angle-left"></i>
+            </a>
+          <div class="pagination pagination-xs">
+            </div>
+            <a href="#" class="btn btn-xs white no-border pager-next hide">
+              <i class="fa fa-angle-right"></i>
+            </a>
+          </div>
+          <div>
+            <span class="text-muted">Total:</span>
+            <span id="count"></span>
+          </div>
+        </div>
+    </div>
+
+  </div>
+</div>

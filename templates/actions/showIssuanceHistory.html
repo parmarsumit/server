@@ -1,0 +1,15 @@
+{% extends "panel.html" %}
+
+{% block panel_body %}
+{% for issuance in currentNode.query_this_newTokensIssued %}
+  <div class="box">
+    <div class="">
+      {{issuance.get_data.amount}} {{currentNode.get_root.get_data.symbol}}
+    </div>
+    <a class="text-primary" target="etherscan"
+            href="{{interface.get_data.etherscan_url}}tx/{{issuance.get_data.tx}}" >
+            {{issuance.get_data.tx}}</a>
+  </div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "search.html" %}
+
+{% block results %}
+<div class="ui padded container" >
+  <div class="ui vertical segment" >
+    <table class="ui very basic table">
+      {% for contributor in nodes %}
+      {% if contributor.akey == contributor.id %}
+      <tr>
+        <td>
+          <a href="/profile.html?id={{contributor.id}}" >
+            <img class="ui circular small image" src="{{contributor.get_image.avatar.url}}" />
+            {{contributor.title}}
+          </a>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+<!-- ############ Main END-->

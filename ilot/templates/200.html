@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{{application.name}}</title>
+  <meta name="description" content="Responsive, Bootstrap, BS4" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- for ios 7 style, multi-resolution icon of 152x152 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-barstyle" content="black-translucent">
+  <link rel="apple-touch-icon" href="/static/assets/images/logo.svg">
+  <meta name="apple-mobile-web-app-title" content="Flatkit">
+  <!-- for Chrome on Android, multi-resolution icon of 196x196 -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" sizes="196x196" href="/static/assets/images/logo.svg">
+
+  <!-- style -->
+  <link rel="stylesheet" href="/static/libs/font-awesome/css/font-awesome.min.css" type="text/css" />
+
+  <!-- build:css /assets/css/app.min.css -->
+  <link rel="stylesheet" href="/static/libs/bootstrap/dist/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="/static/assets/css/app.css" type="text/css" />
+  <link rel="stylesheet" href="/static/assets/css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="/static/libs/noty/noty.css" type="text/css" />
+  <link rel="stylesheet" href="/static/libs/noty/theme/relax.css" type="text/css" />
+  <!-- endbuild -->
+
+</head>
+<body>
+
+{% block page %}
+<div class="app pane" id="app" style="position:relative;"
+     data-plugin="user"
+     data-address="{{interface.get_data.address}}"
+     data-network="{{interface.get_data.network}}" >
+<!-- ############ LAYOUT START-->
+	<!-- ############ Content START-->
+	<div id="content" class="app-content box-shadow-0 pane" role="main" >
+		<!-- Header -->
+    <div class="content-main flex"
+         id="content-main"
+         data-uid="{{origin.id}}"
+         data-actor="{{user_profile.akey}}"
+         data-title="{{origin.related.get_display}}"
+         data-action="{{action}}"
+         {% if action_is_done or action_is_pending %}
+          {% if action_panel.close %}data-close="{{action_panel.close|lower}}"{% end %}
+          {% if action_panel.redirect %}
+            data-redirect="{{origin.related.get_url}}{{action_panel.redirect.name}}/?{% if input_data.panel %}panel={{input_data.panel}}{% end %}"
+          {% elif origin.get_data.redirect and not action_is_pending %}
+            data-redirect="{{origin.get_data.redirect}}"
+          {% end %}
+         {% end %}
+         data-address="{{currentNode.get_root.get_data.address}}"
+         data-account="{{user_profile.get_actor.query_his_ValidatedEthereumAddress_latest.get_data.address}}"
+         >
+         {% if request.user.is_staff %}
+         <div class="box border m-3 light" style="position:fixed;bottom:0px;right:0px;z-index:9999">
+           <a href="/tools/action_node.html?action_filter={{action_item.name}}" class="subpanel" >Edit Action</a>
+         </div>
+         {% end %}
+
+      {% block messages %}
+      {% comment %}
+      {% for message in messages %}
+      <div class="navbar orange box-shadow-0 text-center">
+        {{ message }}
+      </div>
+      {% end %}
+      {% end %}
+      {% end %}
+
+      <!-- ############ Main START-->
+      {% block main %}
+
+      {% if not input_data.embed and user_profile.get_actor.is_TributeUser and not user_profile.get_actor.get_data.username %}
+      <div class="modal-dialog modal-right" style="max-width:640px;width:80vw;" >
+        <div id="welcome_updateProfile" class="white box-shadow-0" style="max-width:640px;width:80vw;" >
+          hello
+        </div>
+      </div>
+      {% else %}
+
+      {% block content %}
+
+      {% if not input_data.embed %}
+      <div class="modal-dialog modal-right w-50 w-auto-sm white dk b-l p-4" >
+        <div class="d-flex flex-column h-100">
+          <div class="p-3 b-b d-flex no-shrink">
+            <h5 class="h5 m-0"></h5>
+            <a data-dismiss="modal" class="ml-auto" onclick="$('#sidepane').remove()"
+              href="{{ request.META.HTTP_REFERER }}">
+              <span class="text-lg l-h-1x">×</span>
+            </a>
+          </div>
+          <div class="scroll-y">
+            <div class="padding">
+      {% end %}
+
+              fdqsfqsd
+
+      {% if not input_data.embed %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% end %}
+      {% end %}
+
+    {% end %}
+
+      {% end %}
+      <!-- ############ Main END-->
+    </div>
+    {% if not input_data.embed %}
+
+
+    {% end %}
+	</div>
+
+	<!-- ############ Content END-->
+
+  <!-- ############ LAYOUT END-->
+
+  <div class="modal modal-right fade pane"
+    id="sidepanel"
+    data-class="modal-open-aside" aria-hidden="true"
+    data-backdrop="true" data-keyboard="true" tabindex="-1" >
+    <div class="modal-dialog modal-right white ">
+    </div>
+  </div>
+
+  <div class="modal fade pane" id="modalpanel" aria-hidden="true" data-backdrop="true" data-keyboard="true" tabindex="-1" >
+    <div class="modal-dialog white ">
+    </div>
+  </div>
+
+
+</div>
+
+<div id="loader-overlay" class="modal fade" style="background:rgba(0,0,0,0.5);" data-backdrop="static" data-keyboard="false" tabindex="1">
+  <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="width: 48px">
+      </div>
+  </div>
+</div>
+
+
+<!-- build:js scripts/app.min.js -->
+<!-- jQuery -->
+  <script src="/static/libs/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+  <script src="/static/libs/popper.js/dist/umd/popper.min.js"></script>
+  <script src="/static/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- core -->
+  <script src="/static/libs/pace-progress/pace.min.js"></script>
+  <script src="/static/libs/pjax/pjax.js"></script>
+
+  <script src="/static/scripts/lazyload.config.js"></script>
+  <script src="/static/scripts/lazyload.js"></script>
+  <script src="/static/scripts/plugin.js"></script>
+  <script src="/static/scripts/nav.js"></script>
+  <script src="/static/scripts/scrollto.js"></script>
+  <script src="/static/scripts/toggleclass.js"></script>
+  <script src="/static/scripts/theme.js"></script>
+  <script src="/static/scripts/ajax.js"></script>
+  <script src="/static/scripts/app.js"></script>
+  <script type="text/javascript" src="/static/components/jeditable/jquery.jeditable.js"></script>
+  <script type="text/javascript" src="/static/components/momentjs/moment-2.10.6.js" ></script>
+  <script type="text/javascript" src="/static/components/momentjs/lang/fr.js" ></script>
+  <script src="/static/libs/noty/noty.min.js"></script>
+  <script src="/static/libs/web3/web3.js"></script>
+  <script src="/io.js"></script>
+
+<!-- endbuild -->
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "app/tools/index.html" %}
+
+{% block content %}
+    {% if input_data.action_filter %}
+      {% for action_item in application.get_actions %}
+        {% if action_item.name == input_data.action_filter %}
+          {% include "app/tools/action_node.html" %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if input_data.type_filter %}
+      {% for type in application.get_types %}
+        {% if type.name == input_data.type_filter or type.id == input_data.type_filter %}
+          {% include "app/tools/type_node.html" %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+{% endblock %}

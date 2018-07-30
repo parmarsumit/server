@@ -1,0 +1,46 @@
+{% load i18n messages markdown_deux_tags %}
+
+
+
+<form id="{{action}}_form" target="_top" class="cleafix" method="post"
+    action="{{origin.get_url}}{{action}}/{% if request.GET.next %}?next={{request.GET.next}}{% endif %}"
+    target="{{ action_target|default:'_self' }}"
+    enctype="multipart/form-data"
+    >
+    {% csrf_token %}
+    <fieldset class="ui vertical segment">
+    {% for action_form in action_forms %}
+        {% for field in action_form %}
+            <div id="id_{{field.name}}_field" class="field {% if field.field.required %} required{% endif %}{% if field.errors %} error{% endif %}" >
+                {% if field.is_hidden %}
+                {% else %}
+                <label for="id_{{field.name}}" class="form-label" >{{ field.label }}</label>
+                {% endif %}
+                {% if field.type == 'checkbox' %}
+                {% else %}
+                  {% if field.name == 'redirect' %}
+                  {% with http_referer=request.META.HTTP_REFERER %}
+                  <input type="hidden" name="redirect" value="{{input_data.redirect|default:http_referer}}" />
+                  {% endwith %}
+                  {% else %}
+                  {{ field }}
+                {% endif %}
+                {% endif %}
+                {{ field.errors }}
+            </div>
+            {% if field.help_text %}
+            <p class="text">{{ field.help_text|safe }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+  </fieldset>
+  <hr/>
+  <input type="submit" class="md-btn md-raised btn-block mb-2 cyan subpanel float-right" value="{% get_context_action origin action 'confirm' %}" />
+</form>
+<div class="cleafix">
+  {% for message in messages %}
+  <div class="navbar red-text box-shadow-0 text-center">
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>

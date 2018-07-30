@@ -1,0 +1,101 @@
+{% load momentjs markdown_deux_tags %}
+
+<div class="box" style="min-height:100vh">
+
+  <a data-dismiss="modal" class="ml-auto float-right p-3" onclick="$('#sidepane').remove()">
+    <span class="text-lg l-h-1x">×</span>
+  </a>
+
+  <div class="item">
+    <div class="item-bg rounded-top">
+      <img src="{{currentNode.get_image_banner.thumbnail.url}}" alt="." class="blur">
+    </div>
+    <div class="p-5 pos-rlt text-center">
+    	<img src="{{currentNode.get_image_logo.avatar.url}}" alt="." class="white circle w-56 box-shadow" style="margin-bottom: -7rem">
+    </div>
+	</div>
+
+  <div class="p-3 text-center">
+  	<span class="text-md mt-3 d-block">{{currentNode.title}}</span>
+  	<p>{{currentNode.tagline}}</p>
+  </div>
+
+  <div class="row no-gutters b-t">
+    <div class="col-4 b-r">
+      <div class="p-3 d-block text-center" >
+        <i class="fa text-md fa-map-marker text-muted d-inline"></i>
+        <span class="d-block">{{currentNode.get_data.location|default:'Earth'}}</span>
+      </div>
+    </div>
+    <div class="col-4 b-r">
+      <a href="{{currentNode.get_data.website_domain}}" class="p-3 d-block text-center active" >
+        <i class="fa text-md fa-globe text-muted d-none"></i>
+        <span class="d-block">{{currentNode.get_data.website_domain|default:'...'}}</span>
+      </a>
+    </div>
+    <div class="col-4">
+      <div class="p-3 d-block text-center" >
+        <i class="fa text-md fa-twitter text-muted d-inline"></i>
+        <span class="d-block">{{currentNode.get_data.twitter_id}}</span>
+      </div>
+    </div>
+   </div>
+
+  <div class="p-3 b-t">
+    {{currentNode.description|markdown}}
+  </div>
+
+  <div class="row b-t">
+    <div class="col-6 p-3">
+      <div class="p-3">
+        Owners
+        <div>
+          {% for owner in currentNode.query_this_owning_targets %}
+          <a class="subpanel" href="{{owner.get_target.get_url}}index/">
+            <img class="avatar w-32" src="{{owner.get_target.get_image.avatar.url}}" style="" />
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="p-3">
+        Contributors
+        <div class="clearfix">
+          {% for contributor in currentNode.query_descendants_assignedContribution_targets %}
+          <a class="float-left subpanel" style="{% if not forloop.first %}margin-left:-1em;{% endif %}" href="{{contributor.get_url}}index/">
+            <img class="avatar w-32" src="{{contributor.get_image.avatar.url}}" style="border:2px white solid" />
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-6 p-3">
+      <div class="p-3">
+        Contributive token supply
+        <div class="text-left">{{currentNode.query_this_newTokensIssued_total_amount}} {{currentNode.get_data.symbol}}</div>
+      </div>
+      <div class="p-3">
+        Reserve Fund
+        <div class="text-left">{{currentNode.query_this_ProjectFunding_total_amount}} ETH</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row no-gutters b-t">
+      <div class="col-6 padding text-center">
+        <a style="width:70%" href="#" class="md-btn md-flat mb-2 w-xs" data-dismiss="modal" onclick="$('#sidepane').remove()">Close</a>
+      </div>
+      <div class="col-6 padding text-center">
+      {% if user_profile.get_actor.is_TributeUser %}
+        {% if currentNode.can_view %}
+          <a style="width:70%" class="md-btn md-raised btn-block mb-2 w-xs cyan" href="{{currentNode.get_root.get_url}}view/" >Open</a>
+        {% elif currentNode.can_index %}
+          <a style="width:70%" class="md-btn md-raised btn-block mb-2 w-xs cyan modalpanel" href="{{currentNode.get_root.get_url}}join/?do=True" >Join !</a>
+        {% endif %}
+
+        {% else %}
+          <a style="width:70%" class="md-btn md-raised btn-block mb-2 w-xs cyan modalpanel" href="{{user_profile.get_actor.get_url}}registerProfile/?redirect={{currentNode.get_url|add:'join/?do=True'|urlencode}}" >Register & Join !</a>
+        {% endif %}
+      </div>
+  </div>
+
+</div>

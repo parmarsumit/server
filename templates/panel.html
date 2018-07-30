@@ -1,0 +1,38 @@
+{% extends "200.html" %}
+{% load messages %}
+
+{% block messages %}{% endblock %}
+
+{% block content %}
+<div class="modal-dialog modal-right w-50 w-auto-sm white dk b-l p-4" >
+  <div class="d-flex flex-column h-100">
+    <div class="p-3 d-flex no-shrink">
+      {% block panel_title %}
+      <h5 class="h5 m-0">{% get_context_action origin action 'title' %}</h5>
+      {% endblock %}
+      <a data-dismiss="modal" class="ml-auto" onclick="$('#sidepane').remove()" href="{{ request.META.HTTP_REFERER }}">
+        <span class="text-lg l-h-1x">×</span>
+      </a>
+    </div>
+    {% for message in messages %}
+    <div class="navbar  box-shadow-0 text-center">
+      {{ message }}
+    </div>
+    {% endfor %}
+    <div class="p-3 scroll-y">
+      <p class="">
+        {% get_context_action origin action 'help' %}
+      </p>
+      {% block panel_body %}
+        {% if not action_is_done %}
+        {% include "tags/action_forms.html" %}
+        {% else %}
+        {% block done %}
+        {% get_context_action origin action 'success' %}
+        {% endblock %}
+        {% endif %}
+      {% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

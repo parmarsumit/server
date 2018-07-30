@@ -1,0 +1,19 @@
+<div class="text-muted float-right clearfix" data-toggle="collapse" data-target="#{{notification.id}}" >Show Message</div>
+On a <span class="text-primary" >{{notification.type}}</span>, when <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.status}}</a> happens,
+it will notify <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.target}}</a>
+{% if notification.webhook %} using <a href="/tools/admin_panel.html?admin_url={{notification.webhook.get_admin_url}}" class="subpanel text-primary" >{{notification.webhook.name}}</a>{% endif %}{% if notification.todo %} with todo {% endif %}.<br />
+<div id="{{notification.id}}" class="ml-5 p-2 mb-0 collapse" >
+    <pre>
+      {{notification.for_actor}}
+    </pre>
+    <pre>
+      {{notification.for_target}}
+    </pre>
+    <pre>
+      {{notification.for_others}}
+    </pre>
+    {% if notification.webhook %}
+    <pre>{{notification.title}}</pre>
+    <pre>{{notification.message}}</pre>
+    {% endif %}
+</div>

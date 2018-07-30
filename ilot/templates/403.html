@@ -1,0 +1,12 @@
+{% extends "200.html" %}
+
+{% block content %}
+<h1 class="text-center">
+  <i class="fa fa-ban"></i>
+</h1>
+{% autoescape off %}{{action_message}}{% endautoescape %}
+{% for action in currentNode.get_actions %}
+<p>You can <a href="{{currentNode.get_url}}{{action}}/" >{{action}}</a></p>
+{% endfor %}
+{{origin.get_infered_types}}
+{% endblock %}

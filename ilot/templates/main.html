@@ -1,0 +1,52 @@
+{% extends "200.html" %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content %}
+
+<div class="ui grid container">
+  <div class="three wide column">
+    <a class="ui fluid secondary rootpanel" href="/" target="_self" style="display:block;height:72px;overflow:hidden" >
+      <img class="ui fluid image" src="/media/image.png" />
+    </a>
+  {% if nav|length>1 %}
+      <ul>
+      {% for nav_item in nav %}
+          {% if nav_item.children %}
+              <li>{{ nav_item.title }}
+                  <ul>
+                  {% for nav_item in nav_item.children %}
+                      <li class="{% if nav_item.active%}current{%endif%}">
+                          <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+                      </li>
+                  {% endfor %}
+                  </ul>
+              </li>
+          {% else %}
+              <li class="{% if nav_item.active%}current{%endif%}">
+                  <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+              </li>
+          {% endif %}
+      {% endfor %}
+      </ul>
+  {% endif %}
+  </div>
+
+  <div class="three wide column">
+    <ul>
+    {% for toc_item in page.toc %}
+        <li><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></li>
+        {% for toc_item in toc_item.children %}
+            <li><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+  </div>
+
+  <div class="nine wide column">
+  {{ page.content }}
+  </div>
+  
+</div>
+{% endblock %}

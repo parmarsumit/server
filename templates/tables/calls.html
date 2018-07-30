@@ -1,0 +1,34 @@
+{% load momentjs %}
+<div class="">
+  <table class="ui table">
+    <thead>
+      <th>Initiative</th>
+      <th>Purpose</th>
+      <th>Status</th>
+      <th>Added by</th>
+      <th>On</th>
+      <th>#JOBS</th>
+      <th>Reward</th>
+    </thead>
+    <tbody>
+      {% for event in currentNode.get_calls|slice:':25' %}
+      <tr>
+        <td><a class="subpanel" href="{{event.related.get_url}}index/">{{event.related.title}}</a></td>
+        <td><a class="subpanel" href="{{event.get_url}}index/">{{event.purpose}}</a></td>
+        <td><a class="subpanel" href="{{event.get_url}}index/"><span class="btn btn-white">{{event.status}}</span></a></td>
+        <td><a class="subpanel" href="{{event.get_actor.get_url}}index/"><img class="avatar" src="{{event.get_actor.get_image.url}}" style="width:32px;" /></a></td>
+        <td>{% moment_from_now event.ref_date %}</td>
+        <td>{{event.get_children.count}}</td>
+        <td><span class="badge">{{event.quantity}}CTX / {{event.value}}€</span></td>
+        <td>
+          <div class="btn-group">
+            <a class="btn btn-outline subpanel" href="{{event.get_url}}invite/?behavior=answer&panel={{input_data.panel}}&subpanel={{input_data.subpanel}}">Invite</a>
+            <a class="btn btn-outline subpanel" href="{{event.get_url}}assign/?panel={{input_data.panel}}&subpanel={{input_data.subpanel}}">Assign</a>
+            <a class="btn btn-outline subpanel" href="{{event.get_url}}answer/?panel={{input_data.panel}}&subpanel={{input_data.subpanel}}">Answer</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

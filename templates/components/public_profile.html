@@ -1,0 +1,91 @@
+
+<div class="d-flex flex-column h-100 w-100 white b-r">
+  <div class="scroll-y">
+        <div class="p-4 flex-column dark" >
+          <img src="{{currentNode.get_image.avatar.url}}" class="float-left circle m-2" alt="{{currentNode.title}}" style="width:72px" >
+          <div class="col-6 p-3">
+            <span class="text-muted">@{{currentNode.username}}</span><br/>
+            <span class="text-md">{{currentNode.title}}</<span>
+          </div>
+            <div class="block clearfix mt-3 text-right">
+              <a href="#" class="btn btn-icon white btn-social btn-rounded">
+                <i class="fa fa-facebook"></i>
+                <i class="fa fa-facebook indigo"></i>
+              </a>
+              <a href="#" class="btn btn-icon white btn-social btn-rounded">
+                <i class="fa fa-twitter"></i>
+                <i class="fa fa-twitter blue"></i>
+              </a>
+              <a href="#" class="btn btn-icon white btn-social btn-rounded">
+                <i class="fa fa-google-plus"></i>
+                <i class="fa fa-google-plus red"></i>
+              </a>
+              <a href="#" class="btn btn-icon white btn-social btn-rounded">
+                <i class="fa fa-linkedin"></i>
+                <i class="fa fa-linkedin cyan"></i>
+              </a>
+            </div>
+
+        </div>
+
+        <div class="p-3">
+
+          <ul class="nav flex-column">
+              <li class="nav-item">
+                <p>{{currentNode.get_data.headline}}</p>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link d-flex flex-row text-muted">
+                    <span>{{currentNode.get_data.location|default:'Here, now'}}</span>
+                    <span class="ml-auto text-sm">
+                      <i class="fa fa-fw fa-map-marker"></i>
+                    </span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                <p>{{currentNode.description}}</p>
+              </li>
+          </ul>
+
+          <hr/>
+          <div class="clearfix m-3">
+            <p class="text-sm text-muted">My projects as team member</p>
+            {% for project in currentNode.query_all_his_ProjectOwnership_items_index %}
+            <a href="{{project.get_url}}" class="float-left text-center col-2 subpanel">
+              <img src="{{project.get_image.avatar.url}}" style="width:48px;" /><br/>
+              <span class="text-muted" >{{project.title}}</span>
+            </a>
+            {% endfor %}
+          </div>
+          <hr/>
+          <div class="clearfix m-3">
+            <p class="text-sm text-muted">My projects as a contributor</p>
+            {% for project in currentNode.query_all_his_AssignedContribution_contexts_index %}
+            <a href="{{project.get_url}}" class="float-left text-center col-2 subpanel">
+              <img src="{{project.get_image.avatar.url}}" style="width:48px;" /><br/>
+              <span class="text-muted" >{{project.title}}</span>
+            </a>
+            {% endfor %}
+          </div>
+
+          {% comment %}
+
+          <div class="m-3">
+            <h6>Projects memberships</h6>
+            {% for project in currentNode.query_all_his_joined_index_contexts %}
+              <a class="btn" href="{{project.get_url}}" >{{project.title}}</a>
+            {% endfor %}
+          </div>
+
+          {% for appliance in currentNode.get_infered_types %}
+          <div class="text-center m-3" style="display:inline-block;width:96px">
+            {% if appliance.image %}
+            <img class="avatar" src="{{appliance.avatar.url}}" style="display:inline;width:48px;" />
+            {% endif %}
+            {{appliance.name}}
+          </div>
+          {% endfor %}
+          {% endcomment %}
+        </div>
+    </div>
+</div>

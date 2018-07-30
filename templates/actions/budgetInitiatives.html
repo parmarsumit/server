@@ -1,0 +1,39 @@
+{% extends "panel.html" %}
+
+{% block panel_body %}
+<div class="box">
+  <div class="box-header light lt" >
+    <h3>Initiatives Budgets</h3>
+  </div>
+  <div class="box-body">
+    <table class="ui very basic table">
+      <thead>
+        <th>Initiative</th>
+        <th>Budget</th>
+        <th>Assigned</th>
+        <th>Spent</th>
+        <th>Action</th>
+      </thead>
+      <tbody>
+        {% for node in currentNode.query_children_Initiative_items %}
+        <tr>
+          <td><a class="ui link" href="{{node.get_url}}view/?panel=settings">{{node.title}}</a></td>
+          <td>{{node.query_this_budgeted_value_total}}</td>
+          <td>{{node.get_descendants_assigned_value}}</td>
+          <td>{{node.get_total_rewarded_value}}</td>
+          <td>
+            <form action="{{node.get_url}}budget/" method="POST" >
+              {% csrf_token %}
+              <input type="number" name="value" value="{{node.query_this_budgeted_value_total}}" >
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script type="text/javascript">
+  
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "200.html" %}
+{% load i18n static %}
+
+{% block content %}
+{% comment %}
+You can make it yours !</br>
+<form action="/" method="POST">
+  <div>
+    <label>Give it a name</label>
+    <input class="form-control" type="text" name="name" value="{{input_data.name}}" />
+  </div>
+
+  <div>
+    <label>Provide an email to authenticate</label>
+    <input class="form-control" type="text" name="email" value="{{input_data.email}}" />
+  </div>
+
+  <div>
+    <label>And an ethereum account to deploy the contract</label>
+    <input class="form-control" type="text" name="address" value="{{input_data.address}}" />
+  </div>
+  <button src="locale">Send</button>
+</form>
+{% endcomment %}
+{% endblock %}

@@ -1,0 +1,118 @@
+{% load messages %}
+
+
+
+  <div class="d-flex flex-column h-100">
+    <div class="scroll-y">
+
+
+      <div class="p-3 b-b d-flex no-shrink">
+        <h5 class="h5 m-0 etitle" data-uid="{{currentNode.id}}" >{{currentNode.title}}</h5>
+        <a data-dismiss="modal" class="ml-auto" href="{{ request.META.HTTP_REFERER }}">
+          <span class="text-lg l-h-1x">×</span>
+        </a>
+      </div>
+
+
+      <div class="padding">
+        <div class="row">
+
+          <div class="">
+            <label class="text-muted text-xs">Title</label>
+            <div class="box-divider"></div>
+            <div class="m-3">
+              {{currentNode.title}}
+            </div>
+          </div>
+
+          <div class="">
+              <label class="text-muted text-xs">Project</label>
+              <div class="box-divider"></div>
+              <div class="m-3">
+                {% if currentNode.can_view %}
+                <a class="btn white" href="{{currentNode.get_root.get_url}}view/" >
+                  {{ currentNode.get_root.title }}
+                </a>
+                {% elif currentNode.can_index %}
+                <a class="btn white" href="{{currentNode.get_root.get_url}}index/" >
+                  {{ currentNode.get_root.title }}
+                </a>
+                {% else %}
+                {{ currentNode.get_root.title }}
+                {% endif %}
+              </div>
+          </div>
+
+          <div class="form-input">
+              <label class="text-muted text-xs">Initiative</label>
+              <div class="box-divider"></div>
+              <div class="m-3">
+                <a class="btn white" href="{{currentNode.parent.get_url}}view/" >
+                  {{ currentNode.parent.parent.title }} / {{ currentNode.parent.title }}
+                </a>
+              </div>
+          </div>
+
+          <div class="col-8">
+            <label class="text-muted text-xs">Description</label>
+            <div class="box-divider"></div>
+            <div class="m-3">
+              {{currentNode.description}}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-input">
+          <label class="text-muted text-xs">Tags</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {% for tag in currentNode.query_this_tagged_targets %}
+            <div class="badge cyan" style="font-size:1em">
+              <a href="{{tag.get_url}}index/" >{{tag.title}}</a>
+              <a href="{{currentNode.get_url}}untag/?value={{tag.id}}" ><i class="fa fa-remove" ></i></a>
+            </div>
+            {% endfor %}
+            {% if origin.can_tagItem %}
+            <div class="text-muted text-right">
+              <a class="text-primary modalpanel" href="{{origin.get_url}}tagItem/" >Add tag</a>
+              <a class="text-muted modalpanel" href="{{user_profile.get_actor.get_url}}createTag/" >Create tag</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if origin.iam_ProjectOwner or origin.iam_InitiativeOwner %}
+          {% if origin.is_CallAnswer %}
+              {% with origin=origin.origin %}
+                {% include "components/call_answers.html" %}
+              {% endwith %}
+          {% else %}
+              {% include "components/call_answers.html" %}
+          {% endif %}
+
+          <div class="form-input">
+            <label class="text-muted text-xs">Actions</label>
+            <div class="box-divider"></div>
+            <div class="m-3">
+              {% for action in origin.origin.related.get_important_actions %}
+                <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action  origin.origin action.name 'label' %}</a>
+              {% endfor %}
+            </div>
+            {{origin.get_infered_types}}
+          </div>
+
+        {% else %}
+        <div class="form-input">
+          <label class="text-muted text-xs">Actions</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {% for action in origin.get_important_actions %}
+              <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action origin action.name 'label' %}</a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,22 @@
+{
+  "id":"{{currentNode.id}}",
+  "label":"{{currentNode.label}}",
+  "title":"{{currentNode.title}}",
+  "name":"{{currentNode.label|default:currentNode.title|default:currentNode.slug|default:'Item'}}",
+  "children_count":{{nodes.count}},
+  "children":[{% for node in nodes %}
+      {
+        "id":"{{node.id}}",
+        "akey":"{{node.akey}}",
+        "parent_id":"{{node.parent_id}}",
+        "type":"{{node.type}}",
+        "title":"{{node.node.title}}",
+        "status":"{{node.status}}",
+        "url":"{{node.get_url}}",
+        "target":"{{node.target}}",
+        "origin_id":"{{node.origin_id}}",
+        "children_count":{{node.get_children_count}}
+      }{% if forloop.revcounter > 1 %},{% endif %}{% endfor %}
+    ]
+
+}

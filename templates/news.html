@@ -1,0 +1,17 @@
+{% extends "200.html" %}
+
+
+{% block content %}
+<div class="box container" >{{ currentNode.query_all_News}}
+{% for news in currentNode.query_all_News %}
+<div>
+  {{news.title}}
+  {{news.summary}}
+  {{news.created_date}}
+</div>
+{% endfor %}
+
+<a href="{{user_profile.get_actor.get_url}}writeNews/" >Write news</a>
+
+</div>
+{% endblock %}

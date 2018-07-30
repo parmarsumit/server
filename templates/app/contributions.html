@@ -1,0 +1,14 @@
+{% extends "public.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      {% with events=currentNode.query_all_index_CallForContribution_items %}
+          {% include "components/contributions.html" %}
+      {% endwith %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+<!-- ############ Main END-->

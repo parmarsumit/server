@@ -1,0 +1,60 @@
+{% load i18n messages markdown_deux_tags %}
+<div class="form-input">
+  <label class="text-muted text-xs">History</label>
+  <div class="box-divider"></div>
+  <div class="m-3">
+    <p>{% get_context_message origin %}</p>
+    {% if event.get_data.message %}
+      <pre>{{message}}</pre>
+    {% endif %}
+
+    {% for event in origin.get_tree %}
+      <p>{% get_context_message event %}</p>
+      {% if event.get_data.message %}
+        <pre>{{message}}</pre>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+<div class="form-input">
+  <label class="text-muted text-xs">Actions</label>
+  <div class="box-divider"></div>
+
+  <div class="m-3">
+
+    {% with actions=origin.get_important_actions %}
+
+      {% for action in actions %}
+        <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action origin action.name 'label' %}</a>
+      {% endfor %}
+
+      {% if actions|length == 0 %}
+
+        {% with actions=origin.related.get_important_actions %}
+        {% for action in actions %}
+          <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.related.get_url}}{{action.name}}/" >{% get_context_action origin.related action.name 'label' %}</a>
+        {% endfor %}
+        {% endwith %}
+
+        {% comment %}
+        <script>
+          setTimeout(1000, function(){
+            // close panel and reload view
+            {% if origin.related_id == origin.id %}
+              {% if origin.can_view %}
+                window.popReload('{{origin.get_url}}view/');
+              {% else %}
+                window.popReload();
+              {% endif %}
+            {% else %}
+              window.popReload();
+            {% endif %}
+          });
+        </script>
+        {% endcomment %}
+      {% endif %}
+
+    {% endwith %}
+  </div>
+</div>
+{{user_profile.completed_date}}

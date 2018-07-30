@@ -1,0 +1,161 @@
+{% load messages momentjs %}
+
+
+  <div class="d-flex flex-column h-100">
+
+    <div class="scroll-y">
+
+
+      <div class="p-3 b-b d-flex no-shrink">
+        <h5 class="h5 m-0 etitle" data-uid="{{currentNode.id}}" >{{currentNode.title}}</h5>
+        <a data-dismiss="modal" class="ml-auto" href="{{ request.META.HTTP_REFERER }}">
+          <span class="text-lg l-h-1x">×</span>
+        </a>
+      </div>
+
+      <div class="p-3">
+
+        <div class="float-right">
+            <div class="">
+              {% if currentNode.can_view %}
+              <a class="white" href="{{currentNode.get_root.get_url}}view/" >
+                <img src="{{currentNode.get_root.get_image_logo.avatar.url}}" style="width:4em" /><br />
+                {{ currentNode.get_root.title }}
+              </a>
+              {% elif currentNode.can_index %}
+              <a class="white" href="{{currentNode.get_root.get_url}}index/" >
+                <img src="{{currentNode.get_root.get_image_logo.avatar.url}}" style="width:4em" /><br />
+                {{ currentNode.get_root.title }}
+              </a>
+              {% else %}
+              {{ currentNode.get_root.title }}
+              {% endif %}
+            </div>
+        </div>
+
+        <div class="form-input">
+            <label class="text-muted text-xs">Initiative</label>
+            <div class="m-1">
+              <a class="btn white" href="{{currentNode.parent.get_url}}view/" >
+                {{ currentNode.parent.parent.title }} / {{ currentNode.parent.title }}
+              </a>
+            </div>
+        </div>
+
+        <div class="form-input float-right">
+          <label class="text-muted text-xs">Tags</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {% for tag in currentNode.query_this_tagged_targets %}
+            <div class="badge cyan" style="font-size:1em">
+              <a href="{{tag.get_url}}index/" >{{tag.title}}</a>
+              <a href="{{currentNode.get_url}}untag/?value={{tag.id}}" ><i class="fa fa-remove" ></i></a>
+            </div>
+            {% endfor %}
+            {% if origin.can_tagItem %}
+            <div class="text-muted text-right">
+              <a class="text-primary modalpanel" href="{{origin.get_url}}tagItem/" >Add tag</a>
+              <a class="text-muted modalpanel" href="{{user_profile.get_actor.get_url}}createTag/" >Create tag</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div >
+          <label class="text-muted text-xs">Description</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {{currentNode.description|default:'<i class="text-muted">missing description</i>'}}
+          </div>
+        </div>
+
+        <div class="form-input clearfix">
+          <label class="text-muted text-xs">Assignee</label>
+          <div class="float-right btn white">
+            <h4>{{currentNode.get_data.value}}</h4> {{currentNode.get_root.symbol}}
+          </div>
+          <div class="box-divider"></div>
+          <div class="m-3 text-big">
+            {% with event=currentNode.query_this_assignedContribution_latest %}
+            {% if event %}
+            <div class="clearfix">
+              <a class="float-left m-2 subpanel" href="{{event.get_target.get_url}}index/" >
+                <img class="ui avatar image" src="{{event.get_target.get_image.avatar.url}}" style="width:32px" />
+              </a>
+              @{{event.get_target.username}} ({{event.get_target.title}})
+              <p class="text-muted">{% moment_from_now event.ref_date %}</p>
+            </div>
+            {% else %}
+            {% if origin.can_proposeAssignement %}
+              <a class="md-btn md-raised btn-block w-xs mb-2 cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action origin 'proposeAssignement' 'label' %}</a>
+            {% endif %}
+            {% endif %}
+            {% endwith %}
+          </div>
+        </div>
+
+
+        <div class="form-input">
+          <label class="text-muted text-xs">History</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {% for event in origin.get_tree %}
+            <div class="clearfix">
+              <a class="float-left m-2 subpanel" href="{{event.get_actor.get_url}}index/" >
+                <img class="ui avatar image" src="{{event.get_actor.get_image.avatar.url}}" style="width:32px" />
+              </a>
+              {% get_context_message event %}
+              <p class="text-muted">{% moment_from_now event.ref_date %}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="form-input">
+          <label class="text-muted text-xs">Actions</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {% comment %}
+            {% with origin=origin.query_this_latest %}
+            {% for action in origin.get_important_actions %}
+              <a class="md-btn md-raised btn-block mb-2 cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action origin action.name 'label' %}</a>
+            {% endfor %}
+            {% endwith %}
+            {% endcomment %}
+            {% for action in origin.get_important_actions %}
+              <a class="md-btn md-raised btn-block mb-2 cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action origin action.name 'label' %}</a>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% comment %}
+
+        <div class="form-input">
+          <label class="text-muted text-xs">Data</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            {{origin.get_data}}
+            {% for attr in currentNode.get_action_item.attributes.all %}
+              <p>{{currentNode.get_data}}</p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-input">
+          <label class="text-muted text-xs">Types</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            Node {{currentNode.get_infered_types}}, <br/>
+            Node My {{currentNode.get_my_infered_types}}, <br />
+            My {{origin.get_my_infered_types}},<br/>
+            Event {{origin.get_infered_types}}<br/>
+            {% if DEBUG %}
+            {% endif %}
+          </div>
+        </div>
+
+        {% endcomment %}
+
+      </div>
+
+    </div>
+  </div>

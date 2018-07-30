@@ -1,0 +1,17 @@
+
+{% if not user_profile.get_actor.is_TributeUser %}
+<li>
+  <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}registerProfile/" >Sign up</a>
+</li>
+<li>
+  <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}requestLogIn/" >Log in</a>
+</li>
+{% else %}
+<li class="dropdown d-flex align-items-center">
+  <a href="/sidebar.html" data-toggle="modal" data-target="#userbar" class="d-flex align-items-center subpanel">
+    <span class="avatar w-32">
+      <img src="{{user_profile.get_actor.get_image.avatar.url}}" alt="...">
+    </span>
+  </a>
+</li>
+{% endif %}

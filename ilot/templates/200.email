@@ -1,0 +1,62 @@
+{% load markdown_deux_tags %}<html>
+    <head>
+        <meta http-equiv="Content-Type"  content="text/html charset=UTF-8" />
+
+        <style>
+            body{
+                background-color:#333;
+                color:#111;
+                padding:40px;
+                font-family:Arial, Helvetica, sans-serif;
+            }
+            .main{
+                width:100%;
+                max-width:600px;
+                background-color:#eee;
+                align:center;
+                margin:0px auto;
+                min-height:200px;
+            }
+            p, hr{
+                margin:20px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <table class="main" cellspacing="0" cellpadding="0" border="0" style="border-radius:20px;">
+            <tr>
+                <td style="width:50px;height:50px;"></td>
+                <td align="center">
+                </td>
+                <td style="width:50px"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td align="center">
+
+                    <p style="text-align:center">
+                      <img alt="{{project.get_full_name}}" src="http://{{project.cname}}{{project.get_image.thumbnail.url}}" style="height:150px;" />
+                      <h1 style="text-align:center">{{project.get_full_name}}</h1>
+                    <p>
+                    <p>
+                      <img alt="{{profile.get_full_name}}" style="height:60px;" src="http://{{project.cname}}{{profile.get_image.url}}" />
+                      <h2>{{title}}</h2>
+                    </p>
+                    <p style="background-color:#fff;border-radius:10px;padding:10%">{{message}}</p>
+                    <p style="text-align:center">
+                        <a href="{{url}}" target="_blank" >Open</a>
+                    </p>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width:50px;height:50px;"></td>
+                <td align="center">
+                </td>
+                <td style="width:50px"></td>
+            </tr>
+        </table>
+    </body>
+</html>

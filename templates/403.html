@@ -1,0 +1,89 @@
+{% extends "200.html" %}
+{% load messages %}
+
+{% block content %}
+{% if origin.related %}
+
+<div class="modal-dialog modal-right" style="max-width:640px;width:80vw;height:100vh" >
+	<div class="white box-shadow-0" style="max-width:640px;width:80vw;height:100vh" >
+      {% include "components/inspector.html" %}
+  </div>
+</div>
+{% else %}
+<div class="modal-dialog modal-bottom w-50 w-auto-sm white dk b-l p-4" >
+  {% if action == 'index' %}
+  <p>{% get_context_message origin %}</p>
+  {% else %}
+  Sorry, you are not allowed to {{action}} on {{origin.get_display}}
+  {% endif %}
+  {{origin.get_infered_types}}
+    {{origin.get_my_infered_types}}
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block Zcontent %}
+{% block messages %}
+{% endblock %}
+<div class="modal-dialog w-50 w-auto-sm white dk b-l p-4" >
+  <div class="d-flex flex-column h-100">
+    <div class="p-3 b-b d-flex no-shrink">
+      <p>{% get_context_message origin %}</p>
+      <a data-dismiss="modal" class="ml-auto" onclick="$('#sidepane').remove()">
+        <span class="text-lg l-h-1x">×</span>
+      </a>
+    </div>
+    {% for message in messages %}
+    <div class="navbar  box-shadow-0 text-center">
+      {{ message }}
+    </div>
+    {% endfor %}
+
+
+    {% comment %}
+
+
+        {% if requirement %}
+        <div class="form-input">
+          <label class="text-muted text-xs">Actions</label>
+          <div class="box-divider"></div>
+          <div class="m-3">
+            <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel"
+              href="{{user_profile.get_actor.get_url}}{{requirement.behavior.name}}/" >{% get_context_action user_profile.get_actor requirement.behavior.name 'label' %}</a>
+          </div>
+        </div>
+        {% endif %}
+    {% if origin.action != 'index' %}
+      <div class="p-3">
+        Sorry you are not allowed to {{action}} on {{origin.get_infered_types}}
+        {{origin.id}}
+      </div>
+    {% endif %}
+
+
+    <div class="form-input">
+      <label class="text-muted text-xs">Data</label>
+      <div class="box-divider"></div>
+      <div class="m-3">
+        {% for attribute in origin.get_attributes %}
+          <div >{{attribute.label}}: {{attribute.value}}</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="form-input">
+      <label class="text-muted text-xs">Actions</label>
+      <div class="box-divider"></div>
+      <div class="m-3">
+        {% for action in origin.get_important_actions %}
+          <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action origin action.name 'label' %}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endcomment %}
+    O {{origin.get_infered_types}}
+    O {{origin.get_my_infered_types}}
+  </div>
+</div>
+{% endblock %}

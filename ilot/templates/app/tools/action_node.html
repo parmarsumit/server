@@ -1,0 +1,167 @@
+{% load ilot_tags %}
+
+<div class="box mt-5 m-0 border" >
+
+  <div class="box-header light p-3" >
+    <div class="float-right">
+      <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{action_item.get_admin_url}}" >Edit action</a>
+    </div>
+    <p>
+      <b>{{action_item.name}}</b><br />
+      <i>{{action_item.description}}</i>
+    </p>
+
+  </div>
+
+  <div class="box-body p-5 " >
+
+  <div class="row">
+    <div class="col-8">
+
+      <p class="">
+        {% for requirement in action_item.requirements.all %}
+          <div class="text-muted float-right clearfix" data-toggle="collapse" data-target="#{{requirement.id}}" >Show Message</div>
+          It requires <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{requirement.condition.get_admin_url}}" >
+            {{requirement.condition}}</a>, witch can be completed by doing
+            <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{requirement.get_admin_url}}" >{{requirement.behavior}}</a>.
+              <pre class="ml-5 p-2 mb-0 collapse" id="{{requirement.id}}" >{{requirement.message}}</pre>
+            <br />
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/requirement/add/?action={{action_item.id}}" class="text-muted subpanel" >Add requirement</a>
+      </p>
+
+      <p class="">
+        {% for attribute in action_item.attributes.all %}
+          It {% if attribute.required %}must{% else %}can{% endif %}
+           set <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{attribute.get_admin_url}}" >{{attribute.label}}</a> as a {{attribute.datatype}}<br />
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/attribute/add/?action={{action_item.id}}" class="text-muted subpanel" class="text-muted float" >Add attribute</a>
+      </p>
+
+      {% if action_item.authorize %}
+      <p class="">It will auhtorize target to complete <a href="/tools/admin_panel.html?admin_url={{action_item.get_admin_url}}" class="text-primary subpanel" >{{action_item.behavior}}</a>
+         using <a href="/tools/admin_panel.html?admin_url={{action_item.get_admin_url}}" class="text-primary subpanel" >{{action_item.webhook.name}}</a>
+      </p>
+      {% endif %}
+
+      <p class="" >
+        {% for sub_type in action_item.status.types.all %}
+        On a <span class="text-primary" >{{sub_type.type}}</span>
+        It defines <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{sub_type.get_admin_url}}" >{{sub_type.status}}</a>
+        {{sub_type.reference}} as <a class="text-primary" href="#{{sub_type.id}}" >{{sub_type}}</a><br/>
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/type/add/?status={{action_item.status.id}}" class="text-muted subpanel" >Add type</a>
+      </p>
+
+      <p class="">
+        {% for trigger in action_item.triggers.all %}
+          On a <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{trigger.get_admin_url}}" >{{trigger.type}}</a>,
+          it will trigger <a href="/tools/admin_panel.html?admin_url={{trigger.behavior.get_admin_url}}" class="text-primary subpanel" >{{trigger.behavior}}</a> as {{trigger.actor_type}}.<br />
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/trigger/add/?type={{type}}" class="text-muted subpanel" >Add trigger</a>
+      </p>
+
+      <p class="">
+        {% for notification in action_item.status.notifications.all %}
+          {% include "app/tools/notification.html" %}
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/grammar/notification/add/?type={{type}}" class="text-muted subpanel" >Add notification</a>
+      </p>
+
+      <p class="">
+        {% for rule in action_item.rules.all %}
+          <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{rule.get_admin_url}}" >{{action_item}}</a>
+           on <span class="text-primary">{{rule.type}}</span>
+           {% if rule.is_allowed %}is allowed {% else %} is denied {% endif %}
+           to <span class="text-primary">{{rule.actor}}</span>
+           <br/>
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/rule/add/?action={{action_item.id}}" class="text-muted subpanel" >Add rule</a>
+      </p>
+
+    </div>
+
+    {% with panel=action_item.get_panel %}
+    <div class="col-4">
+      <div class="float-right">
+        <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{panel.get_admin_url}}" >Edit panel</a>
+      </div>
+      <div class="border m-2">
+        <div class="btn btn-primary">{{panel.i_label}}</div>
+      </div>
+      <div class="box border">
+        <div class="box-header light">
+          <p>{{panel.i_title}}</p>
+        </div>
+        <div class="box-body">
+          <div class="p-2">
+            <p><i>{{panel.i_help|default:'No help text'}}</i></p>
+          </div>
+          <div class="m-1 light">
+            {% for attr in action_item.attributes.all %}
+              <label>{{attr.label}}</label>
+              <p><i>{{attr.help|default:'no help text'}}</i></p>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="box-footer">
+          <div class="btn btn-primary cyan float-right">{{panel.i_confirmation}}</div>
+        </div>
+      </div>
+      <div class="border p-2 dark" >
+        <p class="">{{panel.i_success}}</p>
+      </div>
+
+    </div>
+    {% endwith %}
+  </div>
+
+
+
+    </div>
+
+</div>
+
+<div class="p-3 border">
+
+    <div class="box">
+
+      <div class="box-header">
+        Items where it applies for you
+      </div>
+      {% if query %}
+      <div class="box-body">
+        <table class="table">
+          <thead>
+            <th>Context</th>
+            <th>Item</th>
+            <th>Actor</th>
+            <th>Action</th>
+            <th>Origin</th>
+            <th>Origin Status</th>
+            <th>Target</th>
+            <th>Date</th>
+          </thead>
+        {% with query='query_all_'|add:action_item.name %}
+        {% for item in currentNode|getAttr:query %}
+        <tbody>
+          <tr>
+            <td>{{item.context}}</td>
+            <td>{{item.related.title}}</td>
+            <td>{{item.akey}}</td>
+            <td>{{item.action}}</td>
+            <td>{{item.origin.related.title}}</td>
+            <td>{{item.origin.status}}</td>
+            <td>{{item.get_target.title}}</td>
+            <td>{{item.created_date}}</td>
+          </tr>
+        </tbody>
+        {% endfor %}
+        {% endwith %}
+        </table>
+      </div>
+      {% endif %}
+
+    </div>
+
+</div>

@@ -1,0 +1,108 @@
+{% load momentjs %}
+<div class="row m-3">
+
+<div class="col-3 p-3">
+
+  <div class="box" style="height:100%">
+    <div class="box-header">
+      <h6 class="mb-3">Projects</h6>
+    </div>
+    <div class="box-body">
+      <div class="list inset scroll-y" style="height:100%" >
+        {% for project in user_profile.get_actor.query_all_my_RewardedContribution_contexts %}
+        <div class="list-item {% if currentNode == project %}active{% endif %}" >
+          <span class="w-40 avatar">
+              <img src="{{project.get_image.avatar.url}}" alt=".">
+          </span>
+          <div class="list-body">
+              <a href="/profile.html?panel=wallet&id={{project.id}}" class="item-title _500">{{project.title}}</a>
+              <div class="item-except text-sm text-muted h-1x">
+              </div>
+            <div class="item-tag tag hide">
+            </div>
+          </div>
+          <div>
+              <span class="item-date text-xs text-muted">{{project.query_my_RewardedContribution_descendants_items_value_total}} {{project.get_root.get_data.symbol}}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-9 p-3">
+
+<div class="row flex-row">
+  <div class="col-8">
+    <div class="box" >
+      <div class="box-header">
+        <div class="p-2">
+          Earning History with {{currentNode.title}}
+        </div>
+      </div>
+      <div class="box-body">
+        <div data-plugin="peity" class="peity" data-tooltip="true" data-title="Chart" data-option="
+        'bar',
+        {
+          height: '100%',
+          width: '100%',
+          padding: 0.3,
+            fill: function(_, i, all) {
+              var g = parseInt((i / all.length) * 255);
+              return 'rgb(0, ' + g + ', 250)'
+            }
+        }" style="display: none;">{% for reward in currentNode.query_my_descendants_RewardedContribution_items %}{{reward.get_data.value}}{% if not forloop.last %},{% endif %}{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="box">
+      <div class="box-header">
+        <span class=" text-muted">Contributive tokens</span>
+      </div>
+      <div class="box-body">
+        <div class="p-3" >
+          <div class="flex-column balance-display">
+            <h3 class="">{{currentNode.query_my_RewardedContribution_descendants_items_value_total}} {{currentNode.get_data.symbol}}</h3><br/>
+            <span class="text-muted">All time earnings {{currentNode.query_my_RewardedContribution_descendants_items_value_total}} {{currentNode.get_data.symbol}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="box">
+      <div class="box-body">
+        <table class="table">
+          <thead>
+            <th>Operation</th>
+            <th>Contribution</th>
+            <th>Amount</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+            {% for event in currentNode.query_my_RewardedContribution_descendants_items %}
+            <tr>
+              <td>
+                <a class="subpanel" href="{{event.query_this_latest.get_url}}index/" ><span class="btn white">{{event.query_this_latest.status}}</span></a>
+              </td>
+              <td><a class="subpanel" href="{{event.get_url}}index/">{{event.related.title}}</a></td>
+              <td><span class="badge">{{event.related.get_data.value}} {{event.related.get_root.get_data.symbol}}</span></td>
+              <td>{% moment_from_now event.query_this_RewardedContribution_latest.ref_date %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+</div>

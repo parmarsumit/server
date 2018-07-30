@@ -1,0 +1,57 @@
+{% extends "app/tools/index.html" %}
+
+{% block content %}
+<div class="box p-5" >
+  {% for application in interface.get_applications %}
+  <div>{{application}}</div>
+  <div class="row">
+    {% for interface in application.interfaces.all %}
+    {% if interface.is_local %}
+    <div class="col-md-3" >
+      <div class="box border p-3 text-center">
+        <p>
+          <a class="subpanel" href="/tools/admin_panel.html?admin_url={{interface.get_admin_url}}" >{{interface.cname}}</a>
+        </p>
+        <p>
+          <a class="btn btn-info" href="https://{{interface.cname}}:{{request.get_port}}/" target="_blank" >Dev</a>
+          {% if interface.service %}
+          <a class="btn btn-secondary" href="https://{{interface.cname}}/" target="_blank" >Hosted</a>
+          {% endif %}
+        </p>
+
+        <div class="">
+          <a href="{{interface.repository}}" >{{interface.repository}}</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% for interface in application.interfaces.all %}
+    {% if not interface.is_local %}
+    <div class="col-md-3" >
+      <div class="box border p-3 text-center">
+        <p>
+          <a class="subpanel" href="/tools/admin_panel.html?admin_url={{interface.get_admin_url}}" >{{interface.cname}}</a>
+        </p>
+        <p>
+          <a class="btn btn-secondary" href="/io/#{{interface.id}}" target="_blank" >IO</a>
+        </p>
+        <div class="">
+          <a href="{{interface.repository}}" >{{interface.repository}}</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="col-md-3" >
+      <div class="box border p-3 text-center">
+        <p>
+          <a class="nav-link subpanel text-muted" href="/tools/admin_panel.html?admin_url=/admin/ilot/interface/add/?application={{application.id}}" >
+            <i class="fa fa-plus" ></i>Add interface</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

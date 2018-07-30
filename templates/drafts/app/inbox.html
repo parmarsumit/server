@@ -1,0 +1,12 @@
+{% extends "200.html" %}
+
+{% block content %}
+<div class="row no-gutters" style="height:100vh">
+	<div class="col-sm-5 col-xl-5" style="background-color:rgba(233, 238, 241, 0.83)" >
+    {% include "components/inbox.html" %}
+	</div>
+  <div class="col-sm-7 col-xl-7 box-shadow-0" style="background-color:rgba(157, 164, 169, 0.3)">
+    {% include "components/chat.html" %}
+  </div>
+</div>
+{% endblock %}

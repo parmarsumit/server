@@ -1,0 +1,26 @@
+
+<div class="padded">
+  <h3>Documentation Links</h3>
+  <div class="ui vertical segment">
+    {% for embed in currentNode.get_embedded %}
+      <div class="item">
+        {% with embed_object=embed.get_data %}
+
+        <div class="ui vertical inverted segment">
+        	<img class="float-left" src="{{embed_object.image.url}}" style="width:40%;" />
+        	<a class="ui right floated icon button" href="{{embed_object.url}}"  target="_blank" >
+        		{% if embed_object.logo.url %}<img class="ui mini image" src="{{embed_object.logo.url}}" />
+        		{% elif embed_object.logo %}<img class="ui mini image" src="{{embed_object.logo}}" />
+        		{% else %} Visiter{% endif %}</a>
+        	<a href="{{embed_object.url}}"  target="_blank" >{{embed_object.url}}</a>
+        	<h3>{{embed_object.title}}</h3>
+        	<p>{{embed_object.description}}</p>
+        </div>
+
+        {% endwith %}
+      </div>
+    {% endfor %}
+    <a class="btn btn-primary" href="{{currentNode.get_url}}uembed/?panel={{input_data.panel}}" >Add link</a>
+  </div>
+
+</div>

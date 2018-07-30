@@ -1,0 +1,6 @@
+{% for tag in currentNode.get_tags %}
+<div class="badge cyan" style="font-size:1em">
+  <a href="{{tag.get_url}}index/" >{{tag.title}}</a>
+  <a href="{{currentNode.get_url}}untag/?value={{tag.id}}" ><i class="fa fa-remove" ></i></a>
+</div>
+{% endfor %}

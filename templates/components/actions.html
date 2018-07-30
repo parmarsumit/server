@@ -1,0 +1,6 @@
+<div class="dark row">
+on {{origin.related.title}} {{origin.status}}, you can 
+{% for action in origin.get_actions %}
+  <a class="btn subpanel" href="{{origin.get_url}}{{action}}/" >{{action}}<a>
+{% endfor %}
+</div>

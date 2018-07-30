@@ -1,0 +1,47 @@
+{% load momentjs %}
+
+{% if user_profile.get_actor.is_TributeUser %}
+{% with events=user_profile.get_actor.query_all_todos %}
+<li class="nav-item dropdown">
+  <a class="nav-link px-3" data-toggle="dropdown">
+    <i class="fa fa-bell text-muted"></i>
+    {% if events.count %}
+    <span class="badge badge-pill up danger">{{events|length}}</span>
+    {% endif %}
+  </a>
+  <!-- dropdown -->
+  <div class="dropdown-menu dropdown-menu-right w-md animate fadeIn mt-2 p-0">
+    <div class="scrollable hover" style="max-height: 250px">
+      <div class="list">
+        {% for event in events|slice:':10' %}
+          <div class="list-item " data-id="{{event.id}}">
+            <span class="w-24 avatar circle brown">
+                <span class="fa fa-envelope"></span>
+            </span>
+            <div class="list-body">
+                <a href="{{event.get_url}}index/" class="item-title _500 subpanel">{{event.status}}</a>
+                <div class="item-except text-sm text-muted h-1x">
+                  {{event.related.title}}
+                </div>
+              <div class="item-tag tag hide">
+              </div>
+            </div>
+            <div>
+                <span class="item-date text-xs text-muted">{{event.status}}</span>
+                <span class="item-date text-xs text-muted">{% moment_from_now event.ref_date %}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="d-flex px-3 py-2 b-t">
+      <div class="flex">
+        <span>{{events|length}} Notifications</span>
+      </div>
+      <a href="/profile.html">See all <i class="fa fa-angle-right text-muted"></i></a>
+    </div>
+  </div>
+  <!-- / dropdown -->
+  </li>
+{% endwith %}
+{% endif %}

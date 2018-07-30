@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<link rel="image_src" type="image/jpeg" href="">
+
+{% block base %}<base href="" target="_top" ></base>{% endblock %}
+
+{% block title %}<title>{{ page_title  }} | {{ site_name }}</title>{% endblock %}
+{% block description %}<meta name="description" content="">{% endblock %}
+{% block keywords %}<meta name="keywords" content="">{% endblock %}
+{% if not embed %}
+<link rel="stylesheet" type="text/css" class="ui" href="/static/components/semantic/semantic.min.css">
+<script src="/static/components/jquery/jquery.js"></script>
+<script src="/static/components/semantic/semantic.min.js"></script>
+
+<script type="text/javascript" src="/static/components/momentjs/moment-2.10.6.js" ></script>
+<script type="text/javascript" src="/static/components/momentjs/lang/fr.js" ></script>
+
+<script src="/static/components/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+<link rel="stylesheet" type="text/css" class="ui" href="/static/components/datetimepicker/jquery.datetimepicker.min.css">
+<link rel="stylesheet" type="text/css" class="ui" href="/static/components/handsontable/handsontable.min.css"></script>
+
+<style>
+  html, body{
+    height:100%;margin:0px;padding:0px;
+  }
+</style>
+{% endif %}
+
+{% block stylesheet %}
+{% block extra_styles %}
+{% endblock %}
+{% endblock %}
+
+{% if not embed %}
+<style type="text/css">
+    <!--
+    #body {
+      background-color:#eee;
+    }
+    iframe{
+      border-radius:0px;
+      border: none;
+      background: none;
+      margin:0px;
+      padding:0px;
+    }
+
+    .elabel, .etitle{
+        width:100%;
+        display:inline-block;
+    }
+
+    #toc{
+      overflow-x:visible;!important
+    }
+    #notifications{
+      z-index:3;
+      background:rgba(0,0,0,0.95);color:white;
+    }
+    .tree .active{
+        background-color:blue;
+    }
+    .autohide-right-btn{
+
+    }
+    .autohide-left-btn{
+
+    }
+    #env{
+      position:absolute;
+      top:0px;
+      left:0px;
+      right:0px;
+      bottom:0px;
+      background: linear-gradient(to bottom, #fdfdfd, rgba(0,0,0,0.085) );
+    }
+    #env .gradient{
+      position:absolute;
+      top:0px;
+      left:0px;
+      right:0px;
+      height:200px;
+      opacity:0.25;
+      background-repeat:no-repeat;
+      background-position:center top;
+      background: #eee;  /* fallback for old browsers */
+      background: -webkit-linear-gradient(to bottom, #ffd194, #70e1f5, #eee);  /* Chrome 10-25, Safari 5.1-6 */
+      background: linear-gradient(to bottom, rgba(0,0,0,0), #eee), url(/image.png) no-repeat left top; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
+
+    @media all and (min-width: 1000px){
+      #root.pusher.autohide-left{
+        margin-left:280px;
+        margin-left:0px;
+      }
+      #root.pusher{
+        margin-left:280px;
+        margin-left:0px;
+      }
+      #root.pusher.autohide-right{
+        margin-right:260px;
+      }
+      #container{
+        margin:0px;
+      }
+      #toc{
+      }
+      .autohide-left-btn{
+        display:none;!important
+      }
+    }
+    @media all and (max-width: 1000px){
+      .ui.sidebar.left.autohide{
+        display:none;
+      }
+      #container > .ui.container{
+        padding:0em;
+        margin-left:0px!important;
+        margin-right:0px!important;
+        width:auto!important;
+      }
+    }
+    @media all and (max-width: 1000px){
+      #root.pusher.autohide-left{
+        margin-left:280px;
+        margin-left:0px;
+      }
+      #root.pusher.autohide-right{
+        margin-right:260px;
+      }
+      #toc{
+
+      }
+    }
+    @media all and (max-width: 1600px){
+      .ui.sidebar.right.autohide{
+        display:none;
+      }
+    }
+    @media all and (min-width: 1600px){
+      #root.pusher{
+        margin-left:280px;
+        margin-left:0px;
+        margin-right:260px;
+      }
+      .autohide-right-btn{
+        display:none;
+      }
+    }
+    .ui.accordion .item.active.title {
+      background: none;
+    }
+    .ui.accordion .item.active.content {
+      background: none;
+    }
+
+-->
+</style>
+{% endif %}
+<body class="ui body" >
+
+{% if not embed %}
+<div id="side-pane" class="ui right attached very wide overlay dimmed sidebar" style="width:75vw;min-width:50vw;max-width:600px;background:#eee;z-index:999">
+</div>
+{% endif %}
+
+<div id="0" class="pusher" >
+
+{% block sidebar %}
+{% endblock %}
+
+{% block full_body %}
+    {% block page_body %}
+    <div id="body" class="ui full height pushable" style="height:100vh;" data-url="{{page_url}}" >
+      {% block container %}
+      {% block page_head %}
+      {% endblock %}
+      <div class="ui item" style="position:relative;background-color:white;">
+        <div class="ui fluid secondary pointing menu" >
+          <a class="item" href="/api.html" >Ю</a>
+          <a class="right item" href="/permissions.html" >☯</a>
+          <a class="right item" href="/index.html" >Ⓐ</a>
+        </div>
+      </div>
+      <img src="{{user_profile.get_profile.get_item.get_image.avatar.url}}" />
+      {% block page %}
+
+      {% block content %}
+      {% include "ilot/tags/action_forms.html" %}
+      {% endblock %}
+      {% endblock %}
+      {% endblock %}
+    </div>
+    {% endblock %}
+{% endblock %}
+
+{% if not embed %}
+</div>
+{% endif %}
+
+{% block scripts %}
+{% block extra_scripts %}
+{% if not embed %}
+<script type="text/javascript" src="/static/components/historyjs/native.history.js"></script>
+<script type="text/javascript" src="/static/components/jeditable/jquery.jeditable.js"></script>
+<script src="/static/components/handsontable/handsontable.min.js"></script>
+<script src="/static/components/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+{% if DEBUG %}
+<script src="/static/app/main.js"></script>
+{% else %}
+<script src="/static/app/main.js?{{ref_time}}"></script>
+{% endif %}
+
+{% endif %}
+{% endblock %}
+{% endblock %}
+</body>
+</html>

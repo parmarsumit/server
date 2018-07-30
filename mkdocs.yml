@@ -1,0 +1,15 @@
+site_name: Tribute
+pages:
+  - Index: 'index.md'
+  - Core: 'ilot.md'
+  - Contracts: 'actionstore.md'
+
+site_dir: www/docs
+use_directory_urls: false
+
+theme:
+    name: null
+    custom_dir: 'templates'
+
+plugins:
+    - ilot

@@ -1,0 +1,176 @@
+{% load momentjs mathfilters messages %}
+
+<div class="" >
+  {% if currentNode.get_root == currentNode %}
+  <div class="row p-3" >
+    <div class="col-6 col-md-4 col-lg-4">
+      <div class="light">
+        <div class="box-header light lt" >
+          <h3>Rewards per initiative</h3>
+        </div>
+        <div class="box-body">
+          <div data-plugin="peity" class="peity" data-tooltip="true" data-title="Donut" data-option="
+          'donut',
+          {
+            height: '100%',
+            width: '100%'
+          }" >{% for init in currentNode.query_children_Initiative_items %}{{ init.query_descendants_RewardedContribution_items_total_value }};{% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-lg-4">
+      <div class="light">
+        <div class="box-header light lt" >
+          <h3>Rewards - Last</h3>
+        </div>
+        <div class="box-body">
+          <div data-plugin="peity" class="peity" data-tooltip="true" data-title="Chart" data-option="
+          'bar',
+          {
+            height: '100%',
+            width: '100%',
+            padding: 0.3,
+              fill: function(_, i, all) {
+                var g = parseInt((i / all.length) * 255);
+                return 'rgb(0, ' + g + ', 250)'
+              }
+          }" style="display: none;">{{ currentNode.query_descendants_RewardedContribution_items_value_list }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="light">
+        <div class="box-header light lt" >
+          <span class="float-right badge text-sm" >
+            {% comment %}1 {{currentNode.get_root.get_data.symbol}} = {% widthratio currentNode.get_root.query_this_newTokensIssued_total_amount currentNode.get_root.query_this_total_funded_amount 1 %} ETH</span>{% endcomment %}
+          <h3>Token Issuence</h3>
+        </div>
+        <div class="box-body">
+          <div data-plugin="peity" class="peity" data-tooltip="true" data-title="Line" data-option="
+          'line',
+          {
+            height: '100%',
+            width: '100%',
+            stroke: app.color.accent,
+            fill: 'url(#gradient4)'
+          }" style="display: none;">{% for issuence in currentNode.query_this_newTokensIssued reversed %}{{ issuence.get_data.amount }}{% if not forloop.last %},{% endif %}{% endfor %}
+          </div>
+          {% comment %}
+          <div data-plugin="peity" class="peity" data-tooltip="true" data-title="Line" data-option="
+          'line',
+          {
+            height: '100%',
+            width: '100%',
+            stroke: app.color.accent,
+            fill: 'url(#gradient4)'
+          }" style="display: none;">{% for issuence in currentNode.query_this_funded reversed %}{{ issuence.get_data.amount }}{% if not forloop.last %},{% endif %}{% endfor %}
+          </div>
+          {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <div class="row no-gutters white" >
+
+    <div class="col-md-8 box">
+      <div class="m-3">
+        <div class="box-header lt" >
+          <div class="float-right">
+            {% if input_data.show_my_feed %}
+            <a href="?show_my_feed=1" class="text-muted" >Show all</a>
+            {% else %}
+            <a href="?" class="text-muted" >Only mine</a>
+            {% endif %}
+          </div>
+          {% if currentNode.is_Project %}
+          <h3>Project feed</h3>
+          {% else %}
+          <h3>Initiative feed</h3>
+          {% endif %}
+        </div>
+        <div class="box-body">
+          {% if input_data.show_my_feed %}
+          {% for event in currentNode.query_descendants_notifications|slice:':50' %}
+            <div class="clearfix">
+              <a class="float-left m-2 subpanel" href="{{event.get_actor.get_url}}index/" ><img class="ui avatar image" src="{{event.get_actor.get_image.avatar.url}}" style="width:32px" /></a>
+              {% get_context_message event %}
+              <p class="text-muted">{% moment_from_now event.ref_date %} {% if event.related.parent.parent %} | {{event.related.parent.parent.title}} / {% endif %}{{event.related.parent.title}}</p>
+            </div>
+          {% endfor %}
+          {% else %}
+          {% for event in currentNode.query_descendants_feed|slice:':50' %}
+            <div class="clearfix">
+              <a class="float-left m-2 subpanel" href="{{event.get_actor.get_url}}index/" ><img class="ui avatar image" src="{{event.get_actor.get_image.avatar.url}}" style="width:32px" /></a>
+              {% get_context_message event %}
+              <p class="text-muted">{% moment_from_now event.ref_date %} {% if event.related.parent.parent %} | {{event.related.parent.parent.title}} / {% endif %}{{event.related.parent.title}}</p>
+            </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 box">
+      <div class="">
+        <div class="box-header blue clearfix" >
+
+          <div class="p-2 float-right text-right" >
+            {% if currentNode == currentNode.get_root %}
+              <a class="subpanel" href="{{currentNode.get_url}}showIssuanceHistory/" >Details & history</a>
+              {% if currentNode.can_issueNewTokens  %}
+              <br/><br/>  <a class="btn btn-primary subpanel" href="{{currentNode.get_url}}issueNewTokens/" >Issue new {{currentNode.get_root.get_data.symbol}}</a>
+              {% endif %}
+            {% endif %}
+            {% if currentNode.can_budgetInitiative  %}
+              <a class="subpanel" href="{{currentNode.get_url}}showBudgetHistory/" >Details & history</a>
+              <br/><br/><a class="btn btn-primary subpanel" href="{{currentNode.get_url}}budgetInitiative/" >Define Budgets</a>
+            {% endif %}
+          </div>
+
+          <div>Contributive tokens</div>
+          {% if currentNode == currentNode.get_root %}
+          <h2 class="m-3">{{currentNode.query_this_newTokensIssued_total_amount|sub:currentNode.query_descendants_RewardedContribution_items_total_value}} {{currentNode.get_root.get_data.symbol}}</h2>
+           <small>(outstanding)</small>
+          {% else %}
+          <h2 class="m-3">{{currentNode.query_this_budgetedInitiative_total_value|sub:currentNode.query_descendants_AssignedContribution_items_total_value}} {{currentNode.get_root.get_data.symbol}}</h2>
+           <small>(available)</small>
+          {% endif %}
+
+        </div>
+
+        {% if currentNode == currentNode.get_root %}
+        <div class="box-header green clearfix" >
+
+          <div class="float-right text-right p-2" >
+            <a class="subpanel" href="{{currentNode.get_url}}showFundingHistory/" >Details & history </a>
+            {% if currentNode.can_fundProject  %}
+              <br/><br/><a class="btn btn-secondary subpanel" href="{{currentNode.get_url}}fundProject/" >Fund project</a>
+            {% endif %}
+          </div>
+
+          <div>Reserve fund</div>
+          <h2 class="m-3">{{currentNode.query_this_ProjectFunding_total_amount|sub:currentNode.query_descendants_RedeemedValue_items_total_value}} ETH</h2>
+          <small>(outstanding)</small>
+        </div>
+        {% endif %}
+
+
+
+         <div class="list-group">
+           {% if currentNode == currentNode.get_root %}
+           <div class="list-group-item">Issued <span class="float-right badge text-sm" >{{currentNode.query_this_NewTokensIssued_total_amount}} {{currentNode.get_root.get_data.symbol}}</span></div>
+           <div class="list-group-item">Budgeted <span class="float-right badge text-sm" >{{currentNode.query_children_total_budgetedInitiative_value}} {{currentNode.get_root.get_data.symbol}}</span></div>
+           {% else %}
+           <div class="list-group-item">Budgeted <span class="float-right badge text-sm" >{{currentNode.query_this_total_budgetedInitiative_value}} {{currentNode.get_root.get_data.symbol}}</span></div>
+           {% endif %}
+           <div class="list-group-item">Assigned <span class="float-right badge text-sm" >{{currentNode.query_descendants_AssignedContribution_items_total_value}} {{currentNode.get_root.get_data.symbol}}</span></div>
+           <div class="list-group-item">Rewarded <span class="float-right badge text-sm" >{{currentNode.query_descendants_RewardedContribution_items_total_value}} {{currentNode.get_root.get_data.symbol}}</span></div>
+         </div>
+      </div>
+    </div>
+
+  </div>
+</div>

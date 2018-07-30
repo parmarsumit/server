@@ -1,0 +1,9 @@
+
+
+  On a <span class="text-primary">{{rule.type}}</span>,
+
+    doing <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{rule.get_admin_url}}" >{{rule.action}}</a>
+
+     {% if rule.is_allowed %}is allowed {% else %} is denied {% endif %}
+     to <span class="text-primary">{{rule.actor}}</span>
+     <br/>

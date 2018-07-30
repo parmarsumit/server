@@ -1,0 +1,82 @@
+<div class="row">
+
+  <div class="col-sm-3 col-md-3">
+  </div>
+
+  <div class="col-sm-8 col-md-8 ">
+    <div class="">
+      <ul class="list">
+        {% for ancestor in currentNode.get_ancestors %}
+        <li><h{{forloop.counter|add:'3'}}>
+          <a href="{{ancestor.get_url}}view/?panel={{input_data.panel}}" >{{ancestor.title}}</a>
+        </li></h{{forloop.counter|add:'3'}}>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+    <div class="ml-auto col-sm-2 col-md-2">
+      <div class="" >
+        <a class="btn btn-secondary" href="{{currentNode.get_url}}image/" >
+          <img src="{{currentNode.get_image.url}}" style="max-width:100%;" />
+        </a>
+      </div>
+    </div>
+
+    <div class="col-sm-8 col-md-8 ">
+      <div class="">
+
+        <div class="box-header">
+          <h2>{{currentNode.title}}</h2>
+          <small>{{currentNode.purpose}}</small>
+        </div>
+        <div class="box-tool">
+          <ul class="nav nav-xs">
+            <li class="nav-item">
+              <a class="nav-link" href="{{currentNode.get_url}}translate/?panel=intiatives">
+                <i class="fa fa-fw fa-edit"></i>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link" data-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-fw fa-ellipsis-v"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(28px, 24px, 0px); top: 0px; left: 0px; will-change: transform;">
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item">Separated link</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="box-body">
+          <p class="m-0 text-muted">{{currentNode.description|default:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi id neque quam. Aliquam sollicitudin venenatis ipsum ac feugiat. Vestibulum ullamcorper sodales nisi nec condimentum. Mauris convallis mauris at pellentesque volutpat."}}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-1 col-md-1 "></div>
+
+    <div class="col-sm-8 col-md-8 ml-auto padding">
+      {% if currentNode == currentNode.get_root %}
+      <div class="box-head" >Initiatives</div>
+      {% else %}
+      <div class="box-head" >Sub initiatives</div>
+      {% endif %}
+
+      {% for node in currentNode.get_children %}
+        <a class="btn" href="{{node.get_url}}view/?panel=initiatives" {% if node == currentNode or node in currentNode.get_ancestors %}style="border:5px solid grey"{% endif %}>
+          <img class="ui image" src="{{node.get_image.avatar.url}}"  style="margin:0px;border:none;width:32px" />
+          <span class="ui mini bottom attached label" style="opacity:0.90">{{node.title}}</span>
+        </a>
+      {% endfor %}
+
+      <a class="btn btn-primary float-right"  href="{{currentNode.get_url}}create/?panel=initiatives" >Create initiative</a>
+    </div>
+
+    <div class="col-sm-1 col-md-1 "></div>
+
+
+</div>
+<div class="row">
+  {% include "tables/calls.html" %}
+</div>

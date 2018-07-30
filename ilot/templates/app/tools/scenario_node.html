@@ -1,0 +1,208 @@
+
+
+<div class="box border">
+  <div class="box-header light" data-toggle="collapse" data-target="#{{scenario.id}}" >
+    <div class="float-right">
+      <a href="/tools/admin_panel.html?admin_url={{scenario.get_admin_url}}" class="text-primary subpanel" >Edit scenario</a>
+    </div>
+
+    <a href="/tools/admin_panel.html?admin_url={{scenario.get_admin_url}}" class="text-primary subpanel" >
+    {% if scenario.image %}
+      <img src="{{scenario.avatar.url}}" class="float-left mr-2" style="width:36px" />
+    {% else %}
+      <div class="fa fa-missing float-left mr-2" style="width:36px;height:36px" ></div>
+    {% endif %}
+    </a>
+    <b>{{scenario}}</b><br/>
+    <i>{{scenario.description|default:'No description'}}</i><br/>
+  </div>
+
+  <div class="box-body collapse" id="{{scenario.id}}"  >
+
+{% comment %}
+  <div class="row">
+    <div class="col-3">
+      <p class="text-xs text-muted">Infered properties</p>
+      <div class="box border p-3">
+        {% for action in type.status.actions.all %}
+          <div class="">
+            {% for attribute in action.attributes.all %}
+              <div>{{attribute}}</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <div class="col-9">
+
+      <p class="p-2">
+        {% for action in type.status.actions.all %}
+          {% for rule in action.rules.all %}
+            {% if rule.is_allowed %}
+              Aquired by <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{rule.get_admin_url}}" >{{action}}</a>
+               on <span class="text-primary">{{rule.type}}</span>
+               by <span class="text-primary">{{rule.actor}}</span><br/>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </p>
+
+      <p class="text-xs text-muted">Yielders</p>
+      <p class="p-2">
+        On a {{type}}, <br/>
+        {% for trigger in type.triggers.all %}
+          When <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{trigger.get_admin_url}}" >{{trigger.status}}</a> occurs, it will trigger <a href="" class="text-primary subpanel" >{{trigger.behavior}}</a> as {{trigger.actor}}, targetted to {{trigger.target}}.<br />
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/trigger/add/?type={{type}}" class="text-muted subpanel" >Add trigger</a>
+      </p>
+
+      <p class="p-2">
+        {% for notification in type.notifications.all %}
+
+          <div class="text-muted float-right clearfix" data-toggle="collapse" data-target="#{{notification.id}}" >Show Message</div>
+
+          When <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.status}}</a> happens,
+          it will notify <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.target}}</a>
+          {% if notification.email %} by email.{% endif %}<br />
+          <div id="{{notification.id}}" class="ml-5 p-2 mb-0 collapse" >
+              {% with message=notification.get_message %}
+              <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{message.get_admin_url}}" >Edit</a>
+              <pre>
+                {{message.i_did}}
+              </pre>
+              <pre>
+                {{message.target_did}}
+              </pre>
+              <pre>
+                {{message.others_did}}
+              </pre>
+              {% endwith %}
+              {% if notification.email %}
+              <pre>{{notification.title}}</pre>
+              {% endif %}
+          </div>
+
+          <br />
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/grammar/notification/add/?type={{type.id}}" class="text-muted subpanel" >Add notification</a>
+      </p>
+
+    </div>
+
+  </div>
+{% endcomment %}
+
+  <div class="">
+    <p class="text-xs text-muted">Steps</p>
+
+  {% for step in scenario.get_steps %}
+    {% if step.action.meta_type %}
+      <div class="box m-0 border" >
+        <div class="box-header light" data-toggle="collapse" data-target="#{{scenario.id}}-{{step.id}}" data-parent="#{{scenario.id}}"  >
+          {% if rule.is_allowed == False %}
+          <span class="red"><a href="/tools/admin_panel.html?admin_url={{rule.actor.get_admin_url}}" class="text-primary subpanel" >{{rule.actor}}</a>
+           is forbidden to <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{rule.action.get_admin_url}}" >{{rule.action}}</a></span>
+          {% else %}
+          <a href="/tools/admin_panel.html?admin_url={{rule.actor.get_admin_url}}" class="text-primary subpanel" >{{rule.actor}}</a>
+           can <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{rule.action.get_admin_url}}" >{{rule.action}}</a>
+           {% if rule.action.target_type and rule.action.target_type != type %} to {{rule.action.target_type}}{% endif %}
+          {% endif %}
+          <div class="float-right">
+            <a class="text-muted subpanel" href="/tools/admin_panel.html?admin_url={{rule.get_admin_url}}" >Edit rule</a>
+            <a class="text-muted subpanel" href="/tools/admin_panel.html?admin_url={{rule.action.get_panel.get_admin_url}}" >Panel</a>
+          </div>
+        </div>
+        <div class="box-body p-5 collapse" id="{{rule.id}}-{{type.id}}">
+
+          <p>
+            <b>{{rule.action}}</b><br />
+            <i>{{rule.action.description}}</i>
+          </p>
+
+          <p class="">
+            {% for requirement in rule.action.requirements.all %}
+              <div class="text-muted float-right clearfix" data-toggle="collapse" data-target="#{{requirement.id}}" >Show Message</div>
+              It requires <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{requirement.condition.get_admin_url}}" >
+                {{requirement.condition}}</a>, witch can be completed by doing
+                <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{requirement.get_admin_url}}" >{{requirement.behavior}}</a>.
+                <pre class="ml-5 p-2 mb-0 collapse" id="{{requirement.id}}" >{{requirement.message}}</pre>
+                <br />
+            {% endfor %}
+            <a href="" class="text-muted" >Add requirement</a>
+          </p>
+
+          <p class="">
+            {% for attribute in rule.action.attributes.all %}
+              It {% if attribute.required %}must{% else %}can{% endif %}
+               set <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{attribute.get_admin_url}}" >{{attribute.label}}</a> as a {{attribute.datatype}}<br />
+            {% endfor %}
+            <a href="" class="text-muted float" >Add attribute</a>
+          </p>
+
+          {% if rule.action.authorize %}
+          <p class="">It will auhtorize target to <a href="/tools/admin_panel.html?admin_url={{rule.action.get_admin_url}}" class="text-primary subpanel" >{{rule.action.behavior}}</a></p>
+          {% endif %}
+
+          <p class="" >
+            {% for sub_type in rule.action.status.types.all %}
+            It defines <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{sub_type.get_admin_url}}" >{{sub_type.status}}</a>
+            {{sub_type.reference}} as <a class="text-primary" href="#{{sub_type.id}}" >{{sub_type}}</a><br/>
+            {% endfor %}
+          </p>
+
+          <p class="p-2">
+            {% for trigger in rule.action.status.triggers.all %}
+              When <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{trigger.get_admin_url}}" >{{trigger.status}}</a> occurs, it will trigger <a href="" class="text-primary subpanel" >{{trigger.behavior}}</a> as {{trigger.actor}}, targetted to {{trigger.target}}.<br />
+            {% endfor %}
+            <a href="/tools/admin_panel.html?admin_url=/admin/rules/trigger/add/?type={{type}}" class="text-muted subpanel" >Add trigger</a>
+          </p>
+
+          <p class="p-2">
+            {% for notification in rule.action.status.notifications.all %}
+              On a <span class="text-primary" >{{notification.type}}</span>, when <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.status}}</a> occurs,
+               it will notify <a href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" class="text-primary subpanel" >{{notification.target}}</a>.<br />
+            {% endfor %}
+            <a href="/tools/admin_panel.html?admin_url=/admin/grammar/notification/add/?type={{type}}" class="text-muted subpanel" >Add notification</a>
+          </p>
+
+
+          {% if scenario %}
+          {% for sub_type in rule.action.status.types.all %}
+            {% if type != sub_type %}
+              {% with type=sub_type %}
+                {% include "app/tools/type_node.html" %}
+              {% endwith %}
+            {% else %}
+              {{sub_type}}
+            {% endif %}
+          {% endfor %}
+          {% endif %}
+
+          <div class="">
+            <a href="/tools/admin_panel.html?admin_url=/admin/rules/type/add/?type={{type.id}}&status={{type.status.id}}" class="text-muted subpanel" >Add type</a>
+          </div>
+
+      </div>
+      {% if rule.action.status.types.all.count %}
+      {% endif %}
+    </div>
+    {% else %}
+    <a href="" >{{rule.action}}</a>
+    {% endif %}
+
+  {% endfor %}
+
+  <div class="navbar border">
+    <a href="/tools/admin_panel.html?admin_url=/admin/scenarios/step/add/" class="text-muted subpanel" >Add Step</a>
+  </div>
+
+  </div>
+
+
+
+
+
+  </div>
+</div>

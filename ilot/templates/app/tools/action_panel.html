@@ -1,0 +1,16 @@
+{% extends "200.html" %}
+{% load messages %}
+
+
+{% block content %}
+<div class="modal-dialog modal-right w-50 w-auto-sm white dk b-l" >
+  <div class="d-flex flex-column h-100" style="height:90vh">
+    <a style="position:absolute;top:2em;right:2em" data-dismiss="modal" class="ml-auto" onclick="$('#sidepane').remove()" href="{{ request.META.HTTP_REFERER }}">
+      <span class="text-lg l-h-1x">×</span>
+    </a>
+    {% block panel_body %}
+      {% include "app/tools/action_node.html" %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

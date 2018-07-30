@@ -1,0 +1,37 @@
+{% load markdown_deux_tags momentjs %}
+
+<div class="ui padded container">
+
+  <div class="ui padded vertical segment" >
+    <div class="ui right floated vertical secondary small menu">
+      <div class="item">VALUE <span class="ui label" ><b>{{currentNode.get_total_value}}</b> XCT</span></div>
+    </div>
+    <img class="ui tiny left floated image" src="{{currentNode.get_image.avatar.url}}" />
+    <h2 class="ui header">{{currentNode.title}}</h2>
+    <h4 class="ui subheader" >{{currentNode.purpose}}</h4>
+  </div>
+
+  <div class="ui horizontal secondary pointing menu">
+    {% with oaction=input_data.oaction|default:action %}
+    <a class="item {% if not input_data.panel or input_data.panel == 'action' %}active{% endif %}" href="{{currentNode.get_url}}{{oaction}}/?panel=action&oaction={{oaction}}" >{{oaction}}</a>
+
+    <a class="right item {% if input_data.panel == 'infos' %}active{% endif %}" href="{{currentNode.get_url}}meta/?panel=infos&oaction={{oaction}}" >Infos</a>
+    <a class="item {% if input_data.panel == 'comments' %}active{% endif %}" href="{{currentNode.get_url}}comment/?panel=comments&oaction={{oaction}}" >Comments</a>
+    <a class="item {% if input_data.panel == 'discuss' %}active{% endif %}" href="{{currentNode.get_url}}discuss/?panel=discuss&oaction={{oaction}}" >Discuss</a>
+    <a class="item {% if input_data.panel == 'history' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=history&oaction={{oaction}}" >History</a>
+    {% endwith %}
+  </div>
+
+  <div class="ui vertical segment">
+    {% if not input_data.panel or input_data.panel == 'action' %}
+      {% include "tags/action_forms.html" %}
+    {% elif input_data.panel == 'infos' %}
+      {% include "ilot/tags/cogs.html" %}
+    {% elif input_data.panel == 'history' %}
+      {% include "ilot/tags/feed.html" %}
+    {% else %}
+      {% include "tags/action_forms.html" %}
+    {% endif %}
+  </div>
+
+</div>

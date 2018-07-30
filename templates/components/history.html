@@ -1,0 +1,59 @@
+{% load momentjs %}
+<div class="container" >
+  <div class="white box-shadow mt-3">
+    <div class="box">
+      <div class="box-header" >
+        <h3>My contributions</h3>
+      </div>
+      <div class="box-body">
+        <table class="table">
+          <thead>
+            <th>Project</th>
+            <th>Initiative</th>
+            <th>Contribution</th>
+            <th>Status</th>
+            <th>Assigned on</th>
+            <th>By</th>
+            <th>Ended On</th>
+            <th>Rewarded</th>
+          </thead>
+          <tbody>
+            {% for event in currentNode.query_all_my_AssignedContribution %}
+            <tr>
+              <td>
+                <a class="subpanel" href="{{event.related.get_root.get_url}}index/" style="width:10%" >
+                  <img style="width:32px;" src="{{event.related.get_root.get_image_logo.avatar.url}}" alt="{{event.related.get_root.title}}" />
+                  <span class="text-muted text-sm">{{event.related.get_root.title}}</span>
+                </a>
+              </td>
+              <td><a class="subpanel" href="{{event.related.parent.get_url}}">{{event.related.parent.title}}</a></td>
+              <td><a class="subpanel" href="{{event.related.get_url}}">{{event.related.title}}</a></td>
+              <td>
+                <a class="subpanel" href="{{event.query_this_latest.get_url}}index/" ><span class="btn white">{{event.query_this_latest.status}}</span></a>
+              </td>
+              <td>{% moment_from_now event.created_date %}</td>
+              <td>
+                <a class="subpanel" href="{{event.get_actor.get_url}}index/" >
+                  <img class="ui avatar image" src="{{event.get_actor.get_image.avatar.url}}" style="width:32px" />
+                </a>
+              </td>
+              <td>
+                {% if event.related.is_RewardedContribution %}
+                  {% moment_from_now event.related.query_this_RewardedContribution_latest.ref_date %}
+                {% else %}
+                  {% if event.related.query_this_latest.can_submit %}
+                    <a class="btn cyan subpanel" href="{{event.related.query_this_latest.get_url}}submit/?do=1" >Submit contribution</a>
+                  {% elif event.related.is_SubmitedContribution %}
+                    pending approval
+                  {% endif %}
+                {% endif %}
+              </td>
+              <td><span class="badge">{{event.related.get_data.value}} {{event.related.get_root.get_data.symbol}}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

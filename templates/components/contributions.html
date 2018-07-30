@@ -1,0 +1,28 @@
+{% load momentjs %}
+
+  <table class="ui table">
+
+    <tbody>
+      {% for event in events|slice:':25' %}
+      <tr>
+        <td style="width:18%">
+          <a class="subpanel" href="{{event.related.get_root.get_url}}index/">
+            <img src="{{event.related.get_root.get_image_logo.avatar.url}}" style="width:48px" />{{event.related.get_root.title}}</a>
+        </td>
+        <td>
+          <a class="h6 text-primary subpanel" href="{{event.related.get_url}}index/">{{event.related.title}}</a><br/>
+          <span class="text-muted subpanel" href="{{event.related.parent.get_url}}index/">
+            {{event.related.parent.parent.title}} / {{event.related.parent.title}}
+          </span>
+          <p class="text-muted" >Reward {{event.get_data.value}} {{event.related.get_root.get_data.symbol}}</p>
+          {% for tag in event.related.query_this_tagged_targets %}
+          <div class="badge cyan" style="font-size:1em">{{tag.title}}</a></div>
+          {% endfor %}
+        </td>
+        <td>
+          <a class="btn btn-outline cyan subpanel" href="{{event.get_url}}index/">View call</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>

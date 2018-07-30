@@ -1,0 +1,31 @@
+{% extends "200.html" %}
+
+{% block content %}
+<div class="modal-dialog w-50 w-auto-sm white dk b-l p-4" >
+  <div class="d-flex flex-column h-100">
+    <div class="py-5 text-center w-100 white">
+      <div class="mx-auto w-xxl w-auto-xs">
+        <div class="px-3">
+          <div>
+            <h5>Create Your account</h5>
+            <p class="text-muted my-3">
+              Using your email, you wiil a link to come back to this page.
+            </p>
+          </div>
+          <form name="authenticate" method="post" action="/signup.html?action=requestRegister">
+            {% csrf_token %}
+            <div class="form-group">
+              <input value="{{input_data.username}}" name="username" type="text" placeholder="Username" class="form-control" required>
+              <input value="{{input_data.title}}" name="title" type="text" placeholder="Displayname" class="form-control" required>
+              <input value="{{input_data.email}}" name="email" type="email" placeholder="Email" class="form-control" required>
+            </div>
+            <button type="submit" class="btn primary btn-block p-x-md" >Send</button>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

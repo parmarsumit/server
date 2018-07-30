@@ -1,0 +1,52 @@
+{% extends "app.html" %}
+
+{% block content %}
+
+<div class="row">
+	<div class="navbar">
+		<ul class="nav nav-pills">
+			<li class="nav-item">
+				<a class="nav-link" href="/">Tribute</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/projects.html">Projects</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/contributions.html">Contributions</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div class="d-flex flex-column flex" style="height:100vh">
+	<div class="row no-gutters flex">
+	  <div class="col-sm-9 col-xl-9 scroll-y" style="background-color:rgba(157, 164, 169, 0.3)">
+	    <div class="padding" >
+	      <div class="row row-xs">
+	        {% block results %}
+	        {% endblock %}
+	      </div>
+	      <div>
+	        <div class="btn-group mr-3">
+	          <button type="button" class="btn btn-sm white"><i class="fa fa-angle-left"></i></button>
+	          <button type="button" class="btn btn-sm white"><i class="fa fa-angle-right"></i></button>
+	        </div>
+	        Showing <strong>8</strong> of 25
+	      </div>
+	    </div>
+	  </div>
+		<div class="col-sm-3 col-xl-3 p-3" style="background-color:rgba(233, 238, 241, 0.83)" >
+	    <div>
+	      <a href="/" >
+	        <img src="{{application.get_item.get_image.thumbnail.url}}" style="width:100%" />
+	      </a>
+	    </div>
+	    <form action="/search.html?action=search" class="form-input" >
+	      <input type="text" value="{{input_data.search}}" name="keyword" />
+	    </form>
+	    Filters, tags, search
+		</div>
+	</div>
+</div>
+{% endblock %}
+<!-- ############ Main END-->

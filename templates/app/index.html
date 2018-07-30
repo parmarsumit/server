@@ -1,0 +1,147 @@
+{% extends "200.html" %}
+{% load momentjs messages %}
+{% block content %}
+  <div class="row no-gutters" >
+    <div class="col-md-6 h-v white d-flex">
+      <div class="p-5 flex align-self-center">
+
+          {% comment %}
+          <h1 class="display-4 _700 l-s-n-1x my-5">Tribute <br/><span class="text-primary">Equity</span> <span class="text-muted">for your community</span></h1>
+          <h5 class="text-muted mb-5 text-serif">Equity for your community</h5>
+          {% endcomment %}
+
+          <div class="box-header">
+            <h6 class="mb-3">My Projects</h6>
+          </div>
+          <div class="box-body">
+            <div class="list inset scroll-y" style="height:100%" >
+              {% for project in currentNode.query_all_view_Project_items %}
+              <div class="list-item {% if currentNode == project %}active{% endif %}" >
+                <span class="w-40 avatar">
+                    <img src="{{project.get_image.avatar.url}}" alt=".">
+                </span>
+                <div class="list-body">
+                    <a href="/profile.html?panel=wallet&id={{project.id}}" class="item-title _500">{{project.title}}</a>
+                    <div class="item-except text-sm text-muted h-1x">
+                    </div>
+                  <div class="item-tag tag hide">
+                  </div>
+                </div>
+                <div>
+                    <span class="item-date text-xs text-muted">{{project.query_my_RewardedContribution_descendants_items_value_total}} {{project.get_root.get_data.symbol}}</span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <hr />
+          <a href="/projects.html" data-scroll-to="demos" class="btn btn-lg btn-outline b-primary text-primary b-2x">Find a project</a>
+          or discover <a class="text-primary" href="/contributions.html" >opened contributions</a>
+      </div>
+    </div>
+    
+    <div class="col-md-6 d-flex py-5 align-items-center justify-content-center progress-bar-striped" style="background-color: #eff2f5">
+      {% comment %} progress-bar-animated {% endcomment %}
+      <div class="p-2">
+        <div class="b-l  lt">
+          <div class="p-3" >
+
+          </div>
+        </div>
+        <div class="b-l  lt">
+          {% block subcontent %}
+          <h5>Hello {{user_profile.get_actor.get_data.title}}</h5>
+          {% comment %}
+          <li>
+            {% if user_profile.get_actor.query_his_TermsAgreed %}
+            OK
+            {% endif %}
+            <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}agreeTerms/" >AgreeTerms</a>
+          </li>
+          <li>
+            {% if user_profile.get_actor.query_his_TributeUser %}
+            OK
+            {% endif %}
+            <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}registerProfile/" >Register</a>
+          </li>
+          <li>
+            {% if user_profile.get_actor.query_his_ValidatedEmail %}
+            {% for validated_email in user_profile.get_actor.query_my_ValidatedEmail %}
+            OK, validated {{validated_email.get_data}}<br/>
+            {% endfor %}
+            {% endif %}
+            <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}changeEmail/" >Change email</a>
+          </li>
+
+          <li>
+            <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}meetCoreTeam/" >Meet core Team</a>
+          </li>
+
+          <li>
+            <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}logOut/" >Log out</a>
+          </li>
+          <li>
+            <a class="btn text-primary modalpanel" href="{{user_profile.get_actor.get_url}}requestLogIn/" >Log in</a>
+          </li>
+          {% endcomment %}
+          {% endblock %}
+
+          {% if DEBUG %}
+          <p>From here, you can
+          {% for action in origin.get_actions %}
+          <a class="btn btn-primary subpanel" href="{{origin.get_url}}{{action}}/" >{{action}}</a>
+          {% endfor %}
+          </p>
+          {% for event in user_profile.get_actor.get_feed|slice:':5' %}
+            <div class="p-3" >{% moment_from_now event.ref_date %}{% get_context_message event %}</div>
+          {% endfor %}
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="row no-gutters" id="home">
+    <div class="container">
+      {% include "components/contributions.html" %}
+    </div>
+
+  </div>
+  <footer class="dark pos-rlt">
+    <div class="footer dk">
+      <div class="text-center p-5">
+        <div class="clearfix text-lg">
+          <strong>Tribute</strong> | Equity for your community
+        </div>
+        <div class="nav justify-content-center my-2 text-primary">
+          <a class="nav-link" href="/projects.html" data-scroll-to="demos" >
+            <span class="nav-text">Projects</span>
+          </a>
+          <a class="nav-link" href="/contributions.html" data-scroll-to="demos" >
+            <span class="nav-text">Browse contributions</span>
+          </a>
+        </div>
+        <div class="block clearfix">
+          <a href="" class="btn btn-icon btn-social btn-rounded btn-sm">
+            <i class="ion-logo-dribbble"></i>
+            <i class="ion-logo-dribbble pink"></i>
+          </a>
+        </div>
+      </div>
+      <div class="b b-b"></div>
+      <div class="p-5">
+        <div class="row footer-bottom">
+          <div class="col-sm-8">
+            <small class="text-muted">&copy; Copyright 2018. All rights reserved.</small>
+          </div>
+          <div class="col-sm-4">
+            <div class="text-sm-right text-xs-left">
+              <strong>Tribute</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+{% endblock %}

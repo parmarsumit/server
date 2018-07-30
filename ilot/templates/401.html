@@ -1,0 +1,28 @@
+{% extends "200.html" %}
+
+{% block content %}
+<div class="ui center aligned vertical padded segment" style="padding:20%" >
+  <h3 class="p-3">Login using your email</h3>
+  <div class="" id="messages">
+  {% for message in messages %}
+      {% if not debug or 'debug' not in message.tags %}
+          <div class="ui warning message">
+            <i class="close icon"></i>
+            <div class="header">
+              {{ message.title }}
+            </div>
+            {{ message|safe }}
+          </div>
+      {% endif %}
+  {% endfor %}
+  </div>
+  <form action="" method="POST" class="p-3" >
+    <input class="form-control" type="text" name="email" value="{{input_data.email}}" placeholder="email@corp.com" />
+    <div>
+      <button class="form-control btn btn-secondary">Send</a>
+    </div>
+  </form>
+</div>
+{% comment %}
+{% endcomment %}
+{% endblock %}

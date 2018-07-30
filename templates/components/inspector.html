@@ -1,0 +1,28 @@
+
+
+
+
+{% if origin.related.is_Contribution %}
+  {% include "components/contribution.html" %}
+
+{% elif origin.related.is_Organization %}
+  {% include "components/organization.html" %}
+
+{% elif origin.related.is_CallAnswer %}
+  {% include "components/call_for_contribution.html" %}
+
+{% elif origin.related.is_CallForContribution %}
+  {% include "components/call_for_contribution.html" %}
+
+{% elif origin.related.is_TributeUser %}
+  {% include "components/public_profile.html" %}
+
+{% elif origin.related.is_Project %}
+  {% include "panels/overview.html" %}
+
+{% elif origin.related.is_Initiative %}
+  {% include "panels/initiative.html" %}
+
+{% else %}
+  {% include "components/unknown.html" %}
+{% endif %}

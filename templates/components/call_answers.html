@@ -1,0 +1,62 @@
+{% load messages momentjs %}
+
+<div class="form-input">
+  <label class="text-muted text-xs">Proposals</label>
+  <div class="box-divider"></div>
+  <div class="">
+    {% for answer in origin.query_following_CallAnswer %}
+      {% if not answer.is_CallAnswerAccepted %}
+      <div class="box m-0 clearfix p-2">
+        <div class="float-right">
+        {% if answer.is_CallAnswerRejected %}
+          <div class="btn btn-secondary" disabled >Rejected</div>
+        {% else %}
+            {% for action in answer.get_important_actions %}
+              <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{answer.get_url}}{{action.name}}/?do=1" >{% get_context_action answer action.name 'label' %}</a>
+            {% endfor %}
+        {% endif %}
+        </div>
+        <div class="clearfix">
+          <a class="float-left m-2 subpanel" href="{{answer.get_actor.get_url}}index/" style="height:5em" >
+            <img class="ui avatar image" src="{{answer.get_actor.get_image.avatar.url}}" style="width:32px" />
+          </a>
+          {% get_context_message answer %}
+          <p class="text-muted">{% moment_from_now answer.ref_date %}</p>
+          <p class="p-1">
+            {{answer.get_data.message}}
+          </p>
+        </div>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="form-input">
+  <label class="text-muted text-xs">Contributions</label>
+  <div class="box-divider"></div>
+  <div class="m-0">
+    {% for answer in origin.query_following_CallAnswer %}
+      {% if answer.is_CallAnswerAccepted %}
+      {% with event=answer.query_this_latest %}
+      <div class="box m-0 p-2">
+        <div class="float-right">
+          {% for action in event.get_important_actions %}
+            <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action event action.name 'label' %}</a>
+          {% endfor %}
+        </div>
+
+        <div class="clearfix">
+          <a class="float-left m-2 subpanel" href="{{event.get_actor.get_url}}index/" style="height:3em" >
+            <img class="ui avatar image" src="{{event.get_actor.get_image.avatar.url}}" style="width:32px" />
+          </a>
+          {% get_context_message event %}
+          <p class="text-muted">{% moment_from_now event.ref_date %}</p>
+        </div>
+
+      </div>
+      {% endwith %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

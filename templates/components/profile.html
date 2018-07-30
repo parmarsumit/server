@@ -1,0 +1,74 @@
+
+<div class="d-flex flex" style="height:100vh" >
+	<div class="d-flex flex-column flex"  >
+
+    <div class="white">
+      <div class="item m-0 dark">
+      <div class="item-bg orange" style="opacity:0.4">
+      </div>
+      <div class="p-3">
+        <div class="row mt-2">
+          <div class="col-sm-7">
+            <div class="media">
+              <a href="#">
+                <span class="avatar w-48">
+                  <a class="avatar w-48 modalpanel" href="{{user_profile.get_actor.get_url}}image/" >
+                    <img src="{{user_profile.get_actor.get_image.url}}" alt="." >
+                  </a>
+                  <i class="on"></i>
+                </span>
+              </a>
+              <div class="media-body mx-3 mb-2">
+                <h4>{{user_profile.get_actor.get_data.title}}</h4>
+								<p class="text-muted mb-0"><a class="subpanel" href="{{user_profile.get_actor.get_url}}changeEmail/" >@{{user_profile.get_actor.username}}</a></p>
+                <p class="text-muted"><span class="m-r">{{user_profile.get_actor.occupation}}</span> <small><i class="fa fa-map-marker mr-2"></i>{{user_profile.get_actor.location|default:'Here, now'}}</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="navbar">
+      <ul class="nav nav-sm float-left nav-active-border">
+        <li class="nav-item">
+          <a class="nav-link {% if not input_data.panel or input_data.panel == 'activity' %}active{% endif %}" href="?panel=activity" data-toggle="tab" data-target="#tab_1">Activity Feed</a>
+        </li>
+        <li class="nav-item">
+					{% with default_project=user_profile.get_actor.query_all_my_rewarded_contexts.0 %}
+          <a class="nav-link {% if input_data.panel == 'wallet' %}active{% endif %}" href="?panel=wallet{% if default_project %}&id={{default_project.id}}{% endif %}" data-toggle="tab" data-target="#tab_2">My Wallet</a>
+					{% endwith %}
+				</li>
+        <li class="nav-item">
+          <a class="nav-link {% if input_data.panel == 'history' %}active{% endif %}" href="?panel=history" data-toggle="tab" data-target="#tab_3">My Contributions</a>
+        </li>
+
+      </ul>
+      <ul class="nav nav-sm float-right nav-active-border">
+        <li class="nav-item">
+          <a class="nav-link {% if input_data.panel == 'setting' %}active{% endif %}" href="?panel=setting" data-toggle="tab" data-target="#tab_4">Settings</a>
+        </li>
+      </ul>
+      </div>
+    </div>
+    <div class="scrollable">
+      {% if not input_data.panel or input_data.panel == 'activity' %}
+        {% include "components/activity.html" %}
+      {% elif input_data.panel == 'wallet' %}
+
+				{% if not user_profile.get_actor.get_data.address %}
+					{% include "components/ethereum.html" %}
+				{% else %}
+
+				{% endif %}
+				{% include "components/wallet.html" %}
+
+
+      {% elif input_data.panel == 'history' %}
+        {% include "components/history.html" %}
+      {% elif input_data.panel == 'setting' %}
+        {% include "components/setting.html" %}
+      {% else %}
+      {% endif %}
+    </div>
+  </div>
+</div>

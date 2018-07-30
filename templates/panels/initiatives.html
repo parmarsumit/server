@@ -1,0 +1,47 @@
+
+{% for node in currentNode.get_children %}
+<div class="white p-3">
+
+  <div class="box-header">
+    <div class="float-left m-4">
+      <a class="w-96 modalpanel" href="{{node.get_url}}image/" >
+        <img src="{{node.get_image.url}}" alt="." style="max-height:8em">
+      </a>
+    </div>
+    <h2  class="p-2" >{{node.title}}</h2>
+    <small  class="p-2" >{{node.purpose|default:'purpose ?'}}</small>
+    <p class="p-2 padding m-0 text-muted">{{node.description|default:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi id neque quam. Aliquam sollicitudin venenatis ipsum ac feugiat. Vestibulum ullamcorper sodales nisi nec condimentum. Mauris convallis mauris at pellentesque volutpat."}}</p>
+  </div>
+
+  <div class="box-tool">
+    <ul class="nav nav-xs">
+      <li class="nav-item">
+        <a class="nav-link subpanel" href="{{node.get_url}}translate/?panel=intiatives">
+          <i class="fa fa-fw fa-edit"></i>
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" aria-expanded="false">
+          <i class="fa fa-fw fa-ellipsis-v"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(28px, 24px, 0px); top: 0px; left: 0px; will-change: transform;">
+          <a class="dropdown-item" href="#">Something else here</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item">Separated link</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="box-body">
+    {% with currentNode=node %}
+      {% include 'panels/initiative.html' %}
+    {% endwith %}
+  </div>
+
+</div>
+{% endfor %}
+{% if currentNode.can_create %}
+<div class="p-5 text-center">
+  <a class="btn btn-primary "  href="{{currentNode.get_url}}create/?panel=initiatives" >Create initiative</a>
+</div>
+{% endif %}

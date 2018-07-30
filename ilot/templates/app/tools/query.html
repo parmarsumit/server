@@ -1,0 +1,80 @@
+{% extends "200.html" %}
+
+{% block content %}
+
+<div class="box container" >
+  <div class="box-header m-5">
+      <h5>Hello, i'm {{application.name}}</h5>
+      <div class="float-right">
+        <div class="badge grey">this</div>
+        <div class="badge grey">his</div>
+        <div class="badge grey">my</div>
+        <div class="badge grey">todos</div>
+        <div class="badge grey">notifications</div>
+        <div class="badge grey">items</div>
+        <div class="badge grey">actors</div>
+        <div class="badge grey">targets</div>
+      </div>
+      <div class="float-right">
+        Types
+      </div>
+      <div class="float-right">
+        Status
+      </div>
+      <div class="float-right">
+        Actions
+      </div>
+  </div>
+  <form class="m-5" action="{{request.path}}" method="GET" target="_self" >
+    {% csrf_token %}
+    <input class="form-control" type="text" name="query" value="{{input_data.query}}" placeholder="query" />
+    <input type="submit" />
+  </form>
+  <div>
+    <p>{{currentNode.get_infered_types}}</p>
+    <p>{{currentNode.get_data}}</p>
+  </div>
+
+
+  {{results}}
+  {% comment %}
+  <div>{{results|length}} results</div>
+  <div class="box-body">
+    <table class="table">
+      <thead>
+        <th>Context</th>
+        <th>Parent</th>
+        <th>Item</th>
+        <th>Actor</th>
+        <th>Origin</th>
+        <th>Origin Status</th>
+        <th>Action</th>
+        <th>Status</th>
+        <th>Target</th>
+        <th>Date</th>
+      </thead>
+
+    {% for item in results|slice:':25' %}
+    <tbody>
+      <tr>
+        <td>{{item.get_context.title}}</td>
+        <td><a class="text-primary subpanel" href="/tools/graph.html?id={{item.related.parent.id}}" >{{item.related.parent.get_display}}</a></td>
+        <td><a class="text-primary subpanel" href="/tools/graph.html?id={{item.related.id}}" >{{item.related.get_display}}</a></td>
+        <td><a class="text-primary subpanel" href="/tools/graph.html?id={{item.get_actor.id}}" >{{item.get_actor.get_display}}</a></td>
+        <td><a class="text-primary subpanel" href="/tools/graph.html?id={{item.origin.id}}" >{{item.origin.related.get_display}}</a></td>
+        <td>{{item.origin.status}}</td>
+        <td>{{item.action}}</td>
+        <td>{{item.status}}</td>
+        <td>
+          <a class="text-primary subpanel" href="{{item.get_actor.get_url}}" >{{item.get_target.get_display}}</a>
+        </td>
+        <td>{{item.get_data}}</td>
+      </tr>
+    </tbody>
+    {% endfor %}
+
+    </table>
+  </div>
+  {% endcomment %}
+</div>
+{% endblock %}

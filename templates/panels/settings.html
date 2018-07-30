@@ -1,0 +1,197 @@
+
+{% if currentNode.parent %}
+No settings for now
+{% else %}
+<div class="p-4">
+
+  <div class="box flex-column" >
+    <div class="d-sm-flex">
+
+      <div class="w w-auto-xs light bg bg-auto-sm b-r">
+        <div class="py-3">
+          <div class="nav-active-border left b-primary">
+            <ul class="nav flex-column nav-sm">
+
+              <li class="nav-item">
+                <a class="nav-link {% if not input_data.subpanel or input_data.subpanel == 'general' %}active{% endif %}" href="#" data-toggle="tab" data-target="#tab-1">General</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link {% if input_data.subpanel == 'public' %}active{% endif %}" href="#" data-toggle="tab" data-target="#tab-2">Public</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link {% if input_data.subpanel == 'token' %}active{% endif %}" href="#" data-toggle="tab" data-target="#tab-3">Token</a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col p-0">
+        <div class="tab-content pos-rlt">
+
+          <div class="tab-pane {% if not input_data.subpanel or input_data.subpanel == 'general' %}active{%endif%}" id="tab-1">
+            <div class="p-4 b-b _600">General settings</div>
+            <form action="{{currentNode.get_url}}editProject/?panel=settings&subpanel=general" method="post" role="form" class="p-4">
+              {% csrf_token %}
+
+              <div class="form-group">
+                <div class="">
+                  <label>Project name</label>
+                  <input name="title" type="text" class="form-control" value="{{currentNode.title}}" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="">
+                  <label>Main location</label>
+                  <input name="location" type="text" class="form-control" value="{{currentNode.location}}" />
+                </div>
+              </div>
+
+              <div id="id_logo_field" class="form-group">
+                  <label for="id_logo" class="form-label">Logo</label>
+                  <input type="file" name="logo" id="id_logo" class="form-control">
+                  <img style="" src="{{currentNode.get_image_logo.avatar.url}}" />
+              </div>
+
+              <div class="form-group">
+                <div class="">
+                  <label>Project short description</label>
+                  <input name="description" type="text" class="form-control" value="{{currentNode.description}}" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="">
+                  <label>Website</label>
+                  <input name="website_url" type="text" class="form-control" value="{{currentNode.website_url}}" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="">
+                  <label>Twitter</label>
+                  <input name="twitter_id" type="text" class="form-control" value="{{currentNode.twitter_id}}" />
+                </div>
+              </div>
+
+
+
+
+
+
+
+              <button type="submit" class="btn primary mt-2">Update</button>
+            </form>
+          </div>
+
+          <div class="tab-pane {% if input_data.subpanel == 'public' %}active{% endif %}" id="tab-2">
+            <div class="p-4 b-b _600">Public settings</div>
+
+            <div class="form-group m-3">
+              <div class="clearfix border p-2 m-2">
+                {% if currentNode.is_PublishedProject %}
+
+                {% with publication=currentNode.query_this_ProjectPublication_latest %}
+                  Published on {{publication.ref_date}}
+                  <a class="btn btn-primary subpanel float-right" href="{{publication.get_url}}unpublishProject/" >Un-Publish Project</a>
+                {% endwith %}
+
+                {% else %}
+
+                {% with unpublication=publication.query_this_ProjectUnPublication_latest %}
+                  {% if unpublication %}
+                    Unpublished on {{publication.ref_date}}
+                  {% else %}
+                  {% endif %}
+                  <a class="btn btn-primary subpanel float-right" href="{{currentNode.get_url}}publish/" >Publish Project</a>
+                {% endwith %}
+
+                {% endif %}
+              </div>
+            </div>
+
+            <form action="{{currentNode.get_url}}describeProject/?panel=settings&subpanel=public" method="post" role="form" class="p-4">
+              {% csrf_token %}
+              <div class="form-group">
+                <div class="">
+                  <label>Tagline</label>
+                  <textarea name="tagline" class="form-control" >{{currentNode.get_data.tagline}}</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="">
+                  <label>Parent Organization</label>
+                  <textarea name="organization" class="form-control" >{{currentNode.get_data.organization}}</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="">
+                  <label>How you can help</label>
+                  <textarea name="howto" class="form-control" >{{currentNode.get_data.howto}}</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="">
+                  <label>Tokens</label>
+                  <textarea name="whatfor" class="form-control" >{{currentNode.get_data.whatfor}}</textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn primary mt-2">Update</button>
+            </form>
+
+            <div class="p-5">
+
+              <form action="{{currentNode.get_url}}illustrateProject/?panel=settings&subpanel=public"
+                    method="post" role="form" class="p-4" >
+                    {% csrf_token %}
+                  <div id="id_logo_field" class="field ">
+                      <label for="id_logo" class="form-label">Logo</label>
+                      <input type="file" name="logo" id="id_logo" class="form-control">
+                      <img style="" src="{{currentNode.get_image_logo.avatar.url}}" />
+                  </div>
+
+                  <div id="id_banner_field" class="field ">
+                      <label for="id_banner" class="form-label">Banner</label>
+                      <input type="file" name="banner" id="id_banner" class="form-control">
+                      <img style="" src="{{currentNode.get_image_banner.thumbnail.url}}" />
+                  </div>
+
+                  <div id="id_header_field" class="field ">
+                      <label for="id_header" class="form-label">Public page header</label>
+                      <input type="file" name="header" id="id_header" class="form-control">
+                      <img style="" src="{{currentNode.get_image_header.thumbnail.url}}" />
+                  </div>
+                  <button type="submit" class="btn primary mt-2">Update</button>
+              </form>
+
+            </div>
+
+          </div>
+
+          <div class="tab-pane {% if input_data.subpanel == 'accounting' %}active{% endif %}" id="tab-3">
+            <div class="p-4 b-b _600">Token settings</div>
+            <div role="form" class="p-4">
+
+              <div class="form-group">
+                <label>Token Symbol</label>
+                <p class="border p-1">{{currentNode.symbol}}</p>
+              </div>
+
+              <div class="form-group">
+                <label>Contract address</label>
+                <p class="border p-1">{{currentNode.address}}</p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endif %}

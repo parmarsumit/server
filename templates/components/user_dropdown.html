@@ -1,0 +1,43 @@
+<li class="dropdown d-flex align-items-center">
+
+  <a href="#" data-toggle="dropdown" class="d-flex align-items-center">
+    <span class="avatar w-32">
+      <img src="{{user_profile.get_actor.get_image.url}}" alt="...">
+    </span>
+  </a>
+
+  <div class="dropdown-menu dropdown-menu-right w pt-0 mt-2 animate fadeIn">
+    <a class="dropdown-item no-ajax" href="/inbox.html">
+      <span class="float-right"><span class="badge info">6</span></span>
+      <span>Inbox</span>
+    </a>
+    <a class="dropdown-item" href="/">
+      <span>Wallet</span>
+    </a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item no-ajax" href="/projects.html">
+      <span>All Projects</span>
+    </a>
+    <div class="dropdown-divider"></div>
+    {% for project in currentNode.get_view_roots %}
+    <a class="dropdown-item no-ajax" href="{{project.get_url}}view/" >
+      <span>{{project.title}}</span>
+    </a>
+    {% endfor %}
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item no-ajax" href="/initialize/" target="_self">
+      <span>New project ...</span>
+    </a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item subpanel" href="/profile.html">
+      <span>Profile</span>
+    </a>
+    <a class="dropdown-item subpanel" href="/setting.html">
+      <span>Setting</span>
+    </a>
+    <a class="dropdown-item" href="/docs/">
+      Need help?
+    </a>
+    <a class="dropdown-item" href="/logout/">Sign out</a>
+  </div>
+</li>

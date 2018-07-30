@@ -1,0 +1,14 @@
+{% extends "tools/index.html" %}
+
+{% block main %}
+<div class="box container " >
+  <div class="box-header">
+    Type tree
+  </div>
+  <div class="m-3" >
+    {% for type in currentNode.get_infered_types %}
+        {% include "app/tools/scenario_tree_node.html" %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

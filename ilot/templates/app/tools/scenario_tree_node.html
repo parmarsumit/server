@@ -1,0 +1,70 @@
+
+
+<div class="m-0" id="group-{{type.type.id}}">
+
+  <div class="clearfix p-1" data-toggle="collapse" data-target="#{{type.id}}" data-parent="#group-{{type.type.id}}" >
+      <a class="float-right" href="/tools/types.html?type_filter={{type.id}}" class="subpanel" >Edit <i class="fa fa-chevron-right "></i></a>
+
+      {% if sub_type.reference == 'actor' or sub_type.reference == 'target' %}
+        {% if sub_type.reference == 'target' %}
+          <div class="fa fa-user-o" ></div>
+        {% else %}
+          <div class="fa fa-user" ></div>
+        {% endif %}
+      {% else %}
+        <div class="fa fa-square-o" ></div>
+      {% endif %}
+
+      {% if sub_type.reference == 'actor' or sub_type.reference == 'target' %}
+      {{type}} ({{sub_type.actors.all.count}})
+      {% else %}
+      <b>{{type}} </b> ({{type.children_types.all.count}})
+      {% endif %}
+  </div>
+
+
+  <div class="streamline ml-1 collapse" id="{{type.id}}" >
+
+    {% if sub_type.reference == 'actor' or sub_type.reference == 'target' %}
+    <div class="">
+      {% for rule in sub_type.actors.all %}
+        <div class="ml-0">can <a href="/tools/types.html?action_filter={{rule.action.name}}" class="text-primary subpanel">{{rule.action}}</a>
+           on <a href="/tools/types.html?type_filter={{rule.type.id}}" class="text-primary subpanel" >{{rule.type}}</a></div>
+      {% endfor %}
+    </div>
+    {% else %}
+
+    <div class="sl-item b-primary ">
+      <div class="sl-content">
+      {% for sub_type in type.children_types.all %}
+        {% if type != sub_type %}
+          {% if sub_type.reference == 'related' or sub_type.reference == 'context' or sub_type.reference == 'event' %}
+          {% with type=sub_type %}
+            {% include "app/tools/scenario_tree_node.html" %}
+          {% endwith %}
+          {% endif %}
+        {% else %}
+        {% endif %}
+
+      {% endfor %}
+      </div>
+    </div>
+
+    <div class="sl-item b-secondary">
+      <div class="sl-content">
+        {% for sub_type in type.children_types.all %}
+          {% if type != sub_type %}
+            {% if sub_type.reference == 'actor' or sub_type.reference == 'target' %}
+            {% with type=sub_type %}
+              {% include "app/tools/scenario_tree_node.html" %}
+            {% endwith %}
+            {% endif %}
+          {% else %}
+          {% endif %}
+        {% endfor %}
+      </div>
+
+    </div>
+    {% endif %}
+  </div>
+</div>

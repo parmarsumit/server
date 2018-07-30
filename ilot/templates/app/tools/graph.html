@@ -1,0 +1,129 @@
+{% extends "app/tools/index.html" %}
+
+{% block content %}
+<div class="box border" >
+	<div id="cy" style="width:100%;min-height:75vh;">
+
+	</div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+{{block.super}}
+<script src="/static/components/cytoscape/cytoscape.js" type="text/javascript" ></script>
+<script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.5.0/cytoscape-dagre.js"></script>
+<script type="text/javascript" >
+
+var cy = cytoscape({
+
+  container: document.getElementById('cy'), // container to render in
+
+  elements: [ // list of graph elements to start with
+{% for package in application.packages.all %}
+{% if package.name == input_data.package or not input_data.package %}
+
+{% for action_item in package.actions.all %}
+	{% if action_item.name %}
+    { // node action {{action_item.name}}
+      data: { id: '{{action_item.id}}', name:'{{action_item.name}}', faveShape:'hexagon', weight:200, faveColor: 'green'}
+    },
+		{ // node action {{action_item.status.name}}
+      data: { id: '{{action_item.status.id}}', name:'{{action_item.status.name}}', faveShape:'tag', weight:50, faveColor: '#CCC'}
+    },
+		{ // edge ab
+      data: { id: '{{action_item.id}}-status', source: '{{action_item.id}}', target: '{{action_item.status.id}}', faveColor: '#6FB1FC', strength: 10 }
+    },
+    {% for type in action_item.status.types.all %}
+		{ // node action {{action_item.name}}
+      data: { id: '{{type.id}}', name:'{{type.name}}', faveShape:{% if type.reference == 'target' or type.reference == 'actor' %}'ellipse'{% else %}'rectangle'{% endif %}, weight:150, faveColor: '#6FB1FC'}
+    },
+    { // edge ab
+      data: { id: '{{type.id}}-status', source: '{{type.status.id}}', target: '{{type.id}}', faveColor: '#ccc', strength: 10  }
+    },
+		{% if type.overrides %}
+		{ // edge ab
+      data: { id: '{{type.id}}-parent', source: '{{type.overrides.id}}', target: '{{type.id}}', faveColor: '#6FB1FC', strength: 10  }
+    },{% endif %}
+
+			{% for rule in type.rules.all %}
+			{% if rule.is_allowed %}
+	    { // edge ab
+	      data: { id: '{{rule.id}}-type', source: '{{rule.type.id}}', target: '{{rule.action.id}}', name:'{{rule.actor.name}}', faveColor: '#ccc', strength: 10 }
+	    },
+			{ // edge ab
+	      data: { id: '{{rule.actor.id}}-{{rule.action.id}}', source: '{{rule.actor.id}}', target: '{{rule.type.id}}', name:'{{rule.action.name}}', faveColor: 'orange', strength: 10 }
+	    },{% endif %}
+	    {% endfor %}
+
+		{% endfor %}
+
+		{% for rule in action_item.rules.all %}
+		{% if rule.is_allowed %}
+    { // edge ab
+      data: { id: '{{rule.id}}-type', source: '{{rule.type.id}}', target: '{{rule.action.id}}', name:'{{rule.actor.name}}', faveColor: '#ccc', strength: 10 }
+    },
+		{ // edge ab
+      data: { id: '{{rule.actor.id}}-{{rule.action.id}}', source: '{{rule.actor.id}}', target: '{{rule.type.id}}', name:'{{rule.action.name}}', faveColor: 'orange', strength: 10 }
+    },
+		{% endif %}
+    {% endfor %}
+
+		{% for trigger in action_item.triggers.all %}
+    { // edge ab
+      data: { id: '{{trigger.id}}-behavior', source: '{{trigger.action.id}}', target: '{{trigger.behavior.id}}', name:'{{trigger.name}}', faveColor: '#383', strength: 10 }
+    },
+		{ // edge ab
+      data: { id: '{{trigger.id}}-type', source: '{{trigger.action.id}}', target: '{{trigger.type.id}}', faveColor: '#6FB1FC', strength: 10 }
+    },
+    {% endfor %}
+	{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+  ],
+
+	style: cytoscape.stylesheet()
+    .selector('node')
+      .css({
+        'shape': 'data(faveShape)',
+        'width': 'mapData(weight, 40, 80, 20, 60)',
+        'label': 'data(name)',
+				'color': '#333',
+				'text-color': '#333',
+        'text-valign': 'bottom',
+        'text-outline-width': 0,
+        'text-outline-color': 'data(faveColor)',
+        'background-color': 'data(faveColor)',
+      })
+    .selector(':selected')
+      .css({
+        'border-width': 3,
+        'border-color': '#333'
+      })
+    .selector('edge')
+      .css({
+        'curve-style': 'bezier',
+				'label': 'data(name)',
+        'opacity': 0.666,
+        'width': 'mapData(strength, 70, 100, 2, 6)',
+        'target-arrow-shape': 'triangle',
+        'source-arrow-shape': 'circle',
+        'line-color': 'data(faveColor)',
+        'source-arrow-color': 'data(faveColor)',
+        'target-arrow-color': 'data(faveColor)',
+				'color':'data(faveColor)',
+		}),
+
+  layout: {
+     name: 'dagre',
+     animate: true,
+		 nodeDimensionsIncludeLabels: true,
+   },
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "app/tools/index.html" %}
+
+{% block content %}
+<div class="box container" >
+  <div class="row">
+    <div class="col-12">
+      <h3>{{application}}</h3>
+      {% for scenario in interface.scenarios.all %}
+      <div class="box">
+        {% include "app/tools/scenario_node.html" %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="text-center">
+    <a class="btn btn-secondary subpanel"
+        href="/tools/admin_panel.html?admin_url=/admin/scenarios/scenario/add/?interface={{interface}}" >Add scenario</a>
+  </div>
+</div>
+{% endblock %}

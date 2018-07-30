@@ -1,0 +1,38 @@
+{% load %}
+<div class="ui padded container" >
+  <div class="ui vertical segment" >
+    <div class="ui link six columns doubling stackable cards">
+      {% for node in currentNode.get_view_roots %}
+      <div class="card col-sm-4" {% if currentNode.get_root == node %}style="border:3px solid grey"{% endif %}>
+        <a style="height:100px;overflow:hidden" class="image" href="{{node.get_url}}view/" >
+          <img src="{{node.get_image_banner.thumbnail.url}}" style="" />
+        </a>
+
+        <div class="content">
+          <a style="width:72px;height:72px" class="image" href="{{node.get_url}}view/" >
+            <img src="{{node.get_image_logo.avatar.url}}" style="" />
+          </a>
+          <h3 class="header" >{{ node.title|truncatechars:35 }}</h3>
+          <p class="description" style="max-height:100px;">{{ node.purpose|default:''|truncatechars:95  }}</p>
+          <div class="meta">
+            <div class="tinty label">{{ node.get_todos.count }} opened calls</div>
+            <a href="{{node.get_url}}?panel=people">
+              <i class="user icon"></i>
+              {{node.get_owners.count|default:1}}
+            </a>
+            <a href="{{node.get_url}}?panel=people">
+              <i class="users icon"></i>
+              {{node.get_contributors.count|default:1|truncatechars:5}}
+            </a>
+          </div>
+        </div>
+        <div class="extra content">
+          <span class="right floated">
+            {{ node.get_total_funded_value }} XCT
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

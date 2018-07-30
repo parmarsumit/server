@@ -1,0 +1,22 @@
+{% extends "200.html" %}
+{% load messages %}
+
+
+{% block main %}
+<div class="modal-dialog modal-right w-50 w-auto-sm white dk b-l" >
+  <div class="d-flex flex-column h-100" style="height:90vh">
+    <a style="position:absolute;top:2em;right:2em" data-dismiss="modal" class="ml-auto" onclick="$('#sidepane').remove()" href="{{ request.META.HTTP_REFERER }}">
+      <span class="text-lg l-h-1x">×</span>
+    </a>
+    {% block panel_body %}
+      {% if request.user.is_authenticated %}
+        {% if input_data.admin_url|slice:"-1:" == "/" %}
+          <iframe border="0" style="position:relative;width:100%;height:100%;border:none;background:lightgrey" src="{{input_data.admin_url}}?_popup=1" ></iframe>
+        {% else %}
+          <iframe border="0" style="position:relative;width:100%;height:100%;border:none;background:lightgrey" src="{{input_data.admin_url}}&_popup=1" ></iframe>
+        {% endif %}
+      {% endif %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

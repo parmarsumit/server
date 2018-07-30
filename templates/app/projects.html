@@ -1,0 +1,23 @@
+{% extends "public.html" %}
+
+{% block content %}
+
+<div class="text-center p-5 mt-3">
+	<h4>Explore public projects, or <a class="text-primary subpanel" href="{{user_profile.get_actor.get_url}}createProject/">start</a> your own</h4>
+</div>
+<div class="p-5 container" >
+  {% include "components/projects.html" %}
+</div>
+{% endblock %}
+
+{% comment %}<div class="float-right badge grey text-sm">
+
+	<div>
+		<div class="btn-group mr-3">
+			<button type="button" class="btn btn-sm white"><i class="fa fa-angle-left"></i></button>
+			<button type="button" class="btn btn-sm white"><i class="fa fa-angle-right"></i></button>
+		</div>
+		Showing <strong>8</strong> of 25
+	</div>
+
+	{{project.query_total_budgeted_value}}</div>{% endcomment %}

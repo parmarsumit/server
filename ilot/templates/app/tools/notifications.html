@@ -1,0 +1,58 @@
+{% extends "app/tools/index.html" %}
+
+
+{% block content %}
+
+{% for application in interface.get_applications %}
+  {% for package in application.packages.all %}
+
+  <div>
+    {% for action in package.actions.all %}
+    {% if action.status.notifications.all|length %}
+    <div class="box p-3">
+      <div>{{action.name}}</div>
+      {% for notification in action.status.notifications.all %}
+      <div class="p-3">
+        {% comment %}<div class="text-muted float-right clearfix" data-toggle="collapse" data-target="#{{notification.id}}" >Show Message</div>{% endcomment %}
+        <div class="float-right clearfix" >
+          <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >Edit Message</a></div>
+
+        On a <span class="text-primary" >{{notification.type}}</span>, when <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.status}}</a> happens,
+        it will notify <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{notification.get_admin_url}}" >{{notification.target}}</a>
+        {% if notification.webhook %} using <a href="/tools/admin_panel.html?admin_url={{notification.webhook.get_admin_url}}" class="subpanel text-primary" >{{notification.webhook.name}}</a>{% endif %}{% if notification.todo %} with todo {% endif %}.<br />
+
+        <div id="{{notification.id}}" class="ml-5 p-2 mb-0" >
+
+            <label>Notified actor</label>
+            <pre>
+              {{notification.for_target}}
+            </pre>
+            {% if notification.webhook %}
+            <div class="box p-3">
+              <div>Webhook <a href="/tools/admin_panel.html?admin_url={{notification.webhook.get_admin_url}}" class="subpanel text-primary" >{{notification.webhook.name}}</a></div>
+              <label>Title</label>
+              <pre>{{notification.title}}</pre>
+              <label>Message</label>
+              <pre>{{notification.message}}</pre>
+            </div>
+            {% endif %}
+
+            <label>Observed by anybody</label>
+            <pre>
+              {{notification.for_others}}
+            </pre>
+          
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+
+{% endfor %}
+
+{% endfor %}
+
+{% endblock %}

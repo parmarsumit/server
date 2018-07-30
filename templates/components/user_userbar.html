@@ -1,0 +1,113 @@
+
+<div class="modal fade" id="userbar"
+  data-class="modal-open-aside" aria-hidden="true"
+  data-backdrop="true" data-keyboard="true" tabindex="-1" >
+  <div class="modal-dialog modal-right white sidenav hv" >
+
+      <!-- sidenav top -->
+      <div class="navbar lt">
+    		<div class="nav-fold px-2">
+    		  <div class="hidden-folded flex p-2">
+    		    <div class="d-flex">
+              <a href="{{user_profile.get_actor.get_url}}index/" class="mr-auto text-nowrap subpanel">
+                {{user_profile.get_actor.get_data.title}}
+                <small class="d-block text-muted">{{user_profile.get_actor.get_data.location|default:"Here now"}}</small>
+              </a>
+            </div>
+    		  </div>
+    		</div>
+        <a class="d-flex p-2 subpanel" href="{{user_profile.get_url}}index/">
+          <span class="avatar w-40 rounded grey hide">J</span>
+          <img src="{{user_profile.get_actor.get_image.avatar.url}}" alt="{{user_profile.get_actor.get_data.title}}" class="w-40 circle">
+        </a>
+      </div>
+
+      <div class="nav-active-theme" >
+        <ul class="nav">
+          <li>
+            <a href="/profile.html">
+              <span class="nav-icon">
+                <i class="fa fa-user"></i>
+              </span>
+              <span class="nav-text">My profile</span>
+            </a>
+          </li>
+          <li>
+            <a href="/projects.html" >
+              <span class="nav-icon">
+                <i class="fa fa-list"></i>
+              </span>
+              <span class="nav-text">Explore projects</span>
+            </a>
+          </li>
+          {% if request.user.is_staff %}
+          <li>
+            <a href="/tools/index.html">
+              <span class="nav-icon">
+                <i class="fa fa-user"></i>
+              </span>
+              <span class="nav-text">Edit application</span>
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-header hidden-folded">
+            <span class="text-xs">My projects</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Flex nav content -->
+      <div class="flex hide-scroll">
+        <div class="scroll-y">
+        	<div class="nav-active-theme" data-nav="">
+        	  <ul class="nav">
+
+        	    <li>
+        	      <a class="subpanel" href="{{user_profile.get_actor.get_url}}createProject/">
+        	        <span class="nav-text">Add new project ...</span>
+        	      </a>
+        	    </li>
+
+              {% for project in currentNode.query_all_view_Project_items %}
+              <li>
+        	      <a href="{{project.get_url}}view/" >
+                  <span class="nav-icon">
+                    <i class="badge badge-xs badge-o md"></i>
+                  </span>
+        	        <span class="nav-text">{{project.title}}</span>
+        	      </a>
+        	    </li>
+              {% endfor %}
+        	  </ul>
+
+        	</div>
+        </div>
+      </div>
+
+      <!-- sidenav bottom -->
+  		<div class="py-2 mt-2 b-t no-shrink">
+  		  <ul class="nav no-border">
+          {% comment %}
+          <li>
+  		      <a class="subpanel" href="{{user_profile.get_actor.get_url}}createProfile/" target="_self">
+  		        <span class="nav-icon">
+  		          <i class="fa fa-power-off"></i>
+  		        </span>
+  		        <span class="nav-text">Invite Someone</span>
+  		      </a>
+  		    </li>
+          {% endcomment %}
+          <li>
+  		      <a class="subpanel" href="/logout.html?action=logOut&do=1&redirect=https://{{request.get_host}}" target="_self">
+  		        <span class="nav-icon">
+  		          <i class="fa fa-power-off"></i>
+  		        </span>
+  		        <span class="nav-text">Logout</span>
+  		      </a>
+  		    </li>
+  		  </ul>
+  		</div>
+
+  </div>
+</div>

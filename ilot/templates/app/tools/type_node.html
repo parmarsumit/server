@@ -1,0 +1,127 @@
+{% load ilot_tags %}
+
+
+
+<div class="box m-0 border">
+  <div class="box-header light" >
+    <div class="m-0">
+      {% for ancestor in type.get_ancestors %}
+      <a href="?type_filter={{ancestor.id}}" class="text-primary" >{{ancestor}}</a> >
+      {% endfor %}
+    </div>
+
+    <div class="float-right">
+      <a href="/tools/admin_panel.html?admin_url={{type.get_admin_url}}" class="text-primary subpanel" >Edit type</a>
+    </div>
+
+      <a href="/tools/admin_panel.html?admin_url={{type.get_admin_url}}" class="text-primary subpanel" >
+      {% if type.image %}
+        <img src="{{type.avatar.url}}" class="float-left mr-2" style="width:36px" />
+      {% else %}
+        <div class="fa fa-missing float-left mr-2" style="width:36px;height:36px" ></div>
+      {% endif %}
+      </a>
+      <b>{{type}}</b><br/>
+      <i>{{type.description|default:'No description'}}</i><br/>
+      <p>Overrides <a href="" >{{type.overrides}}</a></p>
+  </div>
+
+  <div class="box-body" id="{{type.id}}-{{rule.id}}"  >
+
+  <div class="row ">
+
+    <div class="col-8 p-4">
+
+      <p class="">
+        {% for action in type.status.actions.all %}
+          {% for rule in action.rules.all %}
+            {% if rule.is_allowed %}
+              Aquired by <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{rule.get_admin_url}}" >{{action}}</a>
+               on <span class="text-primary">{{rule.type}}</span>
+               by <span class="text-primary">{{rule.actor}}</span><br/>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </p>
+
+      <p class="">
+        {% for trigger in type.triggers.all %}
+          When <a class="text-primary subpanel" href="/tools/admin_panel.html?admin_url={{trigger.get_admin_url}}" >{{trigger.action}}</a> completes, it will trigger <a href="" class="text-primary subpanel" >{{trigger.behavior}}</a> as {{trigger.actor|default:'actor'}}, targetted to {{trigger.target|default:'actor'}}.<br />
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/trigger/add/?type={{type}}" class="text-muted subpanel" >Add trigger</a>
+      </p>
+
+      <p class="">
+        {% for notification in type.notifications.all %}
+          {% include "app/tools/notification.html" %}
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/grammar/notification/add/?type={{type.id}}" class="text-muted subpanel" >Add notification</a>
+      </p>
+
+      <div class="">
+        {% for rule in type.rules.all %}
+          {% include "app/tools/rule.html" %}
+        {% endfor %}
+        <a href="/tools/admin_panel.html?admin_url=/admin/rules/rule/add/?type={{type.id}}&status={{type.status.id}}" class="text-muted subpanel" >Add rule</a>
+      </div>
+
+    </div>
+
+    <div class="col-4">
+      <p class="text-xs text-muted">Infered properties</p>
+      <div class="box border p-2">
+
+        {% for action in type.status.actions.all %}
+        <div class="p-2">
+          <div class="">
+            {{action.name}}
+            <div class="float-right">{{action.meta_type.title}}</div>
+          </div>
+          {% for attribute in action.attributes.all %}
+            <div class="ml-3">
+              {{attribute.name}}
+              <div class="float-right"><i>{{attribute.datatype}}</i></div>
+            </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+
+        {% for rule in type.rules.all %}
+        {% with action=rule.action %}
+        {% if action.status == type.status or action.meta_type == 'version' %}
+          <div class="p-2">
+            <div class="">
+              {{action.name}}
+              <div class="float-right">{{action.meta_type.title}}</div>
+            </div>
+            {% for attribute in action.attributes.all %}
+              <div class="ml-3">
+                {{attribute.name}}
+                <div class="float-right"><i>{{attribute.datatype}}</i></div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% endwith %}
+        {% endfor %}
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+</div>
+{% comment %}
+{% with query_string='query_all_'|add:type.name %}
+{% with query=currentNode|getAttr:query_string %}
+<div class="box border">
+
+  <div class="box-header text-center">
+   <b>{{query.count}} Events</b>
+  </div>
+
+
+</div>
+{% endwith %}
+{% endwith %}
+{% endcomment %}

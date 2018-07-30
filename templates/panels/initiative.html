@@ -1,0 +1,212 @@
+{% load momentjs %}
+
+{% comment %}
+{% if not currentNode.is_SubInitiative %}
+  <div class="box">
+    <div class="box-header lt" >
+      <h3>Initiatives</h3>
+      {% if currentNode.can_createInitiative %}
+        <a class="btn btn-outline b-accent text-accent float-right subpanel" href="{{currentNode.get_url}}createInitiative/?panel=initiatives" >New initiative</a>
+      {% endif %}
+      {% if currentNode.can_createSubInitiative %}
+        <a class="btn btn-outline b-accent text-accent float-right subpanel" href="{{currentNode.get_url}}createSubInitiative/?panel=initiatives" >New sub initiative</a>
+      {% endif %}
+    </div>
+    <div class="box-body">
+      {% for event in currentNode.query_children_Initiative_items %}
+      {% with node=event.related %}
+      <div class="text-center" style="display:inline-block">
+        <a class="link" href="{{node.get_url}}view/?panel=initiatives" {% if node == currentNode or node in currentNode.get_ancestors %}style="border:5px solid grey"{% endif %}>
+          <img class="ui image" src="{{node.get_image.avatar.url}}"  style="margin:0px;border:none;width:32px" /><br/>
+          <span class="ui mini bottom attached label" style="opacity:0.90">{{node.title}}</span>
+        </a>
+      </div>
+      {% endwith %}
+      {% endfor %}
+      {% for event in currentNode.query_children_SubInitiative_items %}
+      {% with node=event.related %}
+      <div class="text-center" style="display:inline-block">
+        <a class="link" href="{{node.get_url}}view/?panel=initiatives" {% if node == currentNode or node in currentNode.get_ancestors %}style="border:5px solid grey"{% endif %}>
+          <img class="ui image" src="{{node.get_image.avatar.url}}"  style="margin:0px;border:none;width:32px" /><br/>
+          <span class="ui mini bottom attached label" style="opacity:0.90">{{node.title}}</span>
+        </a>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+<div class="box-header lt" >
+  <h3>Contributions</h3>
+</div>
+{% endcomment %}
+<div class="p-4">
+<div class="box">
+  <div class="box-body">
+
+    <div class="m-1">
+      <div class="btn-group nav-active-border b-theme text-center">
+        <a class="btn btn-outline {% if input_data.subpanel == 'assigned' or not input_data.subpanel %}active{% endif %}" href="{{currentNode.get_url}}view/?panel={{input_data.panel}}&subpanel=assigned" >Assigned contributions</a>
+        <a class="btn btn-outline {% if input_data.subpanel == 'calls' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel={{input_data.panel}}&subpanel=calls" >Calls for contribution</a>
+      </div>
+      <div class="float-right">
+        {% if currentNode != currentNode.get_root %}
+
+        {% if currentNode.can_createCallForContribution and input_data.subpanel == 'calls' %}
+          <a class="btn btn-outline b-accent text-accent subpanel" href="{{currentNode.get_url}}createCallForContribution/?panel={{input_data.panel}}&subpanel={{input_data.subpanel}}"><i class="ui announcement icon"></i>Call for contributions</a>
+        {% endif %}
+
+        {% if input_data.subpanel == 'assigned' or not input_data.subpanel %}
+          {% if currentNode.can_createContribution %}
+          <a class="btn btn-outline b-accent text-accent subpanel" href="{{currentNode.get_url}}createContribution/?panel={{input_data.panel}}&subpanel={{input_data.subpanel}}"><i class="ui user icon"></i>New contribution</a>
+          {% endif %}
+        {% endif %}
+
+        {% if input_data.subpanel == 'call' %}
+        {% else %}
+        {% endif %}
+
+        {% endif %}
+      </div>
+    </div>
+    <hr/>
+    {% if input_data.subpanel == 'calls' %}
+    <div class="">
+      <table class="ui table">
+        <thead>
+          <th>Call</th>
+          <th>Initiative</th>
+          <th>Status</th>
+          <th>Tags</th>
+          <th>Added on</th>
+          <th>By</th>
+          <th>#JOBS</th>
+          <th>Rewarded</th>
+        </thead>
+        <tbody>
+          {% for event in currentNode.query_descendants_calling|slice:':25' %}
+          <tr >
+            <td>
+              {% if event.related.can_editCallForContribution %}
+              <a class="subpanel text-primary" href="{{event.related.get_url}}editCallForContribution/">{{event.related.title}}</a>
+              {% else %}
+              <a class="subpanel" href="{{event.related.get_url}}index/">{{event.related.title}}</a>
+              {% endif %}
+            </td>
+            <td>{{event.related.parent.title}}</td>
+            <td>
+              {% if event.can_index %}
+              <a class="subpanel" href="{{event.get_url}}index/" >
+                {{event.query_this_latest.status}}
+              </a>
+              {% else %}
+                {{event.query_this_latest.status}}
+              {% endif %}
+            </td>
+            <td>
+              {% for tag in event.related.query_this_tagged_targets %}
+                <div class="badge">{{tag.title}}</div>
+              {% endfor %}
+            </td>
+            <td>{% moment_from_now event.created_date %}</td>
+            <td>
+              <a class="subpanel" href="{{event.get_actor.get_url}}index/">
+                <img class="avatar" src="{{event.get_actor.get_image.avatar.url}}" style="width:32px;" />
+              </a>
+            </td>
+            <td>
+              {{event.query_following_with_AssignedContribution_count}}
+            </td>
+            <td>
+              <span class="badge">{{event.get_data.value}} {{event.related.get_root.get_data.symbol}}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% elif input_data.subpanel == 'assigned' or not input_data.subpanel %}
+    <div class="ui vertical segment">
+      <table class="ui table">
+        <thead>
+          <th>Contribution</th>
+          <th>Initiative</th>
+          <th>Status</th>
+          <th>Tags</th>
+          <th>Assigned on</th>
+          <th>To</th>
+          <th>Ended on</th>
+          <th>Reward</th>
+        </thead>
+        <tbody>
+          {% for event in currentNode.query_descendants_Contribution_items|slice:':25' %}
+          <tr class="" >
+            <td>
+              {% if event.related.can_editContribution %}
+              <a class="subpanel text-primary" href="{{event.related.get_url}}editContribution/">{{event.related.title}}</a>
+              {% else %}
+              <a class="subpanel" href="{{event.related.get_url}}index/">{{event.related.title}}</a>
+              {% endif %}
+            </td>
+            <td>
+              {% if event.related.parent.can_editInitiative %}
+              <a class="subpanel text-primary" href="{{event.related.parent.get_url}}editInitiative/">{{event.related.parent.title}}</a>
+              {% else %}
+              <a class="subpanel" href="{{event.related.parent.get_url}}index/">{{event.related.parent.title}}</a>
+              {% endif %}
+            </td>
+            <td>
+              {{event.query_this_latest.status}}
+            </td>
+            <td>{% for tag in event.query_this_tagged_targets %}
+                <div class="badge">{{tag.title}}</div>
+                {% endfor %}
+            </td>
+            <td>
+              {% if event.is_AssignedContribution %}
+                {% moment_from_now event.query_this_assignedContribution_latest.ref_date %}
+              {% else %}
+                {% if event.can_proposeAssignement %}
+                  <a class="btn btn-sm btn-secondary subpanel" href="{{event.get_url}}proposeAssignement/" >Assign Contribution</a>
+                {% endif %}
+              {% endif %}
+            </td>
+            <td>
+              {% if event.is_AssignedContribution %}
+                {% with avatar=event.query_this_AssignedContributor_latest %}
+                <a class="subpanel" href="{{avatar.get_url}}index/">
+                  <img class="avatar" src="{{avatar.get_image.avatar.url}}" style="width:32px;" />
+                  @{{avatar.get_data.username}}
+                </a>
+                {% endwith %}
+              {% elif event.is_ProposedContribution %}
+                {% with avatar=event.query_this_ProposalAssignee_latest %}
+                <a class="subpanel" href="{{avatar.get_url}}index/">
+                  <img class="avatar" src="{{avatar.get_image.avatar.url}}" style="width:32px;" />
+                  @{{avatar.get_data.username}}
+                </a>
+                {% endwith %}
+              {% endif %}
+            </td>
+            <td>
+              {% if event.is_RewardedContribution %}
+                {% moment_from_now event.ref_date %}
+              {% elif event.is_AssignedContribution %}
+                In progres
+              {% else %}
+
+              {% endif %}
+            </td>
+            <td>
+               <span class="badge">{{event.related.get_data.value}} {{event.related.get_root.get_data.symbol}}</span>
+             </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+</div>

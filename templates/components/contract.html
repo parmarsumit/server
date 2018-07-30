@@ -1,0 +1,37 @@
+<div id="{{application.id}}" class="box border p-5" >
+  <h3>Interface settings</h3>
+  Contract address
+  <div>{{interface.get_data.address|default:'??'}}</div>
+  Network
+  <div>{{interface.get_data.network|default:'??'}}</div>
+  Explorer
+  <div>
+    <a class="text-primary" target="etherscan" href="{{interface.get_data.etherscan_url|default:'??'}}address/{{interface.get_data.address}}">
+    {{interface.get_data.etherscan_url|default:'??'}}address/{{interface.get_data.address}}
+    </a>
+  </div>
+</div>
+
+<div class="box border">
+  <div class="box-header">Deployed contracts</div>
+  <div class="box-body">
+    {% for contract in currentNode.query_DeployedContract %}
+      <div class="box border p-3">
+        <a class="subpanel" href="{{contract.get_url}}" >{{contract.get_data.name}}</a>
+        <p>NETWORK: {{contract.get_data.network}}</p>
+        <p>ADDRESS: <a class="text-primary" target="etherscan"
+                      href="{{interface.get_data.etherscan_url}}address/{{contract.get_data.address}}" >
+                      {{contract.get_data.address}}</a></p>
+        <p>TX: <a class="text-primary" target="etherscan"
+                href="{{interface.get_data.etherscan_url}}tx/{{contract.get_data.tx}}" >
+                {{contract.get_data.tx}}</a></p>
+      </div>
+    {% endfor %}
+    <div class="text-center">
+      <a class="btn btn-secondary subpanel" href="{{currentNode.get_url}}deployContract/">
+        <span class="nav-text">Deploy contract</span>
+      </a>
+    </div>
+  </div>
+
+</div>

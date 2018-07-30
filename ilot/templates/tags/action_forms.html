@@ -1,0 +1,29 @@
+{% load i18n messages markdown_deux_tags %}
+
+<form id="{{action}}_form" target="_top" class="" method="post"
+    action="/io/{{ pipe_data.context }}/{{action}}/{% if request.GET.next %}?next={{request.GET.next}}{% endif %}"
+    target="{{ action_target|default:'_self' }}"
+    enctype="multipart/form-data" >
+    {% csrf_token %}
+    <fieldset class="ui vertical segment">
+    {% for action_form in action_forms %}
+        {% for field in action_form %}
+            <div id="id_{{field.name}}_field" class="field {% if field.field.required %}required{% endif %}{% if field.errors %}error{% endif %}" >
+                {% if field.is_hidden %}
+                {% else %}
+                <label for="id_{{field.name}}" >{{ field.label }}</label>
+                {% endif %}
+                {% if field.type == 'checkbox' %}
+                {% else %}
+                {{ field }}
+                {% endif %}
+                {{ field.errors }}
+            </div>
+            {% if field.help_text %}
+            <p class="text">{{ field.help_text|safe }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+  </fieldset>
+  <input type="submit" class="btn btn-primary" value="{% get_context_action origin action 'label' %}" />
+</form>

@@ -1,0 +1,46 @@
+<div class="row row-xs">
+	{% for project in currentNode.query_PublishedProject_index_items %}
+	<div class="col-12 col-sm-4 col-md-3">
+		<div class="box">
+			<div class="item r-t">
+				<div class="item-media item-media-16by9">
+						<a href="{{project.get_url}}index/" class="item-media-content subpanel"
+						style="background-image: url({{project.get_image_banner.avatar.url}})"></a>
+				</div>
+			</div>
+			<div class="p-3 text-center">
+				<div class="text-center" style="position:relative;top:-3em;">
+					<a href="{{project.get_url}}index/" >
+						<img class="box-shadow" src="{{project.get_image_logo.avatar.url}}" style="width:48px;height:48px;background:white;border-radius:1em;"  />
+					</a>
+				</div>
+				<div class="h5">
+					<a href="{{project.get_url}}index/" class="subpanel">{{project.title}}</a>
+				</div>
+				<p class="">{{project.purpose|default:'...'}}</p>
+				<p class="">{{project.description|default:'...'}}</p>
+			</div>
+			<div class="row no-gutters b-t text-sm">
+				<div class="col-4 b-r">
+					<div class="p-3 d-block text-center" >
+						<i class="fa text-md fa-user-o text-muted d-inline"></i>
+						<span class="d-block">{{project.query_this_joined_count}}</span>
+					</div>
+				</div>
+				<div class="col-4 b-r">
+					<div class="p-3 d-block text-center active" >
+						<i class="fa text-md fa-money text-muted d-none"></i>
+						<span class="d-block">{{project.query_this_ProjectFunding_total_amount}} ETH</span>
+					</div>
+				</div>
+				<div class="col-4">
+					<div class="p-3 d-block text-center" >
+						<i class="fa text-md fa-bitcoin text-muted d-inline"></i>
+						<span  >{{project.query_this_newTokensIssued_total_amount}} {{project.get_data.symbol}}</span>
+					</div>
+				</div>
+			 </div>
+		</div>
+	</div>
+	{% endfor %}
+</div>

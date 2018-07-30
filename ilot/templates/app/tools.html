@@ -1,0 +1,198 @@
+{% extends "200.html" %}
+
+
+
+{% block main %}
+{% if not request.user.is_authenticated %}
+<div class="modal-dialog white box-shadow-0" >
+
+  <div class="p-5">
+  <p class="text-center">
+    Welcome to the ilot toolbox.
+  </p>
+
+  <p class="text-center">
+    <a href="/admin/login/" target="_self" class="btn btn-primary" >Login</a>
+  </p>
+
+  </div>
+
+</div>
+{% else %}
+
+<div class="d-flex flex fixed-height" style="height:100vh">
+
+  <div class="aside" >
+    <div class="modal-dialog d-flex flex-column w-md h-100 lt dark scroll-y" style="width:18vw" >
+
+      {% for application in interface.get_applications %}
+
+      <div id="{{application.id}}" class="p-1 m-1" >
+        <a class="subpanel" href="/tools/admin_panel.html?admin_url={{application.get_admin_url}}" >{{application}}</a>
+        {% for package in application.packages.all %}
+        <div class="box m-0" id="{{package.id}}"  >
+          <div class="p-2" data-toggle="collapse" data-target="#{{package.id}}-content" data-parent="#{{application.id}}">
+            <i class="fa fa-cube" ></i> {{package.name}}
+          </div>
+          <div id="{{package.id}}-content" class="box-body collapse {% if input_data.action_filter in package.get_actions_names or input_data.type_filter in package.get_types_names %}show{% endif %}" >
+            <div class="box m-0" >
+              <div class="" data-toggle="collapse" data-target="#{{package.id}}-actions" data-parent="#{{package.id}}" >
+                <b>Actions</b>
+              </div>
+              <div class="nav-active-border nav-active-primary b-warning left box collapse show" id="{{package.id}}-actions">
+                <ul class="nav flex-column nav-xs">
+                {% for action in package.actions.all %}
+                  <li class="nav-item {% if action.name == input_data.action_filter %}active{% endif %}">
+                    <a class="nav-link" href="/tools/types.html?action_filter={{action.name}}" >
+                      {% if action.meta_type == 'event' %}
+                        <i class="fa fa-square-o" ></i>
+                      {% elif action.meta_type == 'item' %}
+                        <i class="fa fa-square" ></i>
+                      {% elif action.meta_type == 'request' %}
+                        <i class="fa fa-dot" ></i>
+                      {% elif action.meta_type == 'clone' %}
+                        <i class="fa fa-copy" ></i>
+                      {% elif action.meta_type == 'actor' %}
+                        <i class="fa fa-graduation-cap" ></i>
+                      {% elif action.meta_type == 'version' %}
+                        <i class="fa fa-dedent" ></i>
+                      {% elif action.meta_type == 'context' %}
+                        <i class="fa fa-flag" ></i>
+                      {% else %}
+                        <i class="fa fa-user" ></i>
+                      {% endif %}
+                      {{action}}</a>
+                  </li>
+                {% endfor %}
+                  <li class="nav-item">
+                    <a class="nav-link subpanel text-muted" href="/tools/admin_panel.html?admin_url=/admin/rules/action/add/?package={{package.id}}" >
+                      <i class="fa fa-plus" ></i>Add action</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="box m-0" >
+              <div class="" data-toggle="collapse" data-target="#{{package.id}}-types" data-parent="#{{package.id}}">
+                <b>Types</b>
+              </div>
+              <div class="nav-active-border nav-active-primary b-warning left box collapse show" id="{{package.id}}-types">
+                <ul class="nav flex-column nav-xs">
+                  {% for type in package.types.all %}
+                    <li class="nav-item {% if type.name == input_data.type_filter %}active{% endif %}" >
+                      <a class="nav-link" href="/tools/types.html?type_filter={{type.name}}" >
+                      {% if type.reference == 'actor' or type.reference == 'target' %}
+                        {% if type.reference == 'target' %}
+                          <i class="fa fa-user" ></i>
+                        {% else %}
+                          <i class="fa fa-user-o" ></i>
+                        {% endif %}
+                      {% else %}
+                        {% if type.reference == 'event' %}
+                        <i class="fa fa-square-o" ></i>
+                        {% else %}
+                        <i class="fa fa-square" ></i>
+                        {% endif %}
+                      {% endif %}
+                      {{type}}
+
+                      <div class="float-right">
+                          {% if type.scope == 'event' %}<i class="fa fa-square-o" ></i>
+                          {% elif type.scope == 'children' %}<i class="fa fa-list" ></i>
+                          {% elif type.scope == 'descendants' %}<i class="fa fa-tree" ></i>
+                          {% else %} <i class="fa fa-square" ></i>{% endif %}
+                      </div>
+
+                    </a>
+                    </li>
+                  {% endfor %}
+                  <li class="nav-item">
+                    <a class="nav-link subpanel text-muted" href="/tools/admin_panel.html?admin_url=/admin/rules/type/add/?package={{package.id}}" >
+                      <i class="fa fa-plus" ></i>Add type</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <div class="nav-item">
+        <a class="nav-link subpanel text-muted" href="/tools/admin_panel.html?admin_url=/admin/ilot/package/add/?application={{application.id}}" >
+          <i class="fa fa-plus" ></i>Add package</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex ">
+
+    <div class="d-flex flex flex-column ">
+
+      <div class="scroll-y">
+
+        <div class="m-2">
+        {% block content %}
+
+        <div class="box container " >
+          <div class="box-header">
+            <div>{{application.get_last_release}}</div>
+            <i class="fa fa-exclamation-circle" ></i> Unreleased changes
+          </div>
+
+          <div class="m-3 collapse" >
+            {% for change in application.get_changes %}
+            <div>
+                {{change.get_package_name}}  {{change.get_model_name}} I.{{change.version}} - {{change}} - {{change.ref_date}}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="box container " >
+          <div class="box-header">
+            <i class="fa fa-archive" ></i> Releases
+          </div>
+          <div class="m-3" >
+            {% for release in application.releases.all %}
+              <div>
+                {{release.organization.cname}} - {{release.name}} - {{release.ref_date}}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="box container " >
+          <div class="box-header">
+            <i class="fa fa-exclamation-circle" ></i> Type tree
+          </div>
+          <div class="m-3" >
+            {% for type in currentNode.get_infered_types %}
+                {% include "app/tools/scenario_tree_node.html" %}
+            {% endfor %}
+          </div>
+        </div>
+        {% endblock %}
+      </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+
+{% if input_data.action_filter %}
+  {% for action_item in application.get_actions %}
+    {% if action_item.name == input_data.action_filter %}
+      {% include "app/tools/action_node.html" %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if input_data.type_filter %}
+  {% for type in application.get_types %}
+    {% if type.name == input_data.type_filter or type.id == input_data.type_filter %}
+      {% include "app/tools/type_node.html" %}
+    {% endif %}
+  {% endfor %}
+{% endif %}

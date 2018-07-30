@@ -1,0 +1,17 @@
+{% extends "panel.html" %}
+
+{% block content %}
+<div class="modal-dialog w-50 w-auto-sm white dk b-l p-4" >
+  <div class="d-flex flex-column h-100">
+    <div class="p-3 b-b d-flex no-shrink">
+      <h5 class="h5 m-0">{{currentNode.title}}</h5>
+      <a data-dismiss="modal" class="ml-auto" onclick="$('#sidepane').remove()">
+        <span class="text-lg l-h-1x">×</span>
+      </a>
+    </div>
+    <h1 class="text-center">
+      <i class="fa fa-exclamation"></i>
+    </h1>
+  </div>
+</div>
+{% endblock %}

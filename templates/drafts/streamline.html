@@ -1,0 +1,24 @@
+<div class="streamline m-b">
+  {% for event in currentNode.get_feed reversed %}
+  <div class="sl-item {% if event.id == input_data.origin_id %}active{% endif %}">
+    <div class="sl-left">
+      <img src="{{event.get_actor.get_image.url}}" alt="." class="circle">
+    </div>
+    <div class="sl-content">
+      <a href="/profile.html?id={{event.get_actor.akey}}" class="text-info">{{event.get_actor.title}}</a><span class="ml-2 sl-date">{{event.ref_date}}</span>
+      <div>
+        <div class="badge">{{event.status}}</div>
+        <p>{{event.purpose}} </p>
+      </div>
+    </div>
+  </div>
+  {% if event.id == input_data.origin_id and event.id != event.related_id %}
+  <div class="box">
+    <div class="box-body">
+    {% include "tags/action_forms.html" %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% endfor %}
+</div>

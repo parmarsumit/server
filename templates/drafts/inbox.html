@@ -1,0 +1,195 @@
+{% load momentjs %}
+
+{% comment %}
+<h3 class="ui dividing header"><span><i class="ui icon inbox"></i> {{input_data.panel.title}}</span></h3>
+{% endcomment %}
+<div class="ui grid" >
+  <div class="three wide column" >
+      <div class="ui large vertical secondary fluid pointing menu" >
+        <a class="item {% if not input_data.panel %}active{% endif %}" href="{{request.path}}?id={{currentNode.id}}&panel=">Inbox</a>
+        <a class="item {% if input_data.panel == 'messages' %}active{% endif %}" href="{{request.path}}?id={{currentNode.id}}&panel=messages">Messages</a>
+        <a class="item {% if input_data.panel == 'invitations' %}active{% endif %}" href="{{request.path}}?id={{currentNode.id}}&panel=invitations">Invitations</a>
+        <a class="item {% if input_data.panel == 'votes' %}active{% endif %}" href="{{request.path}}?id={{currentNode.id}}&panel=votes">Votes</a>
+        <a class="item {% if input_data.panel == 'contributions' %}active{% endif %}" href="{{request.path}}?id={{currentNode.id}}&panel=contributions">Contributions</a>
+      </div>
+  </div>
+
+  <div class="thirteen wide column" style="background-color:#eee">
+    {% if input_data.panel == 'ownerships' %}
+    <div class="ui vertical segment">
+      <h3>Ownerships</h3>
+      <p>Projects and initatives owned</p>
+      <div class="ui vertical segment">
+        <table class="ui table">
+          <thead>
+            <th>Initiative</th>
+            <th>Purpose</th>
+            <th>Since</th>
+            <th>Action</th>
+          </thead>
+          <tbody>
+          {% for own in currentNode.get_actor.get_owned %}
+            <tr>
+              <td><a class="ui link" href="{{own.related.get_url}}">{{own.related.title}}</a></td>
+              <td>{{own.purpose}}</td>
+              <td>{% moment_from_now own.ref_date %}</td>
+              <td>
+                <a class="ui rootpanel button" href="{{own.related.get_url}}view/">View</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% elif input_data.panel == 'settings' %}
+    <div class="ui vertical segment">
+      <h3>Settings</h3>
+      <div class="ui vertical segment">
+        {% for embed in currentNode.get_embedded %}
+          <div class="item">
+            {% with embed_object=embed.get_data %}
+            {% include "ilot/tags/embed.html" %}
+            {% endwith %}
+          </div>
+        {% endfor %}
+        <a class="ui secondary subpanel button" href="{{currentNode.get_url}}uembed/" >Add link</a>
+      </div>
+    </div>
+    {% elif input_data.panel == 'contributions' %}
+    <div class="ui vertical segment">
+      <table class="ui table">
+        <thead>
+          <th>Initiative</th>
+          <th>Purpose</th>
+          <th>On</th>
+          <th>Status</th>
+          <th>Reward</th>
+          <th>Action</th>
+        </thead>
+        <tbody>
+          {% for contribution in currentNode.get_actor.get_contributions %}
+          <tr>
+            <td><a class="ui link" href="{{contribution.related.get_url}}">{{contribution.related.title}}</a></td>
+            <td>{{contribution.purpose}}</td>
+            <td>{% moment_from_now contribution.ref_date %}</td>
+            <td>{{contribution.status}}</td>
+            <td>{{contribution.value}}</td>
+            <td>{{contribution.is_submited}}
+
+                {% if contribution.is_submited %}
+                  {% if contribution.is_accepted %}
+                    <span class="ui green label">Accepted<span>
+                  {% elif contribution.is_rejected %}
+                    <span class="ui green label">Rejected<span>
+                  {% else %}
+                    <span class="ui label">Pending<span>
+                  {% endif %}
+                {% elif contribution.status == 'answering' %}
+                  <span class="ui label">Accept Pending<span>
+                {% else %}
+                <a class="ui primary button" href="{{contribution.related.get_url}}submit/?origin_id={{contribution.id}}">Submit</a>
+                {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% elif input_data.panel == 'invitations' %}
+    <div class="ui vertical segment">
+      <h3>Invitations</h3>
+      {% for invitation in currentNode.get_actor.get_invitations %}
+        <div class="ui icon {% if not invitation.is_done %}warning{% endif %} message">
+          <img class="ui avatar image" src="{{invitation.get_actor.get_image.url}}" />
+          <div class="content" >
+            <div class="header" >{{invitation.get_data.subject}}</div>
+            <p>{{invitation.purpose}}</p>
+          </div>
+          <div class="ui right floated compact secondary menu">
+            <a class="item {% if invitation.get_data.behavior == 'index' or invitation.get_data.behavior == 'view' %}rootpanel{% else %}subpanel{% endif %}" href="{{invitation.related.get_url}}{{invitation.get_data.behavior}}/?origin_id={{invitation.id}}" ><i class="icon right arrow"></i> Go On !</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% elif input_data.panel == 'votes' %}
+    <div class="ui vertical segment">
+      <h3>Polls</h3>
+      {% for poll in currentNode.get_actor.get_polls %}
+        <div class="ui icon message">
+          <img class="ui avatar image" src="{{poll.get_actor.get_image.url}}" />
+          <div class="content" >
+            <div class="header" >{{poll.related.title}}</div>
+            <p>{{poll.purpose}}</p>
+          </div>
+          <div class="ui right floated compact secondary menu">
+            <a class="item" href="{{poll.related.get_url}}reject/?origin_id={{poll.id}}" ><i class="orange icon close"></i> Reject</a>
+            <a class="item" href="{{poll.related.get_url}}accept/?origin_id={{poll.id}}" ><i class="green icon check mark"></i> Accept</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% elif input_data.panel == 'wallet' %}
+    <div class="ui vertical segment">
+      <h3>Funded</h3>
+      <table class="ui table">
+        <thead>
+          <th>Initiative</th>
+          <th>Purpose</th>
+          <th>On</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Action</th>
+        </thead>
+        <tbody>
+          {% for contribution in currentNode.get_actor.get_funded %}
+          <tr>
+            <td><a class="ui link" href="{{node.get_url}}">{{contribution.related.title}}</a></td>
+            <td>{{contribution.purpose}}</td>
+            <td>{% moment_from_now contribution.ref_date %}</td>
+            <td>{{contribution.status}}</td>
+            <td>{{contribution.value}}</td>
+            <td>
+                <a class="ui button" href="{{contribution.related.get_url}}view/?origin_id={{contribution.id}}">Infos</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="ui vertical segment">
+      <h3>Rewarded</h3>
+      <table class="ui table">
+        <thead>
+          <th>Initiative</th>
+          <th>Purpose</th>
+          <th>On</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Action</th>
+        </thead>
+        <tbody>
+          {% for contribution in currentNode.get_actor.get_rewarded %}
+          <tr>
+            <td><a class="ui link" href="{{node.get_url}}">{{contribution.related.title}}</a></td>
+            <td>{{contribution.purpose}}</td>
+            <td>{% moment_from_now contribution.ref_date %}</td>
+            <td>{{contribution.status}}</td>
+            <td>{{contribution.value}}</td>
+            <td>
+                <a class="ui button" href="{{contribution.related.get_url}}view/?origin_id={{contribution.id}}">Infos</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% elif input_data.panel == 'messages' %}
+    TODO Private messages ...
+    {% elif input_data.panel == 'projects' %}
+    {% include "public/projects.html" %}
+    {% else %}
+    TODO All messages ...
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,305 @@
+{% load momentjs %}
+<div class="p-4">
+<div class="box">
+  {% if currentNode.get_root == currentNode %}
+  <div class="box-header lt" >
+    {% if currentNode.can_inviteOwner %}
+      <a class="btn btn-outline b-accent text-accent float-right subpanel" href="{{currentNode.get_url}}inviteOwner/" >
+       Invite Owner
+      </a>
+    {% endif %}
+    <h3>Project Owners</h3>
+  </div>
+
+  <div class="box-body p-3 clearfix">
+    {% with ownerships=currentNode.query_this_ProjectOwnership owners=currentNode.query_this_ProjectOwner %}
+
+    {% for ownership in ownerships reversed %}
+    {% include "components/ownership_thumb.html" %}
+    {% endfor %}
+
+    {% for invited in currentNode.query_this_InvitedProjectOwner %}
+    {% if not invited in owners %}
+    {% include "components/invited_thumb.html" %}
+    {% endif %}
+    {% endfor %}
+    {% endwith %}
+  </div>
+  {% else %}
+
+  <div class="box-body row">
+    <div class="col-6">
+
+      <div class="box-header lt" >
+        {% if currentNode.can_inviteOwner %}
+          <a class="btn btn-outline b-accent text-accent float-right subpanel" href="{{currentNode.get_url}}inviteOwner/" >
+           Invite owner
+          </a>
+        {% endif %}
+        <h3>Initiative Owners</h3>
+
+      </div>
+
+      <div class="box-body" >
+      {% with owners=currentNode.query_this_InitiativeOwner invited_owners=currentNode.query_this_InvitedInitiativeOwner %}
+      {{currentNode.query_all_InitiativeOwnership}}
+
+      {% for ownership in currentNode.query_this_InitiativeOwnership %}
+      {% include "components/ownership_thumb.html" %}
+      {% endfor %}
+
+      {% for invited in invited_owners %}
+      {% include "components/invited_thumb.html" %}
+      {% endfor %}
+
+      {% endwith %}
+      </div>
+
+    </div>
+
+    <div class="col-6" style="border-left:1px solid #eee">
+      <div class="text-muted" >Sub initiative owners</div>
+      {% for initiative in currentNode.query_children_Initiative_items %}
+
+        {% with owners=initiative.query_this_InitiativeOwner invited=initiative.query_this_InvitedInitiativeOwner %}
+
+        {% if owners|length or invited|length %}
+        <div class="box border">
+          <a href="{{initiative.get_url}}view/?panel=people" >{{initiative.title}}</a>
+
+          {% for owner in owners %}
+          <div class="m-1 text-center" style="display:inline-block" >
+            <a class="subpanel" href="{{owner.get_actor.get_url}}index/" >
+              <img class="avatar" src="{{owner.get_actor.get_image.avatar.url}}" style="width:32px" style="display:block" />
+              <span class="text-muted text-sm">{{owner.get_actor.title}}</span>
+            </a>
+          </div>
+          {% endfor %}
+
+
+          Invited
+          {% for invited in invited %}
+            <div>@{{invited.username}}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% if currentNode.get_root == currentNode %}
+<div class="box" >
+
+  <div class="box-header lt">
+    <h3>Initiative owners</h3>
+  </div>
+
+  {% for initiative in currentNode.query_children_Initiative_items %}
+  <div class="box m-3 p-2 border" >
+
+    <div class="clearfix">
+      {% if initiative.can_inviteOwner %}
+        <a class="btn btn-outline b-accent text-accent subpanel float-right" href="{{initiative.get_url}}inviteOwner/" >
+         Invite owner
+        </a>
+      {% endif %}
+      <p><span class="lt">{{initiative.title}}</span>
+        {% if initiative.can_editInitiative %}
+      <a href="{{initiative.get_url}}editInitiative/" class="text-primary subpanel" >Edit</a>
+      {% endif %}</p>
+
+    </div>
+    <div class="row">
+
+      <div class="col-2">
+        <div>
+          Budget : {{initiative.query_this_total_budgetedInitiative_value}}
+        </div>
+
+      </div>
+
+      <div class="col-10">
+        {% with initiative_owners=initiative.query_this_InitiativeOwner %}
+
+        {% for ownership in initiative.query_this_InitiativeOwnership %}
+        {% include "components/ownership_thumb.html" %}
+        {% endfor %}
+
+        {% if initiative.can_inviteOwner %}
+        {% for invited in initiative.query_this_InvitedInitiativeOwner %}
+        {% if not invited in initiative_owners %}
+        {% include "components/invited_thumb.html" %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        {% endwith %}
+
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% with members=currentNode.query_this_Member %}
+<div class="box">
+
+  <div class="box-header lt">
+    {% if currentNode.can_inviteVisitor %}
+      <a class="btn btn-outline b-accent text-accent float-right subpanel" href="{{currentNode.get_url}}inviteVisitor/" >
+       Invite contributor
+      </a>
+    {% endif %}
+    <h3>All members</h3>
+  </div>
+
+  <div class="box-body">
+    <table class="ui very basic table">
+      <thead>
+        <th>Contributor</th>
+        <th>Name</th>
+        <th>Last Seen</th>
+        <th>Rewarded</th>
+        <th>#Jobs</th>
+        <th>Last contribution</th>
+        <th>Ended On</th>
+      </thead>
+      <tbody>
+        {% for contributor in members %}
+        <tr>
+          <td>
+            <a class="subpanel" href="{{contributor.get_url}}index/" >
+              <img class="avatar" src="{{contributor.get_image.avatar.url}}" style="width:1.5em;display:inline;" />
+              {{contributor.get_actor.username}}
+              {% if contributor.is_LeftMember %}Left{% endif %}
+            </a>
+          </td>
+          <td>{{contributor.get_actor.title}}</td>
+          <td>{% moment_from_now contributor.query_acting_incontext_latest.ref_date %}</td>
+          <td>{{contributor.query_his_incontext_RewardedContribution_items_total_value}} {{currentNode.get_data.symbol}}</td>
+          <td>{{contributor.query_his_incontext_AssignedContribution_items_count}}</td>
+          {% with last_ct=contributor.query_his_incontext_AssignedContribution_latest %}
+          <td>
+              <a class="subpanel" href="{{last_ct.related.get_url}}" >{{last_ct.related.title}}</a>
+          </td>
+          <td>
+            {% if last_ct %}
+            {% moment_from_now last_ct.ref_date %}
+            {% endif %}
+          </td>
+          {% endwith %}
+
+        </tr>
+        {% endfor %}
+
+
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if currentNode.iam_ProjectOwner %}
+<div class="box">
+  <div class="box-header lt">
+    <h3>Invited contributors</h3>
+  </div>
+  <div class="box-body">
+    <table class="ui very basic table">
+      <thead>
+        <th>Contributor</th>
+        <th>Name</th>
+        <th>Email</th>
+      </thead>
+      <tbody>
+        {% for contributor in currentNode.query_this_InvitedVisitor %}
+        {% if not contributor in members %}
+        <tr>
+          <td>
+            <a class="subpanel" href="{{contributor.get_url}}index/" >
+              <img class="avatar" src="{{contributor.get_image.avatar.url}}" style="width:1.5em;display:inline;" />
+              {{contributor.get_actor.username}}
+            </a>
+          </td>
+          <td>{{contributor.get_actor.title}}</td>
+          <td>{{contributor.get_actor.email}}</td>
+          <td>
+            {% if contributor.query_acting_incontext_latest %}
+            {% moment_from_now contributor.query_acting_incontext_latest.ref_date %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endwith %}
+
+{% if currentNode.iam_ProjectOwner %}
+<div class="box">
+  <div class="box-header lt">
+    <h4>Left Members</h4>
+  </div>
+  {% for left_member in currentNode.query_this_LeftMember %}
+    <div>{{left_member.username}}</div>
+  {% empty %}
+  <div class="text-center">None</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="box">
+  <div class="box-header light lt clearfix">
+    {% if currentNode.get_root.can_inviteVisitor %}
+    <a class="btn btn-outline b-accent text-accent float-right subpanel" href="{{currentNode.get_root.get_url}}inviteVisitor/" ><b>Invite contributor</b></a>
+    {% endif %}
+    <h3>Contributors</h3>
+  </div>
+  <div class="box-body">
+  <table class="ui very basic table">
+    <thead>
+      <th>Contributor</th>
+      <th>Name</th>
+      <th>Last Seen</th>
+      <th>Rewarded</th>
+      <th>#Jobs</th>
+      <th>Last contribution</th>
+      <th>Ended On</th>
+    </thead>
+    <tbody>
+      {% for contributor in currentNode.query_descendants_AssignedContributor %}
+      <tr>
+        <td>
+          <a class="subpanel" href="{{contributor.get_url}}index/" >
+            <img class="avatar" src="{{contributor.get_image.avatar.url}}" style="width:1.5em;display:inline;" />
+            {{contributor.username}}
+          </a>
+        </td>
+        <td>{{contributor.title}}</td>
+        <td>{% moment_from_now contributor.query_his_incontext_latest.ref_date %}</td>
+
+        <td>{{contributor.query_his_incontext_RewardedContribution_items_total_value}} {{currentNode.get_root.symbol}}</td>
+        <td>{{contributor.query_his_incontext_AssignedContribution_items_count}}</td>
+        <td>
+          {{ contributor.query_his_incontext_AssignedContribution_items_latest.title }}
+        </td>
+        <td>
+          {% moment_from_now contributor.query_his_incontext_descendants_AssignedContribution_items_latest.ref_date %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+{% endif %}
+</div>

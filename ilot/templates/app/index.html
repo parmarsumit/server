@@ -1,0 +1,25 @@
+{% extends "app/tools/index.html" %}
+
+{% block content %}
+  <div class="box p-5">
+    <div class="navbar" >
+      <a href="/tools/index.html" >Index</a>
+      <a href="/tools/query.html" target="admin" >Query</a>
+      <a href="/admin/" target="admin" >Admin</a>
+      <a href="/swagger/" target="swagger" >Swagger</a>
+      <a href="/docs/" target="docs" >Docs</a>
+    </div>
+  </div>
+  <div class="box" >
+    <h5>Interfaces</h5>
+    <div class="row">
+      {% for interface in application.interfaces.all %}
+      <div class="col-md-3 border" >
+        <a href="{{interface.get_url}}" >{{interface.cname}}</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+{{block.super}}
+{% endblock %}

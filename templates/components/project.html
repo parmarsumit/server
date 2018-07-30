@@ -1,0 +1,147 @@
+
+<div class="d-flex flex" style="height:100vh" >
+	<div class="fade aside aside-sm nav-expand box-shadow-0" id="content-aside" style="min-width:15vw" >
+    <div class="sidenav modal-dialog dk white" style="min-width:15vw" >
+		  <!-- sidenav top -->
+		  <div class="navbar ">
+		    <!-- brand -->
+		    <a href="{{currentNode.get_root.get_url}}view/?panel={{input_data.panel}}" class="navbar-brand">
+					<img class="image" src="{{currentNode.get_root.get_image_logo.avatar.url}}" alt="." >
+		    	<span class="hidden-folded text-muted"><br/>{{currentNode.get_root.title}}</span>
+		    </a>
+		    <!-- / brand -->
+		  </div>
+
+		  <!-- Flex nav content -->
+		  <div class="flex hide-scroll">
+		      <div class="scroll">
+		        <div class="nav-active-primary p-1" >
+		          <div class="nav flex-column nav-pills" data-nav="" id="initiatives-nav">
+										<div class="nav-header">
+										 <a href="{{currentNode.get_root.get_url}}view/?panel={{input_data.panel}}" class="text-xs text-muted">
+											 <span class="{% if not currentNode.parent %}text-primary{% endif %} text-italic">All Initiatives</span>
+										 </a>
+									 </div>
+		                {% for node in currentNode.get_root.query_children_Initiative_items %}
+										<div class="nav-item {% if node in currentNode.get_ancestors or node == currentNode %}active{% endif %}">
+		                  <div class="" >
+												<span style="position:relative;z-index:4" class="btn btn-outline float-right" data-toggle="collapse" data-target="#{{node.id}}-children" data-parent="#initiatives-nav" >
+													<i class="fa fa-caret-down"></i>
+												</span>
+												<span class="nav-icon">
+													<i class="badge badge-xs badge-o md"></i>
+												</span>
+		                    <a href="{{node.get_url}}view/?panel={{input_data.panel}}" class="nav-text">{{node.title}}</a>
+		                  </div>
+
+											<div id="{{node.id}}-children" class="streamline pl-3 pt-2 collapse {% if currentNode == node or currentNode in node.query_children_Initiative_items %}show{% else %}{% endif %}">
+												{% for node in node.query_children_Initiative_items %}
+													<div class="sl-item mb-1 pb-2 mt-0 {% if node in currentNode.get_ancestors or node == currentNode %}active{% endif %}">
+														<a class="sl-content" href="{{node.get_url}}view/?panel={{input_data.panel}}">
+															<span class="">{{node.title}}</span>
+														</a>
+													</div>
+												{% endfor %}
+												{% if currentNode == node and node.can_createSubInitiative %}
+												<div class="sl-item ">
+												 <a href="{{node.get_url}}createSubInitiative/?parent={{node.id}}" class="text-xs text-muted subpanel">
+													 <i class="fa fa-plus"></i><span class="text-italic"> Add sub initiative</span>
+												 </a>
+											  </div>
+												{% endif %}
+											</div>
+											{% if node.query_children_Initiative_items_count %}
+											{% endif %}
+		                </div>
+										{% endfor %}
+
+										{% if currentNode.can_createInitiative %}
+										<div class="nav-item pl-0" >
+											<div class="nav-link text-muted text-xs" >
+												<a href="{{currentNode.get_root.get_url}}createInitiative/" class="subpanel">
+												<i class="fa fa-plus"></i>	Add initiative
+		 										</a>
+											</div>
+										</div>
+										{% endif %}
+							</div>
+		        </div>
+					</div>
+		  </div>
+
+    </div>
+	</div>
+	<div class="d-flex flex" id="content-body"  >
+		<div class="d-flex flex-column flex"  >
+			<div class="nav border white" style="display:block;padding-left:1em;" >
+					<ol class="breadcrumb" style="padding-bottom:0px;margin-top:1em;background:none;" >
+						<li class="breadcrumb-item">
+							<a href="{{currentNode.get_root.get_url}}view/?panel={{input_data.panel}}">All</a>
+						</li>
+						{% if currentNode != currentNode.get_root %}
+							{% for item in currentNode.get_ancestors %}
+							{% if item != currentNode.get_root %}
+							<li class="breadcrumb-item">
+								<a href="{{item.get_url}}view/?panel={{input_data.panel}}">{{item.title}}</a>
+							</li>
+							{% endif %}
+							{% endfor %}
+							{% if currentNode != currentNode.get_root %}
+							<li class="breadcrumb-item active">
+								<a href="{{currentNode.get_url}}view/?panel={{input_data.panel}}">{{currentNode.title}}</a>
+							</li>
+							{% endif %}
+						{% endif %}
+					</ol>
+	      	<div class="nav-active-border b-theme text-center" >
+						{% if currentNode.iam_ProjectOwner %}
+						<div class="nav-item float-right">
+							<a class="nav-link {% if input_data.panel == 'settings' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=settings">Settings</a>
+						</div>
+						{% endif %}
+            <ul class="nav" >
+							<li class="nav-item">
+								<a class="nav-link d-md-none" data-toggle="modal" data-target="#content-aside" data-modal >
+			  	      	<i class="fa fa-th"></i>
+			  	      </a>
+						  </li>
+      	      <li class="nav-item">
+                <a class="nav-link {% if not input_data.panel or input_data.panel == 'dashboard' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=dashboard">Overview</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if input_data.panel == 'initiatives' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=initiatives">Contributions</a>
+              </li>
+							<li class="nav-item">
+                <a class="nav-link {% if input_data.panel == 'people' %}active{% endif %}" href="{{currentNode.get_url}}view/?panel=people">People</a>
+              </li>
+            </ul>
+					</div>
+			</div>
+
+
+    	<div class="scrollable">
+        {% if input_data.panel == 'dashboard' %}
+          {% include "panels/dashboard.html" %}
+        {% elif input_data.panel == 'overview' %}
+          {% include "panels/overview.html" %}
+        {% elif input_data.panel == 'settings' %}
+					{% with currentNode=currentNode.get_root %}
+          	{% include "panels/settings.html" %}
+					{% endwith %}
+        {% elif input_data.panel == 'people' %}
+          {% include "panels/people.html" %}
+        {% elif input_data.panel == 'projects' %}
+          {% include "panels/projects.html" %}
+        {% elif input_data.panel == 'initiatives' %}
+					{% if currentNode.get_root == ZcurrentNode %}
+          	{% include "panels/initiatives.html" %}
+					{% else %}
+						{% include "panels/initiative.html" %}
+					{% endif %}
+        {% else %}
+          {% include "panels/dashboard.html" %}
+        {% endif %}
+    	</div>
+		</div>
+	</div>
+</div>

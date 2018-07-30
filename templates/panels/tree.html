@@ -1,0 +1,33 @@
+<div class="ui inverted list">
+  {% for branch in currentNode.get_root.get_children %}
+  <div class="item {% if currentNode == branch %}active{% endif %}">
+    <img class="ui avatar image" src="{{branch.get_image.avatar.url}}">
+    <div class="content">
+      <a href="{{branch.get_url}}view/?panel={{input_data.panel}}" class="header">{{branch.title}}</a>
+      <div class="description">{{branch.purpose|default:'...'}}</div>
+      <div class="divided list">
+        {% for children in branch.get_children %}
+        <div class="item {% if currentNode == children %}active{% endif %}">
+          <img class="ui avatar image" src="{{children.get_image.avatar.url}}">
+          <div class="content">
+            <a href="{{children.get_url}}view/?panel={{input_data.panel}}" class="header">{{children.title}}</a>
+            <div class="description">{{children.purpose|default:'...' }}</div>
+            <div class="divided list">
+              {% for sub_children in children.get_children %}
+              <div class="item {% if currentNode == sub_children %}active{% endif %}">
+                <img class="ui avatar image" src="{{sub_children.get_image.avatar.url}}">
+                <div class="content">
+                  <a href="{{sub_children.get_url}}view/?panel={{input_data.panel}}" class="header">{{sub_children.title}}</a>
+                  <div class="description">{{sub_children.purpose|default:'...' }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

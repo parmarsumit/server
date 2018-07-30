@@ -1,0 +1,56 @@
+{% extends "200.html" %}
+{% load momentjs messages %}
+{% block content %}
+
+  {% comment %}
+  {% if user_profile.get_actor.is_TributeUser %}
+    {% include "panels/splashscreen.html" %}
+  {% else %}
+  {% endif %}
+  {% endcomment %}
+
+  {% include "panels/homepage.html" %}
+
+  <div class="row no-gutters" id="home">
+    <div class="container">
+      {% include "components/contributions.html" %}
+    </div>
+  </div>
+
+  <footer class="dark pos-rlt">
+    <div class="footer dk">
+      <div class="text-center p-5">
+        <div class="clearfix text-lg">
+          <strong>Tribute</strong> | Equity for your community
+        </div>
+        <div class="nav justify-content-center my-2 text-primary">
+          <a class="nav-link" href="/projects.html" data-scroll-to="demos" >
+            <span class="nav-text">Projects</span>
+          </a>
+          <a class="nav-link" href="/contributions.html" data-scroll-to="demos" >
+            <span class="nav-text">Contributions</span>
+          </a>
+        </div>
+        <div class="block clearfix">
+          <a href="https://github.com/Tribute-coop/tribute" class="btn btn-icon btn-social btn-rounded btn-sm">
+            <i class="fa fa-github"></i>
+            <i class="fa fa-github"></i>
+          </a>
+        </div>
+      </div>
+      <div class="b b-b"></div>
+      <div class="p-5">
+        <div class="row footer-bottom">
+          <div class="col-sm-8">
+            <small class="text-muted">&copy; Copyright 2018. All rights reserved.</small>
+          </div>
+          <div class="col-sm-4">
+            <div class="text-sm-right text-xs-left">
+              <strong>Tribute</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+{% endblock %}

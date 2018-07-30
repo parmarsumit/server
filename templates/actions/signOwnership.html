@@ -1,0 +1,9 @@
+{% extends "200.html" %}
+
+{% block action_form %}
+<div id="target_actor"
+  data-address="{{user_profile.get_target.get_data.address}}"
+  >UA: {{action_forms.0.instance.get_target.query_his_ValidatedEthereumAddress_latest.get_data.address}}
+</div>
+{{block.super}}
+{% endblock %}

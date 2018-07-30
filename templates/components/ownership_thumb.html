@@ -1,0 +1,12 @@
+<div class="float-left" >
+  <div class="m-2 text-center">
+    <a class="subpanel" href="{{ownership.get_target.get_url}}index/" >
+      <img class="m-1" src="{{ownership.get_target.get_image.avatar.url}}" style="width:48px;height:48px" />
+    </a><br/>
+    <span class="text-muted text-sm">@{{ownership.get_target.username}} <a class="subpanel text-muted" href="{{ownership.get_url}}revokeOwner/" ><i class="fa fa-remove"></i></a></span>
+    {% if not ownership.is_SignedProjectOwner and ownership.can_signOwnership %}
+    <br/>
+    <a class="subpanel text-bold" href="{{ownership.get_url}}signOwnership/?target={{ownership.target}}" >Sign ownership</a>
+    {% endif %}
+  </div>
+</div>
