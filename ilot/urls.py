@@ -37,7 +37,6 @@ urlpatterns = [
         SiteView.as_view(),
         name='front',
         kwargs={'path':'', 'action':'', 'ext':'.html'}),
-    url(r'admin/', include(admin.site.urls)),
     url(r'', include('ilot.api.urls') ),
     url(uuid_slug_regexp+'+\/$',
         FrontView.as_view(), name='query', kwargs={'action':'', 'ext':'/'}),
@@ -48,3 +47,6 @@ urlpatterns = [
         name='site', kwargs={'action':'index'})
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if not os.environ.get('DJANGO_ENV', 'dev') == 'production':
+    urlpatterns.insert(0, url(r'admin/', include(admin.site.urls)))

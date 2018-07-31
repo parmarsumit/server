@@ -17,7 +17,6 @@ setup(
               'ilot.management',
               'ilot.migrations',
               'ilot.templatetags',
-              'ilot.utils',
               'ilot.views',
               'ilot.webhooks'
               ],
