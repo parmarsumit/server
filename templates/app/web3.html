@@ -3,21 +3,7 @@
 {% block content %}
 <div class="modal-dialog white p-5">
 
-  Before continuing,
-
-  You need to setup your account for the ethereum blockchain.
-
-  <ul class="menu">
-
-    <li class="menu-item" >
-      <a class="btn btn-secondary subpanel" href="{{user_profile.get_actor.get_url}}validateEthereumAddress/" >I already got an address and know how to use a wallet</a>
-    </li>
-
-    <li class="menu-item" >
-      <a class="btn btn-primary subpanel" href="{{user_profile.get_actor.get_url}}createEthereumAccount/" >Create and manage an account for me</a>
-    </li>
-
-  </ul>
+  {% include "components/ethereum.html" %}
 
 </div>
 {% endblock %}

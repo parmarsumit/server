@@ -4,12 +4,13 @@ $('#app').on('app.switched', function(event){
   if (event.action == 'createProject'){
 
     $('#app form').off('submit');
+
     $('#createProject_form').submit( function(event){
         event.preventDefault();
 
         var tokenName = $('#id_title').val();
         var tokenSymbol = $('#id_symbol').val();
-        var tokenSupply = $('#id_amount').val();
+        var tokenSupply = $('#id_amount').val().toString();
 
         var options = {}
         //if (ethAmount > 0){
@@ -31,16 +32,14 @@ $('#app').on('app.switched', function(event){
         }
 
         window.wrapControllerTransaction('#createProject_form',
-                                        'createProject',
-                                        [tokenName, tokenSymbol, tokenSupply],
-                                        options,
-                                        createdTokenCallback);
+                                          'createProject',
+                                          [tokenName, tokenSymbol, tokenSupply],
+                                          options,
+                                          createdTokenCallback);
+
         return false;
     });
-    require('../components/web3.js')();
-
   }
-
 });
 
 

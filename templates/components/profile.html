@@ -51,16 +51,23 @@
       </div>
     </div>
     <div class="scrollable">
-      {% if not input_data.panel or input_data.panel == 'activity' %}
-        {% include "components/activity.html" %}
-      {% elif input_data.panel == 'wallet' %}
 
+			{% if not input_data.panel or input_data.panel == 'activity' %}
+        {% include "components/activity.html" %}
+
+      {% elif input_data.panel == 'wallet' %}
+			<div class="padding">
+			  <div class="box border flex-column" style="" >
 				{% if not user_profile.get_actor.get_data.address %}
 					{% include "components/ethereum.html" %}
 				{% else %}
 
+						Account: {{user_profile.get_actor.get_data.address}}
+						{% include "components/wallet.html" %}
 				{% endif %}
-				{% include "components/wallet.html" %}
+				</div>
+			</div>
+
 
 
       {% elif input_data.panel == 'history' %}

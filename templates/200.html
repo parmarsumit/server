@@ -69,7 +69,10 @@
           {% endif %}
          {% endif %}
          data-address="{{currentNode.get_root.get_data.address}}"
-         data-account="{{user_profile.get_actor.query_his_ValidatedEthereumAddress_latest.get_data.address}}"
+         data-account="{{user_profile.get_actor.get_data.address}}"
+         data-require-signature="{{action_panel.action.signed}}"
+         data-require-transaction="{{action_panel.action.transaction}}"
+         data-keystore="{{user_profile.get_actor.get_data.keystore}}"
          >
 
       {% block messages %}
@@ -115,9 +118,13 @@
                    <p>{% get_context_action origin action 'success' %}</p>
                  {% else %}
                    {% if action_is_pending %}
+                   {% block action_pending %}
                      {% include "tags/action_pending.html" %}
+                   {% endblock %}
                    {% elif action_is_done %}
+                   {% block action_done %}
                      {% include "tags/action_done.html" %}
+                   {% endblock %}
                    {% else %}
                      {% include "tags/action_forms.html" %}
                    {% endif %}
@@ -169,6 +176,10 @@
   <div class="modal fade pane" id="modalpanel" aria-hidden="true" data-backdrop="true" data-keyboard="true" tabindex="-1" >
     <div class="modal-dialog white ">
     </div>
+  </div>
+
+  <div class="modal fade pane" id="extrapanel" aria-hidden="true" data-backdrop="true" data-keyboard="true" tabindex="-1" >
+    <div id="password_modal" class="modal-dialog modal-xs white p-5" ><label>Unlock password</label><input class="form-control" type="password" id="account_password" /></div>
   </div>
 
 

@@ -1,0 +1,33 @@
+{% extends "200.html" %}
+
+{% block action_form %}
+<div>
+  <p>
+    Choose a password to protect your account.<br />
+     Don't loose it, nobody will be able to retreive it !
+   </p>
+  <div>
+   <label>Password</label>
+    <input class="form-control" type="password" id="account_password" />
+  </div>
+  <div>
+   <label>Confirm</label>
+    <input class="form-control" type="password" id="account_confirm" />
+  </div>
+</div>
+<div class="">
+{{block.super}}
+</div>
+{% endblock %}
+
+{% block action_done %}
+Your account have been successfully created and saved !
+You can now add some ETH to it !
+
+We strongly recommend you to keep a copy of your wallet:
+<div>
+  {{user_profile.get_actor.get_data.keystore}}
+</div>
+
+
+{% endblock %}

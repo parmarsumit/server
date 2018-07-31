@@ -149,29 +149,40 @@ function parseResponse(url, target, data){
   }
 
   //
-  $(target).html( $(data).find('#content').html() );
+  var signatureRequired = content.data('require-signature');
+  var transactionRequired = content.data('require-transaction');
 
-  $(target+' a').click(loadNext);
-
-  if (target == '#content'){
-    history.pushState( {}, $(data).has('title').text(), url);
-    $('#sidepanel').modal('hide');
+  var defaultAccount = content.data('account');
+  if ( !defaultAccount && ( signatureRequired=='True' || transactionRequired=='True' )){
+      window.popReload('/web3.html', '#sidepanel');
   } else {
-    document.title = $(data).find('title').text();
-  }
-  
-  stwitch(target, action, uid);
 
-  if (target == '#modalpanel'){
-    $(target).modal('show');
-  } else if (target == '#sidepanel') {
-    $(target).modal('show');
-  } else {
-    //$('.modal-backdrop').remove();
+    //
+    $(target).html( $(data).find('#content').html() );
+
+    $(target+' a').click(loadNext);
+
+    if (target == '#content'){
+      history.pushState( {}, $(data).has('title').text(), url);
+      $('#sidepanel').modal('hide');
+    } else {
+      document.title = $(data).find('title').text();
+    }
+
+    stwitch(target, action, uid);
+
+    if (target == '#modalpanel'){
+      $(target).modal('show');
+    } else if (target == '#sidepanel') {
+      $(target).modal('show');
+    } else {
+      //$('.modal-backdrop').remove();
+    }
+    if (target == '#content'){
+    //  app.init();
+    }
   }
-  if (target == '#content'){
-  //  app.init();
-  }
+
 }
 
 window.parseResponse = parseResponse;
@@ -303,7 +314,8 @@ $(document).ready(function(){
           window.web3 = new Web3(window.web3.currentProvider);
           console.log('Got web3 ...');
         } else {
-          var infura_url = 'https://ropsten.infura.io/izzDOxMZA5pJYbl8naUF';
+          var infura_url = 'https://ropsten.infura.io/v3/85b874cf0fe74f98a1006219a5e03985';
+          //var infura_url = 'http://localhost:7545';
           window.web3 = new Web3(new Web3.providers.HttpProvider(infura_url));
           console.log('Default infura web3 ...');
         }

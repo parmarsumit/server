@@ -55,7 +55,7 @@
           {% end %}
          {% end %}
          data-address="{{currentNode.get_root.get_data.address}}"
-         data-account="{{user_profile.get_actor.query_his_ValidatedEthereumAddress_latest.get_data.address}}"
+         data-account="{{user_profile.get_actor.get_data.address}}"
          >
          {% if request.user.is_staff %}
          <div class="box border m-3 light" style="position:fixed;bottom:0px;right:0px;z-index:9999">

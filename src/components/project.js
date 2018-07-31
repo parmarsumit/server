@@ -16,11 +16,38 @@ require('../actions/deployContract.js');
 
 require('../actions/validateEthereumAddress.js');
 
+function unlockAccount(callback){
+  var keystore = $('#content-main').data('keystore');
+  if (keystore){
+    $('#extrapanel').modal('show');
+    $('#password_modal').bind('keypress', function(e) {
+       if( e.which === 13 )
+           var password = $('#account_password').val();
+           if (password){
+             /// unlocking account keystore with passwd
+             var account = web3.eth.accounts.decrypt(keystore, password);
+             var wallet = web3.eth.accounts.wallet.create();
+             wallet.add(account);
+             $('#extrapanel').modal('hide');
+             $('#account_password').val('');
+             callback();
+             account = null;
+             wallet = null;
+           } else {
+             // do nothing ...
+           }
+    });
+  } else {
+    callback();
+  }
+}
+
 function wrapControllerTransaction(form_selector, method, args, options, callback){
 
     if (window.tributeControllerContract){
       wrapContractTransaction(window.tributeControllerContract, form_selector, method, args, options, callback);
     } else {
+
       var userAccount = $('#content-main').data('account');
       var tokenAddress = $('#app').data('address');
 
@@ -80,7 +107,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
     type: 'warning',
     timeout: 0,
     layout: 'bottomRight',
-    text: 'Generating transaction ...',
+    text: 'Preparing transaction ...',
     callbacks: {
       onTemplate: function() {
           this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
@@ -93,78 +120,21 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
   // hide the form panel
   //$(form_selector).closest('.modal-dialog').hide();
   //$(form_selector).closest('.modal-dialog').css({'z-index':0});
-  var zIndex = 1040 + (10 * $('.modal:visible').length);
-  $('#loader-overlay').css('z-index', zIndex);
-  $('#loader-overlay').modal('show');
   //$(form_selector).closest('.modal-dialog').modal('hide');
 
-  //
-  contract.methods[method].apply(this, args)
-  .send(options)
-  .on('transactionHash', function(hash){
-      console.log(hash);
-      //notyf.close();
-      notyfReceipt = new Noty({theme: 'relax',
-        type: 'warning',
-        timeout: 0,
-        closeWith: [],
-        layout: 'bottomRight',
-        text: 'Transaction processing.<br /><a class="text-primary" href="https://ropsten.etherscan.io/tx/'+hash+'" target="_etherscan" >'+hash+'</a><br/>Waiting for validation.',
-        callbacks: {
-          onTemplate: function() {
-              this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
-              // Important: .noty_body class is required for setText API method.
-          },
-          onShow: function() {},
-        }
-      }).show();
+  var sendTrans = function(){
 
-      if (!callback){
-
-        $('#id_tx').val(hash);
+    contract.methods[method].apply(this, args)
+    .send(options)
+    .on('transactionHash', function(hash){
         console.log(hash);
-
-        // send the final
-        $('#app form').off('submit');
-        $(form_selector).closest('.modal-dialog').hide();
-
-        $('#sidepanel').modal('hide');
-        //$(form_selector).submit(window.submitAForm);
-        //$(form_selector).submit();
-
-        var dataString = $(form_selector).serialize();
-        $.ajax({
-            type: "POST",
-            url: $(form_selector).attr('action'),
-            data: dataString,
-            success: function(msg) {
-              console.log('Ok sent ...');
-              $('#loader-overlay').modal('hide');
-              notyfTransaction.close();
-            },
-            error: function(msg) {
-              console.log('Error pushing form');
-            }
-        });
-      }
-
-  })
-  .on('confirmation', function(confirmationNumber, receipt){
-      //console.log('confirmationNumber '+confirmationNumber);
-      if (confirmationNumber == 0){
-        console.log(receipt);
-        if (callback){
-          callback(receipt);
-        } else {
-        //  console.log('no callback');
-        }
-
-        var notyfTransaction = new Noty({
-          theme: 'relax',
-          type: 'success',
-          timeout: 3500,
+        //notyf.close();
+        notyfReceipt = new Noty({theme: 'relax',
+          type: 'warning',
+          timeout: 0,
+          closeWith: [],
           layout: 'bottomRight',
-          text: 'Transaction confirmed !',
+          text: 'Transaction processing.<br /><a class="text-primary" href="https://ropsten.etherscan.io/tx/'+hash+'" target="_etherscan" >'+hash+'</a><br/>Waiting for validation.',
           callbacks: {
             onTemplate: function() {
                 this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
@@ -174,39 +144,168 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
           }
         }).show();
 
-        notyfReceipt.close();
-        //notyfReceipt.closeWith = ['click'];
-        //notyfReceipt.timeout = 5500;
-        //notyfReceipt.type = 'success';
-      }
-  })
-  .on('receipt', function(receipt){
-    //console.log('Receipt for transaction '+receipt.transactionHash );
-  })
-  .on('error',
-    function(err){
+        if (!callback){
 
-      console.error
+          $('#id_tx').val(hash);
+          console.log(hash);
 
-      notyfTransaction.close();
-      var notyfError = new Noty({theme: 'relax',
-        type: 'error',
-        timeout: 0,
-        layout: 'bottomRight',
-        text: err.message,
-        callbacks: {
-          onTemplate: function() {
-              this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
-              // Important: .noty_body class is required for setText API method.
-          },
-          onShow: function() {},
+          // send the final
+          $('#app form').off('submit');
+          $(form_selector).closest('.modal-dialog').hide();
+
+          $('#sidepanel').modal('hide');
+          //$(form_selector).submit(window.submitAForm);
+          //$(form_selector).submit();
+
+          var dataString = $(form_selector).serialize();
+          $.ajax({
+              type: "POST",
+              url: $(form_selector).attr('action'),
+              data: dataString,
+              success: function(msg) {
+                console.log('Ok sent ...');
+                $('#loader-overlay').modal('hide');
+                notyfTransaction.close();
+              },
+              error: function(msg) {
+                console.log('Error pushing form');
+              }
+          });
         }
-      }).show();
 
-      // hide the form panel
-      $('#sidepanel').modal('hide');
-      $('#loader-overlay').modal('hide');
+    })
+    .on('confirmation', function(confirmationNumber, receipt){
+        console.log('confirmationNumber '+confirmationNumber);
+        if (confirmationNumber == 0){
+
+          console.log(receipt);
+
+          if (callback){
+            callback(receipt);
+          } else {
+          //  console.log('no callback');
+          }
+
+          var notyfTransaction = new Noty({
+            theme: 'relax',
+            type: 'success',
+            timeout: 3500,
+            layout: 'bottomRight',
+            text: 'Transaction confirmed !',
+            callbacks: {
+              onTemplate: function() {
+                  this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
+                  // Important: .noty_body class is required for setText API method.
+              },
+              onShow: function() {},
+            }
+          }).show();
+
+          notyfReceipt.close();
+          //notyfReceipt.closeWith = ['click'];
+          //notyfReceipt.timeout = 5500;
+          //notyfReceipt.type = 'success';
+        }
+    })
+    .on('receipt', function(receipt){
+      console.log('Receipt for transaction '+receipt.transactionHash );
+    })
+    .on('error', function(err){
+
+        console.log('ERROR');
+
+        console.error
+
+        notyfTransaction.close();
+        var notyfError = new Noty({theme: 'relax',
+          type: 'error',
+          timeout: 0,
+          layout: 'bottomRight',
+          text: err.message,
+          callbacks: {
+            onTemplate: function() {
+                this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
+                // Important: .noty_body class is required for setText API method.
+            },
+            onShow: function() {},
+          }
+        }).show();
+
+        // hide the form panel
+        $('#sidepanel').modal('hide');
+        $('#loader-overlay').modal('hide');
 
     });
+
+  };
+
+  //
+  function checkAndSend(){
+
+    //
+    var zIndex = 1040 + (10 * $('.modal:visible').length);
+    $('#loader-overlay').css('z-index', zIndex);
+    $('#loader-overlay').modal('show');
+
+    // user balance has to have enought ether for the gas
+    web3.eth.getBalance(userAccount).then(function(balance){
+
+      var currentBalance = balance;
+      // Number.parseFloat(web3.utils.fromWei(balance)).toPrecision(4);
+      
+      console.log('Balance:', currentBalance, balance);
+
+      contract.methods[method].apply(this, args).estimateGas({options})
+      .then(function(gasAmount){
+
+          options.gas = Math.round(gasAmount*1.3);
+
+          console.log(options);
+
+          if (currentBalance > options.gas){
+            sendTrans();
+          } else {
+
+            ///
+            var notyfTransaction = new Noty(
+              {theme: 'relax',
+              type: 'error',
+              timeout: 0,
+              layout: 'bottomRight',
+              text: 'You don\' have enought ETH to for the gas.',
+              callbacks: {
+                onTemplate: function() {
+                    this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
+                    // Important: .noty_body class is required for setText API method.
+                },
+                onShow: function() {},
+              }
+            }).show();
+
+            ///
+            $('#sidepanel').modal('hide');
+            $('#loader-overlay').modal('hide');
+
+
+          }
+          //sendTrans();
+      })
+      .catch(function(error){
+        console.log('Cannot estimate gas');
+        console.error();
+      });
+
+    });
+
+  }
+
+
+  if ( $('#content-main').data('keystore') ){
+    unlockAccount(function(account){
+      checkAndSend();
+    });
+  } else {
+    checkAndSend();
+  }
 
 }

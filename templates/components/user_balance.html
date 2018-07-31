@@ -2,7 +2,7 @@
   <a class="nav-link px-3" href="#" data-toggle="dropdown" >
     Ξ
   </a>
-  {% with eth_address=user_profile.get_actor.query_his_ValidatedEthereumAddress_latest %}
+  {% with eth_address=user_profile.get_actor.get_data.address %}
   <div id="eth_dropdown" class="dropdown-menu dropdown-menu-right">
 
     <div class="p-2">
@@ -10,14 +10,12 @@
     </div>
 
     <div class="p-2" >
-
-
       {% if eth_address %}
       <span id="eth_balance"></span> ETH
       {% endif %}
     </div>
     <div class="p-2" >
-      <span>{{eth_address.get_data.address|truncatechars:'10' }}</span>
+      <span>{{eth_address|truncatechars:'10' }}</span>
     </div>
   </div>
   {% endwith %}

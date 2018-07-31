@@ -2,22 +2,18 @@
 
 <div class="clearfix m-4 p-4 text-center">
 
-  {% with user_profile.get_actor.query_his_ValidatedEthereumAddress_latest as validated_address %}
-
-    {% if validated_address %}
+    {% if user_profile.get_actor.get_data.address %}
       <div class="" >
        <a href="{{interface.get_data.etherscan_url}}{{user_profile.get_actor.get_data.address}}" >
-         {{validated_address.get_data.address}}
+         {{user_profile.get_actor.get_data.address}}
        </a>
+       <label>Please enter your password to unlock your wallet</label>
+       <input type="password" id="account_password" class="form-control" />
      </div>
-
    {% else %}
-
       <div class="p-4" >
-
         <b>You need to associate your profile with an Ξthereum address.</b><br />
         This will allow you to get rewarded, start projects and more !
-
       </div>
 
      <div class="box p-4" >
@@ -26,12 +22,8 @@
 
      <div class="box p-4" >
        <p>I already got an address and know how to use a web3 compatible wallet</p>
-       <a class="btn btn-secondary modalpanel" href="{{user_profile.get_actor.get_url}}validateEthereumAddress/?network={{interface.get_data.network}}" >Link with my Ξthereum account</a>
+       <a class="btn btn-secondary subpanel" href="{{user_profile.get_actor.get_url}}validateEthereumAddress/?network={{interface.get_data.network}}" >Link with my Ξthereum account</a>
      </div>
 
     {% endif %}
-  {% endwith %}
-
-
-
 </div>

@@ -10,7 +10,10 @@ $('#app').on('app.switched', function(event){
       // call metamask
       window.web3.eth.getAccounts().then(function(accounts){
         defaultAccount = accounts[0];
+
         $('#id_address').val(defaultAccount);
+        /// ask for signature before the user can register it's address
+
       });
     }
   }

@@ -7,7 +7,7 @@ Here are the first guidelines to get it running.
 ### requirements
 git, python3.5
 
-    apt-get install python3-dev python3-pil build-essential
+    apt-get install python3-dev python3-pil build-essential python-certbot-nginx
 
 ### setup
 
