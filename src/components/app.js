@@ -159,7 +159,7 @@ function parseResponse(url, target, data){
 
     //
     $('#content-main').attr('id', 'content-prev');
-    
+
     $(target).html( $(data).find('#content').html() );
 
     //
@@ -182,7 +182,7 @@ function parseResponse(url, target, data){
       //$('.modal-backdrop').remove();
     }
     if (target == '#content'){
-    //  app.init();
+      app.init();
     }
   }
 

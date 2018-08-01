@@ -1046,14 +1046,9 @@ class Moderation(DataPath):
                         return type.image
 
         # generate identicon
-        print('GENERATING identicon')
-
         import pydenticon
         generator = pydenticon.Generator(5, 5)
-
         identicon_path = settings.MEDIA_ROOT+'/CACHE/'+self.id+'.png'
-
-
         if not os.path.exists(identicon_path):
             identicon_png = generator.generate(self.id, 256, 256, output_format="png")
 
@@ -1070,7 +1065,6 @@ class Moderation(DataPath):
         image.thumbnail = FieldFile(self, media.thumbnail, 'CACHE/'+self.id+'.png')
 
         Item.objects.tree_images[self.id][attr] = image
-        print(image.path)
 
         return image
 
