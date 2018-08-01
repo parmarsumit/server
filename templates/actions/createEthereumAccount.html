@@ -21,13 +21,16 @@
 {% endblock %}
 
 {% block action_done %}
-Your account have been successfully created and saved !
-You can now add some ETH to it !
-
-We strongly recommend you to keep a copy of your wallet:
-<div>
+<p>
+  Your account have been successfully created and saved !
+</p>
+<p>
+  We strongly recommend you to keep a copy of your wallet.
+  Here is the keystore data:
+</p>
+<pre class="p-3">
   {{user_profile.get_actor.get_data.keystore}}
-</div>
+</pre>
 
 
 {% endblock %}

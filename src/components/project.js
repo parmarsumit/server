@@ -121,6 +121,12 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
   //$(form_selector).closest('.modal-dialog').hide();
   //$(form_selector).closest('.modal-dialog').css({'z-index':0});
   //$(form_selector).closest('.modal-dialog').modal('hide');
+  function freeSpace(){
+
+    notyfTransaction.close();
+    $('#loader-overlay').modal('hide');
+
+  }
 
   var sendTrans = function(){
 
@@ -144,34 +150,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
           }
         }).show();
 
-        if (!callback){
 
-          $('#id_tx').val(hash);
-          console.log(hash);
-
-          // send the final
-          $('#app form').off('submit');
-          $(form_selector).closest('.modal-dialog').hide();
-
-          $('#sidepanel').modal('hide');
-          //$(form_selector).submit(window.submitAForm);
-          //$(form_selector).submit();
-
-          var dataString = $(form_selector).serialize();
-          $.ajax({
-              type: "POST",
-              url: $(form_selector).attr('action'),
-              data: dataString,
-              success: function(msg) {
-                console.log('Ok sent ...');
-                $('#loader-overlay').modal('hide');
-                notyfTransaction.close();
-              },
-              error: function(msg) {
-                console.log('Error pushing form');
-              }
-          });
-        }
 
     })
     .on('confirmation', function(confirmationNumber, receipt){
@@ -179,12 +158,6 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
         if (confirmationNumber == 0){
 
           console.log(receipt);
-
-          if (callback){
-            callback(receipt);
-          } else {
-          //  console.log('no callback');
-          }
 
           var notyfTransaction = new Noty({
             theme: 'relax',
@@ -205,6 +178,47 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
           //notyfReceipt.closeWith = ['click'];
           //notyfReceipt.timeout = 5500;
           //notyfReceipt.type = 'success';
+
+          if (callback){
+            
+            callback(receipt);
+
+            freeSpace();
+
+          } else {
+            var hash = receipt.transactionHash;
+            $('#id_tx').val(hash);
+            console.log(hash);
+
+            // send the final
+            $('#app form').off('submit');
+
+            $(form_selector).closest('.modal-dialog').hide();
+
+            $('#sidepanel').modal('hide');
+            $('#modalpanel').modal('hide');
+
+            //$(form_selector).submit(window.submitAForm);
+            //$(form_selector).submit();
+
+            console.log('Sending form ...');
+            var dataString = $(form_selector).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: $(form_selector).attr('action'),
+                data: dataString,
+                success: function(msg) {
+                  console.log('Ok sent ...');
+                  freeSpace();
+                  //$('#loader-overlay').modal('hide');
+                  //notyfTransaction.close();
+                },
+                error: function(msg) {
+                  console.log('Error pushing form');
+                }
+            });
+          }
         }
     })
     .on('receipt', function(receipt){
@@ -239,6 +253,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
 
   };
 
+
   //
   function checkAndSend(){
 
@@ -252,13 +267,13 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
 
       var currentBalance = balance;
       // Number.parseFloat(web3.utils.fromWei(balance)).toPrecision(4);
-      
+
       console.log('Balance:', currentBalance, balance);
 
       contract.methods[method].apply(this, args).estimateGas({options})
       .then(function(gasAmount){
 
-          options.gas = Math.round(gasAmount*1.3);
+          options.gas = Math.round(gasAmount*5);
 
           console.log(options);
 

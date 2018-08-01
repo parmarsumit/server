@@ -16,6 +16,8 @@
     {% endfor %}
   </div>
 </div>
+
+{% if request.user.is_authenticated %}
 <div class="form-input">
   <label class="text-muted text-xs">Actions</label>
   <div class="box-divider"></div>
@@ -58,3 +60,4 @@
   </div>
 </div>
 {{user_profile.completed_date}}
+{% endif %}

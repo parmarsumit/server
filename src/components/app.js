@@ -132,7 +132,7 @@ function parseResponse(url, target, data){
   if (redirect){
     window.popReload(redirect, '#content');
     console.log('Redirecting ...', redirect);
-    console.log(content.data('close'))
+    console.log(content.data('close'));
 
   //  $(target).modal('hide');
   //  return;
@@ -143,9 +143,9 @@ function parseResponse(url, target, data){
   if (content.data('close')){
       console.log('Closing ...',);
       $(target).modal('hide');
-      //if (!redirect){
-      //  window.popReload(window.location.href);
-      //}
+      if (!redirect){
+        window.popReload(window.location.href);
+      }
   }
 
   //

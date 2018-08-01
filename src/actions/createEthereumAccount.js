@@ -19,7 +19,7 @@ $('#app').on('app.switched', function(event){
           var createdAccountKeystore = '';
 
           var account = web3.eth.accounts.create();
-          createdAccountAddress = account.address;
+          createdAccountAddress = account.address.toString();
 
           createdAccountKeystore = account.encrypt(password);
 
@@ -31,10 +31,11 @@ $('#app').on('app.switched', function(event){
             akey: $('#content').data('actor')
           }
           var signature = account.sign(JSON.stringify(signatureData));
-          $('#id_tx').val(signature);
+          
+          $('#id_tx').val(JSON.stringify(signature));
 
           console.log('Submitting ...');
-          window.submitAform(event);
+          window.submitAForm(event);
           return false;
 
         } else {

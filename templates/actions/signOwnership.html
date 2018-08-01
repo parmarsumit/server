@@ -1,9 +1,16 @@
 {% extends "200.html" %}
 
 {% block action_form %}
+{% if not action_forms.0.instance.get_target.get_data.address %}
+<div>
+  <p>Looks like he does not have added an ethereum address to he's account yet.</p>
+  <p>You should we remind him to do so.</p>
+</div>
+{% else %}
 <div id="target_actor"
-  data-address="{{user_profile.get_target.get_data.address}}"
-  >UA: {{action_forms.0.instance.get_target.get_data.address}}
+  data-address="{{action_forms.0.instance.get_target.get_data.address}}"
+  >It's address {{action_forms.0.instance.get_target.get_data.address}}
 </div>
 {{block.super}}
+{% endif %}
 {% endblock %}

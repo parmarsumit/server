@@ -1,8 +1,3 @@
-const Web3 = require('web3')
-const Tx = require('ethereumjs-tx')
-
-// connect to Infura node
-const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/INFURA_KEY'))
 
 // the address that will send the test transaction
 const addressFrom = '0x1889EF49cDBaad420EB4D6f04066CA4093088Bbd'
@@ -22,7 +17,7 @@ function sendSigned(txData, cb) {
 }
 
 // get the number of transactions sent so far so we can create a fresh nonce
-web3.eth.getTransactionCount(addressFrom).then(txCount => {
+web3.eth.getTransactionCount(defaultAccount).then(function(txCount){
 
   // construct the transaction data
   const txData = {
