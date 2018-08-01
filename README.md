@@ -77,3 +77,9 @@ If you are done correctly, you can start the service
     ilot update
     ilot collectstatic
     service ilot reload
+
+### service variables
+
+    ilot setenv mailjet_api_key XXXXXXXXXXX
+    ilot setenv mailjet_api_secret XXXXXXXXXXX
+    ilot setenv mailjet_from_email email@domaine

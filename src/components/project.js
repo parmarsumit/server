@@ -49,14 +49,14 @@ function wrapControllerTransaction(form_selector, method, args, options, callbac
     } else {
 
       var userAccount = $('#content-main').data('account');
-      var tokenAddress = $('#app').data('address');
+      var controllerAddress = $('#app').data('address');
 
       $.getJSON("/static/contracts/TributeController.json?"+Math.random(), function(json) {
 
           var code = json.bytecode;
           var abi = json.abi;
 
-          var tributeControllerContract = new window.web3.eth.Contract(abi, tokenAddress);
+          var tributeControllerContract = new window.web3.eth.Contract(abi, controllerAddress);
           tributeControllerContract.options.from = userAccount;
           //myContract.options.from = web3.eth.accounts[0]; // default from address
           //myContract.options.gasPrice = '20000000000000'; // default gas price in wei
@@ -73,6 +73,10 @@ function wrapTokenTransaction(form_selector, method, args, options, callback){
 
   var userAccount = $('#content-main').data('account');
   var tokenAddress = $('#content-main').data('address');
+
+  if (tokenAddress == userAccount){
+    alert('Ouch ... same same ...');
+  }
 
   if(window.tributeTokenContract){
     wrapContractTransaction(window.tributeTokenContract, form_selector, method, args, options, callback);
@@ -346,7 +350,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
 
           console.error();
           freeSpace();
-          
+
         });
 
       }

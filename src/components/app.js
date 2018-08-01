@@ -158,8 +158,11 @@ function parseResponse(url, target, data){
   } else {
 
     //
+    $('#content-main').attr('id', 'content-prev');
+    
     $(target).html( $(data).find('#content').html() );
 
+    //
     $(target+' a').click(loadNext);
 
     if (target == '#content'){
