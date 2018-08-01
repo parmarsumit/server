@@ -4,11 +4,9 @@
 
     {% if user_profile.get_actor.get_data.address %}
       <div class="" >
-       <a href="{{interface.get_data.etherscan_url}}{{user_profile.get_actor.get_data.address}}" >
+       <a href="{{interface.get_data.etherscan_url}}address/{{user_profile.get_actor.get_data.address}}" >
          {{user_profile.get_actor.get_data.address}}
        </a>
-       <label>Please enter your password to unlock your wallet</label>
-       <input type="password" id="account_password" class="form-control" />
      </div>
    {% else %}
       <div class="p-4" >

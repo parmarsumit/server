@@ -58,11 +58,12 @@
       {% elif input_data.panel == 'wallet' %}
 			<div class="padding">
 			  <div class="box border flex-column" style="" >
-				{% if not user_profile.get_actor.get_data.address %}
-					{% include "components/ethereum.html" %}
-				{% else %}
 
-						Account: {{user_profile.get_actor.get_data.address}}
+				{% include "components/ethereum.html" %}
+
+				{% if not user_profile.get_actor.get_data.address %}
+
+				{% else %}
 						{% include "components/wallet.html" %}
 				{% endif %}
 				</div>

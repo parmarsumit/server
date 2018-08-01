@@ -50,6 +50,7 @@
         <div class="text-right" >
           {% with actions=item.get_important_actions %}
             {% if actions|length > 2 %}
+
               {% if item.can_view %}
               <a class="md-btn md-raised btn-block mb-2 w-xs grey" href="{{item.get_url}}view/" >Open</a>
               {% elif item.can_index %}
@@ -69,7 +70,6 @@
                 {% endif %}
               {% endfor %}
             {% endif %}
-
           {% endwith %}
         </div>
       </div>

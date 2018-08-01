@@ -1,0 +1,19 @@
+{% extends "200.html" %}
+
+{% block action_form %}
+{% if not action_forms.0.instance.get_target.get_data.address %}
+<div>
+  <p>Looks like he does not have added an ethereum address to he's account yet.</p>
+  <p>You should we remind him to do so.</p>
+</div>
+{% else %}
+<div id="contribution-data"
+  data-address="{{currentNode.query_this_AssignedContributor_latest.get_data.address}}"
+  data-amount="{{currentNode.get_data.value}}"
+  >
+  <p>{{action_forms.0.instance.get_target.get_data.username}} have been rewarded for {{currentNode.get_data.value}} {{currentNode.get_root.get_data.symbol}}</p>
+  <p>It's address is {{currentNode.query_this_AssignedContributor_latest.get_data.address}}</p>
+</div>
+{{block.super}}
+{% endif %}
+{% endblock %}

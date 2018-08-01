@@ -94,9 +94,19 @@
             <label class="text-muted text-xs">Actions</label>
             <div class="box-divider"></div>
             <div class="m-3">
-              {% for action in origin.origin.related.get_important_actions %}
-                <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action  origin.origin action.name 'label' %}</a>
-              {% endfor %}
+              {% if origin.is_CallForContribution %}
+                {% for action in origin.get_important_actions %}
+                  <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action  origin.origin action.name 'label' %}</a>
+                {% endfor %}
+              {% elif origin.related.is_CallAnswer %}
+                {% for action in origin.related.get_important_actions %}
+                  <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action  origin.origin action.name 'label' %}</a>
+                {% endfor %}
+              {% else %}
+                {% for action in origin.origin.related.get_important_actions %}
+                  <a class="md-btn md-raised btn-block mb-2 w-xs cyan subpanel" href="{{origin.get_url}}{{action.name}}/" >{% get_context_action  origin.origin action.name 'label' %}</a>
+                {% endfor %}
+              {% endif %}
             </div>
             {{origin.get_infered_types}}
           </div>

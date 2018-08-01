@@ -180,7 +180,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
           //notyfReceipt.type = 'success';
 
           if (callback){
-            
+
             callback(receipt);
 
             freeSpace();
@@ -270,45 +270,87 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
 
       console.log('Balance:', currentBalance, balance);
 
-      contract.methods[method].apply(this, args).estimateGas({options})
-      .then(function(gasAmount){
-
-          options.gas = Math.round(gasAmount*5);
-
-          console.log(options);
-
-          if (currentBalance > options.gas){
-            sendTrans();
-          } else {
-
-            ///
-            var notyfTransaction = new Noty(
-              {theme: 'relax',
-              type: 'error',
-              timeout: 0,
-              layout: 'bottomRight',
-              text: 'You don\' have enought ETH to for the gas.',
-              callbacks: {
-                onTemplate: function() {
-                    this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
-                    // Important: .noty_body class is required for setText API method.
-                },
-                onShow: function() {},
-              }
-            }).show();
-
-            ///
-            $('#sidepanel').modal('hide');
-            $('#loader-overlay').modal('hide');
-
-
+      if (currentBalance < 1){
+        ///
+        var notyfBalanceError = new Noty(
+          {theme: 'relax',
+          type: 'error',
+          timeout: 5000,
+          layout: 'bottomRight',
+          text: 'You don\' have enought ETH to for the gas.',
+          callbacks: {
+            onTemplate: function() {
+                this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
+                // Important: .noty_body class is required for setText API method.
+            },
+            onShow: function() {},
           }
-          //sendTrans();
-      })
-      .catch(function(error){
-        console.log('Cannot estimate gas');
-        console.error();
-      });
+        }).show();
+
+        console.log('No balance for gas');
+        freeSpace();
+
+      } else {
+
+        contract.methods[method].apply(this, args).estimateGas({options})
+        .then(function(gasAmount){
+
+            options.gas = Math.round(gasAmount*5);
+
+            console.log(options);
+
+            if (currentBalance > options.gas){
+              sendTrans();
+            } else {
+              ///
+              var notyfNoBalance = new Noty(
+                {theme: 'relax',
+                type: 'error',
+                timeout: 0,
+                layout: 'bottomRight',
+                text: 'You don\' have enought ETH to for the gas.',
+                callbacks: {
+                  onTemplate: function() {
+                      this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
+                      // Important: .noty_body class is required for setText API method.
+                  },
+                  onShow: function() {},
+                }
+              }).show();
+
+              freeSpace();
+              ///
+              //$('#sidepanel').modal('hide');
+              console.log('No enougth eth for transaction');
+
+            }
+            //sendTrans();
+        })
+        .catch(function(error){
+
+          console.log('Cannot estimate gas');
+          var notyfError = new Noty(
+            {theme: 'relax',
+            type: 'error',
+            timeout: 0,
+            layout: 'bottomRight',
+            text: 'Cannot estimate gas cost.',
+            callbacks: {
+              onTemplate: function() {
+                  this.barDom.innerHTML = '<div class="noty_body">' + this.options.text + '<div>';
+                  // Important: .noty_body class is required for setText API method.
+              },
+              onShow: function() {},
+            }
+          }).show();
+
+          console.error();
+          freeSpace();
+          
+        });
+
+      }
+
 
     });
 

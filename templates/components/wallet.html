@@ -88,7 +88,17 @@
             {% for event in currentNode.query_my_RewardedContribution_descendants_items %}
             <tr>
               <td>
-                <a class="subpanel" href="{{event.query_this_latest.get_url}}index/" ><span class="btn white">{{event.query_this_latest.status}}</span></a>
+
+                  {% if event.query_this_latest.status == 'signedReward' %}
+                  <a target="_etherscan" href="{{interface.get_data.etherscan_url}}tx/{{ event.query_this_latest.get_data.tx }}" >
+                    {{ event.query_this_latest.get_data.tx|truncatechars:'12' }}
+                  </a>
+                  {% else %}
+                  <a class="subpanel" href="{{event.query_this_latest.get_url}}index/" >
+                    <span class="btn white">{{event.query_this_latest.status}}</span>
+                  </a>
+                  {% endif %}
+
               </td>
               <td><a class="subpanel" href="{{event.get_url}}index/">{{event.related.title}}</a></td>
               <td><span class="badge">{{event.related.get_data.value}} {{event.related.get_root.get_data.symbol}}</span></td>
