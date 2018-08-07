@@ -1,0 +1,25 @@
+{% extends "200.html" %}
+
+{% block content %}
+
+<div class="container">
+{% for application in interface.get_applications %}
+{% for package in application.packages.all %}
+
+<div class="row">
+{% for action in package.actions.all %}
+{% if not action.meta_type == 'request' %}
+<div class="col-md-6 p-3 border">
+    <h6>{{action.name}}</h6>
+    <p>{{action.description}}</p>
+    <div>
+      <label></label>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+{% endfor %}
+{% endfor %}
+</div>
+{% endblock %}
