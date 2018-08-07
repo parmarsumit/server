@@ -150,8 +150,11 @@ if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'ilot',
-            'USER': 'ilot',
+            'NAME': os.environ.get('POSTGRES_DB', 'ilot'),
+            'USER': os.environ.get('POSTGRES_USER', 'ilot'),
+            'PASSWORD': os.environ.get('POSTGRES_PASS', ''),
+            'HOST': os.environ.get('POSTGRES_HOST', ''),
+            'PORT': os.environ.get('POSTGRES_PORT', '')
         }
     }
 else:
