@@ -26,3 +26,16 @@
 ### Tools
 
     ALLOW_EDITION
+
+
+### Mailjet api
+
+    MAILJET_API_KEY
+    MAILJET_API_SECRET
+    MAILJET_FROM_EMAIL
+
+### Settings
+
+    DJANGO_ENV=production
+
+    SECRET_KEY

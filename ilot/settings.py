@@ -332,8 +332,9 @@ CONTACT_EMAIL = 'contact@ilot.online'
 
 MAILJET_API_KEY = 'ebeeb0718e7a52640b5a20bae28a28f7'
 MAILJET_API_SECRET = '1801ea9757a5445761b02aede88a90aa'
+MAILJET_FROM_EMAIL = DEFAULT_FROM_EMAIL
 
 ADMINS = ['nicolas@biodigitals.com']
 
 #
-SECRET_KEY = 'ffdqsg)z8@q0qfsdreI89è§FDS1oxudm08mz=w°04./S8f&)'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'ffdqsg)z8@q0qfsdreI89è§FDS1oxudm08mz=w°04./S8f&)' )
