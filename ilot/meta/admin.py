@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.forms.models import ModelForm
 
-from ilot.meta.models import ActorInferedType, ActorNotification
+from ilot.meta.models import ActorInferedType, ActorNotification, MessageQueue
 
 
 class ActorInferedTypeAdmin(admin.ModelAdmin):
@@ -18,3 +18,11 @@ class ActorNotificationAdmin(admin.ModelAdmin):
     list_display = ('context', 'rule', 'request', 'created_date', 'modified_date', )
     ordering = ('-modified_date',)
 admin.site.register(ActorNotification, ActorNotificationAdmin)
+
+
+
+class MessageQueueAdmin(admin.ModelAdmin):
+    model = MessageQueue
+    list_display = ('process_id', 'actor_id', 'event_id', 'message', 'created_date'  )
+    ordering = ('-modified_date',)
+admin.site.register(MessageQueue, MessageQueueAdmin)

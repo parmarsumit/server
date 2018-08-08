@@ -1,5 +1,6 @@
 from django.db import models
 from ilot.core.models import AuditedModel
+from ilot.core.parsers.api_json import dump_json
 
 class ActorInferedType(AuditedModel):
     """
@@ -46,7 +47,7 @@ class ActorNotification(AuditedModel):
         return parse_message(self.rule.for_target, self.event, target=self.context.actor)
 
     def notify(self):
-
+        from ilot.meta.models import MessageQueue
         from ilot.manager import OnlineManager
         online_manager = OnlineManager.get_instance()
 
@@ -60,5 +61,23 @@ class ActorNotification(AuditedModel):
             'text': message,
             'todo':self.rule.todo,
         }
-        print('Sending notfication to ', data)
+        # print('Sending notfication to ', data)
         online_manager.notify(self.context.actor_id, data)
+
+        # pushing notifications to database
+        processes_to_notify = MessageQueue.objects.filter(actor_id=self.context.actor_id).exclude(process_id=online_manager.get_process_id()).values_list('process_id', flat=True).distinct()
+        for process_id in processes_to_notify:
+            m = MessageQueue(process_id=process_id,
+                             actor_id=self.context.actor_id,
+                             event_id=self.event.id,
+                             message=dump_json(data))
+            m.save()
+
+
+
+class MessageQueue(AuditedModel):
+    process_id = models.CharField(max_length=36)
+    actor_id = models.CharField(max_length=36)
+    event_id = models.CharField(max_length=36, blank=True, null=True)
+
+    message = models.TextField(blank=True, null=True)

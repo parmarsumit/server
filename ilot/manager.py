@@ -3,6 +3,7 @@ from django.db.models import ObjectDoesNotExist
 from django.db.models import Q
 
 from django.conf import settings
+from ilot.core.models import request_switch, request_lock
 
 from datetime import datetime
 import sys
@@ -17,6 +18,9 @@ utc = pytz.utc
 import json
 
 from ilot.core.models import DataPath
+
+from ilot.meta.models import MessageQueue
+
 
 from ilot.core.parsers.api_json import dump_json
 
@@ -74,20 +78,62 @@ class OnlineManager(Thread):
     def get_time():
         return datetime.utcnow()
 
+    def get_process_id(self):
+        return self.process_id
+
     def __init__(self, *args, **kwargs):
         """
         Not much to init ...
         """
+        self.process_id = str(uuid.uuid4())
+        self.process_time = OnlineManager.get_ref_time()
+
+        self.do_polling = True
+
         super(OnlineManager, self).__init__(*args, **kwargs)
 
-    def notify(self, akey, data):
+    def run(self):
 
+        """ here comes the database polling """
+        from ilot.core.models import Moderation
+        from ilot.meta.models import MessageQueue
+        while self.do_polling:
+            request_lock.acquire()
+            # get latest events
+            last_mods = Moderation.objects.filter(ref_time__gt=self.process_time).order_by('ref_time')
+
+            for mod in last_mods:
+                # check for messages
+                relay_messages = MessageQueue.objects.filter(process_id=self.process_id, event_id=mod.id)
+                for message in relay_messages:
+                    self.relay(message.actor_id, message.message)
+                self.process_time = mod.ref_time
+
+            #self.process_time = OnlineManager.get_ref_time()
+            request_lock.release()
+
+            time.sleep(1)
+
+    def stop(self):
+
+        self.do_polling = False
+
+        # remove message queue process rows
+        MessageQueue.objects.filter(process_id=self.process_id).delete()
+
+        self.join()
+
+
+    def notify(self, akey, data):
         event_data = dump_json(data)
         if akey in self.websockets_by_visitor:
             for ws in self.websockets_by_visitor[akey]:
                 ws.send_safe(event_data)
 
-        return
+    def relay(self, akey, string):
+        if akey in self.websockets_by_visitor:
+            for ws in self.websockets_by_visitor[akey]:
+                ws.send_safe(string)
 
     def register_online(self, websocket, wkey, token=None):
 
@@ -119,6 +165,10 @@ class OnlineManager(Thread):
 
         if not websocket in self.websockets_by_visitor[str(akey)]:
             self.websockets_by_visitor[str(akey)].append(websocket)
+
+
+        markup = MessageQueue(process_id=self.process_id, actor_id=akey)
+        markup.save()
 
         self.visitors.append({'socket':websocket, 'akey':akey, 'domain':self.websocket_domain[websocket]})
 
@@ -162,12 +212,18 @@ class OnlineManager(Thread):
         self.websockets_by_visitor[akey].remove(websocket)
         if not len(self.websockets_by_visitor[akey]):
             del self.websockets_by_visitor[akey]
+
+            # delete only if no more connection opened for the user
+            mq = MessageQueue.objects.filter(process_id=self.process_id, actor_id=akey)
+            mq.delete()
             #self.process_publisher.send_disconnected(akey, CloudManager.get_process_id())
 
         for visitor in self.visitors:
             if 'socket' in visitor and visitor['socket'] == websocket:
                 self.visitors.remove(visitor)
                 break
+
+
 
         del self.visitors_by_websocket[websocket]
 

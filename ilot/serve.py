@@ -99,6 +99,8 @@ def serve(ip='127.0.0.1', port=8080):
 
     def stop():
         print('STOPPED ...')
+        from ilot.manager import OnlineManager
+        OnlineManager.get_instance().stop()
 
     import signal
     import sys
