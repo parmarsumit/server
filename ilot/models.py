@@ -131,13 +131,13 @@ class Interface(AuditedModel):
 
     def get_settings(self):
         # get current running app settings
-        settings = {}
+        settings_data = {}
 
-        settings['mailjet_api_key'] = os.environ.get('MAILJET_API_KEY', settings.MAILJET_API_KEY)
-        settings['mailjet_api_secret'] = os.environ.get('MAILJET_API_SECRET', settings.MAILJET_API_SECRET)
-        settings['mailjet_from_email'] = os.environ.get('MAILJET_FROM_EMAIL', settings.MAILJET_FROM_EMAIL)
-        
-        return settings
+        settings_data['mailjet_api_key'] = os.environ.get('MAILJET_API_KEY', settings.MAILJET_API_KEY)
+        settings_data['mailjet_api_secret'] = os.environ.get('MAILJET_API_SECRET', settings.MAILJET_API_SECRET)
+        settings_data['mailjet_from_email'] = os.environ.get('MAILJET_FROM_EMAIL', settings.MAILJET_FROM_EMAIL)
+
+        return settings_data
 
     def get_applications(self):
         return Organization.objects.all()
