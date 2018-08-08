@@ -48,5 +48,5 @@ urlpatterns = [
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if not os.environ.get('DJANGO_ENV', 'dev') == 'production':
+if os.environ.get('ALLOW_EDITION', settings.DEBUG):
     urlpatterns.insert(0, url(r'admin/', include(admin.site.urls)))

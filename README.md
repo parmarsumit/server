@@ -7,7 +7,11 @@ Here are the first guidelines to get it running.
 ### requirements
 git, python3.5
 
-    apt-get install python3-dev python3-pil build-essential python-certbot-nginx
+    apt-get install python3-dev python3-pil build-essential
+
+
+python-pil package may be named python-imaging, depends on distribution
+
 
 ### setup
 
@@ -38,15 +42,32 @@ git, python3.5
 A default certificate is created to enable using local https.
 You should have access now at https://localhost:9999/
 
+
+### updating
+
+    git pull
+
+    ilot migrate
+    ilot update
+    ilot collectstatic
+
+
+### editing actions and messages
+
+You need to create a superuser
+
+    ilot createsuperuser
+
+Then you can access ide at /tools/index.html
+
+To save changes to application.json
+
+    ilot release
+
+
 ### dev tools
 
 + truffle for contract compilation
 + webpack for the webapp
 
-
-### updating
-
-    git pull
-    ilot migrate
-    ilot update
-    ilot collectstatic
+###
