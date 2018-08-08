@@ -299,7 +299,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
         contract.methods[method].apply(this, args).estimateGas({options})
         .then(function(gasAmount){
 
-            options.gas = Math.round(gasAmount*5);
+            options.gas = Math.round(gasAmount*2);
 
             console.log(options);
 
@@ -331,7 +331,7 @@ function wrapContractTransaction(contract, form_selector, method, args, options,
             //sendTrans();
         })
         .catch(function(error){
-
+          console.log(error);
           console.log('Cannot estimate gas');
           var notyfError = new Noty(
             {theme: 'relax',
