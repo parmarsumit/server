@@ -17,13 +17,8 @@ class Loader(BaseLoader):
 
     def get_template_sources(self, template_name, template_dirs=None):
 
-        from ilot.cloud.models import Service
-        try:
-            app = Service.objects.get(interface=request_switch.interface)
-            template_dir = os.path.join(app.path, 'templates/')
-        except Service.DoesNotExist:
-            from django.conf import settings
-            template_dir = os.path.join(settings.APP_ROOT, 'templates/')
+        from django.conf import settings
+        template_dir = os.path.join(settings.APP_ROOT, 'templates/')
         #print('TEMPLATE DIR', template_dir, request_switch.interface)
         try:
             yield safe_join(template_dir, template_name)

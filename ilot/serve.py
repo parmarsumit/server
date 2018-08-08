@@ -59,18 +59,28 @@ def serve(ip='127.0.0.1', port=8080):
     from ilot.socket import OnlineSocket
 
     # start the app
-    tornado_app = tornado.web.Application([
-          (r'/static/app/(.*)', StaticFileSwitcher, {'path': 'build/app/' }),
-          (r'/static/contracts/(.*)', StaticFileSwitcher, {'path': 'build/contracts/' }),
-          (r'/static/(.*)', StaticFileSwitcher, {'path': 'static/' }),
-          (r'/media/(.*)', StaticFileHandler, {'path': settings.MEDIA_ROOT }),
-          (r'/io.ws', OnlineSocket),
-          (r'/io.js', AppView),
-          (r'/io/', IndexView),
-          #(r'/(.*)', StaticFileSwitcher, {'path': 'www/' }),
-          (r'(.*)', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),
-        ])
-
+    if settings.DEBUG:
+        tornado_app = tornado.web.Application([
+              (r'/static/app/(.*)', StaticFileHandler, {'path': settings.APP_ROOT+'/build/app/' }),
+              (r'/static/contracts/(.*)', StaticFileHandler, {'path': settings.APP_ROOT+'/build/contracts/' }),
+              (r'/static/(.*)', StaticFileHandler, {'path': settings.STATIC_ROOT }),
+              (r'/media/(.*)', StaticFileHandler, {'path': settings.MEDIA_ROOT }),
+              (r'/io.ws', OnlineSocket),
+              (r'/io.js', AppView),
+              (r'/io/', IndexView),
+              #(r'/(.*)', StaticFileSwitcher, {'path': 'www/' }),
+              (r'(.*)', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),
+            ])
+    else:
+        tornado_app = tornado.web.Application([
+              (r'/static/(.*)', StaticFileHandler, {'path': settings.STATIC_ROOT }),
+              (r'/media/(.*)', StaticFileHandler, {'path': settings.MEDIA_ROOT }),
+              (r'/io.ws', OnlineSocket),
+              (r'/io.js', AppView),
+              (r'/io/', IndexView),
+              #(r'/(.*)', StaticFileSwitcher, {'path': 'www/' }),
+              (r'(.*)', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),
+            ])
     # openssl req -new -x509 -days 365 -nodes -out conf/certificate.pem -keyout conf/key.pem
     #if settings.SECURE_SSL_REDIRECT:
     from ilot.core.manager import AppManager

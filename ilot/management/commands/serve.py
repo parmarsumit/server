@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 import os
 
 class Command(BaseCommand):
-    help = 'Deploy clusters  to scaleway infrastructure'
+    help = 'Serve https and websocket'
 
     def add_arguments(self, parser):
         from ilot.core.manager import AppManager

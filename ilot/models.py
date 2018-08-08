@@ -131,11 +131,13 @@ class Interface(AuditedModel):
 
     def get_settings(self):
         # get current running app settings
-        from ilot.cloud.models import Service
-        try:
-            return Service.objects.get(interface=self).get_data()
-        except Service.DoesNotExist:
-            return {}
+        settings = {}
+
+        settings['mailjet_api_key'] = os.environ.get('MAILJET_API_SECRET')
+        settings['mailjet_api_secret'] = os.environ.get('MAILJET_API_KEY')
+        settings['mailjet_from_email'] = os.environ.get('MAILJET_FROM_EMAIL')
+
+        return settings
 
     def get_applications(self):
         return Organization.objects.all()

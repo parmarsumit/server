@@ -14,7 +14,7 @@ else:
 
 LIB_ROOT = os.path.dirname(os.path.dirname(__file__))
 
-SERVER_ROOT = os.environ.get('ILOT_SRV_ROOT', '/srv')
+SERVER_ROOT = os.environ.get('ILOT_SRV_ROOT', os.getcwd())
 APP_ROOT = os.environ.get('ILOT_APP_ROOT', LIB_ROOT)
 
 SECRET_KEY = "fsldjkhgljkfshfgnlcuqsngfiu"
@@ -74,12 +74,10 @@ INSTALLED_APPS = [
     "ilot.grammar",
     #"ilot.scenarios",
     "ilot.webhooks",
-    "ilot.cloud",
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_swagger",
     "django_filters",
-    "django_mailjet",
     "mathfilters"
 ]
 
@@ -113,8 +111,6 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE_CLASSES = (
-    #'ilot.cloud.middleware.GithubDeployMiddleware',
-#    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -325,14 +321,14 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST', 'in-v3.mailjet.com')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'ebeeb0718e7a52640b5a20bae28a28f7')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '1801ea9757a5445761b02aede88a90aa')
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
 
 DEFAULT_FROM_EMAIL = 'contact@ilot.online'
 
 SERVER_EMAIL = 'contact@ilot.online'
 CONTACT_EMAIL = 'contact@ilot.online'
 
-EMAIL_BACKEND = 'django_mailjet.backends.MailjetBackend'
+#EMAIL_BACKEND = 'django_mailjet.backends.MailjetBackend'
 
 MAILJET_API_KEY = 'ebeeb0718e7a52640b5a20bae28a28f7'
 MAILJET_API_SECRET = '1801ea9757a5445761b02aede88a90aa'
